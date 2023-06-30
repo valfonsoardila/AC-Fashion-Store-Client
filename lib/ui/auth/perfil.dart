@@ -119,7 +119,7 @@ class _PerfilState extends State<Perfil> {
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(color: Colors.white),
                   ),
-                  labelText: controlua.userValido!.user!.email,
+                  labelText: controlua.userValido!.email,
                   labelStyle: const TextStyle(color: Colors.white),
                   prefixIcon: const Icon(Icons.email, color: Colors.white),
                 ),
@@ -248,10 +248,10 @@ class _PerfilState extends State<Perfil> {
               ElevatedButton(
                 onPressed: () {
                   var catalogo = <String, dynamic>{
-                    'id': controlua.userValido!.user.id,
+                    'id': controlua.userValido!.id,
                     'foto': _image != null ? _image.path : null,
                     'correo': controlUser.text,
-                    'password': controlPass.text,
+                    'contrasena': controlPass.text,
                     'estado': 'activo',
                     'nombre': controlNombre.text,
                     'genero': generoSeleccionado,

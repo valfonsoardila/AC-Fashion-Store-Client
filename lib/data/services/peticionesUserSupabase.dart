@@ -2,85 +2,91 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Peticioneslogin {
   static Future login(String email, String password) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .select()
-        .eq('email', email)
-        .eq('password', password);
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+    try {
+      final client = Supabase.instance.client;
+      final AuthResponse authResponse = await client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      final Session? sesion = authResponse.session;
+      final response = sesion;
+      return response;
+    } catch (e) {
+      print('Error al iniciar sesion: $e');
     }
-    if (response.data == null || response.data.length == 0) {
-      throw Exception('Usuario o contraseña incorrectos');
-    }
-    return response.data;
   }
 
   static Future register(String email, String password) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .insert({'email': email, 'password': password});
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+    try {
+      final client = Supabase.instance.client;
+      final AuthResponse authResponse = await client.auth.signUp(
+        email: email,
+        password: password,
+      );
+      final User? user = authResponse.user;
+      final response = user;
+      return response;
+    } catch (e) {
+      print('Error al registrar autenticacion: $e');
     }
-    return response.data;
   }
 
   static Future update(String email, String password) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .update({'email': email, 'password': password})
-        .eq('email', email)
-        .eq('password', password);
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+    try {
+      final client = Supabase.instance.client;
+      final UserResponse userResponse = await client.auth.updateUser(
+        UserAttributes(
+          email: email,
+          password: password,
+        ),
+      );
+      final User? user = userResponse.user;
+      final response = user;
+      return response;
+    } catch (e) {
+      print('Error al actualizar autenticacion: $e');
     }
-    return response.data;
   }
 
-  static Future delete(String email, String password) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .delete()
-        .eq('email', email)
-        .eq('password', password);
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+  static Future obtenerUsurioLogueado() async {
+    try {
+      final client = Supabase.instance.client;
+      final User? user = client.auth.currentUser;
+      final respouse = user;
+      return respouse;
+    } catch (e) {
+      print('Error al obtener autenticacion: $e');
     }
-    return response.data;
   }
 
-  static Future get(String email, String password) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .select()
-        .eq('email', email)
-        .eq('password', password);
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+  static Future obtenerDatosSesion() async {
+    try {
+      final client = Supabase.instance.client;
+      final Session? session = client.auth.currentSession;
+      final respouse = session;
+      return respouse;
+    } catch (e) {
+      print('Error al obtener autenticacion: $e');
     }
-    if (response.data == null || response.data.length == 0) {
-      throw Exception('Usuario o contraseña incorrectos');
-    }
-    return response.data;
   }
 
   static Future recuperarContrasena(String email) async {
-    final response = await Supabase.instance.client
-        .from('users')
-        .select()
-        .eq('email', email);
-    if (response.error != null && response.error.message != '') {
-      throw Exception(response.error.message);
+    try {
+      final client = Supabase.instance.client;
+      final response = await client.auth.resetPasswordForEmail(email);
+      return response;
+    } catch (e) {
+      print('Error al recuperar contraseña: $e');
     }
-    if (response.data == null || response.data.length == 0) {
-      throw Exception('Usuario o contraseña incorrectos');
-    }
-    return response.data;
   }
 
   static Future abandonarSesion() async {
-    final response = await Supabase.instance.client.auth.signOut();
-    return response;
+    try {
+      final client = Supabase.instance.client;
+      final response = await client.auth.signOut();
+      return response;
+    } catch (e) {
+      print('Error al cerrar sesion: $e');
+    }
   }
 }

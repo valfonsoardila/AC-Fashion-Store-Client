@@ -5,19 +5,26 @@ import 'package:get/get.dart';
 class ControlUserAuth extends GetxController {
   final _response = Rxn();
   final _mensaje = "".obs;
-  final Rxn<Session> _usuario =
+  final Rxn<User> _usuario = Rxn<User>();
+  final Rxn<Session> _sesion =
       Rxn<Session>(); // Usa Session en lugar de UserCredential
 
   Future<void> crearUser(String email, String pass) async {
     _response.value = await Peticioneslogin.register(email,
         pass); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
+    await controlUser(_response.value);
+  }
+
+  Future<void> consultarUser() async {
+    _response.value = await Peticioneslogin
+        .obtenerUsurioLogueado(); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
     print(_response.value);
     await controlUser(_response.value);
   }
 
-  Future<void> consultarUser(String email, String pass) async {
-    _response.value = await Peticioneslogin.get(email,
-        pass); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
+  Future<void> consultarSesion() async {
+    _response.value = await Peticioneslogin
+        .obtenerDatosSesion(); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
     print(_response.value);
     await controlUser(_response.value);
   }
@@ -50,12 +57,18 @@ class ControlUserAuth extends GetxController {
       _mensaje.value = "Por favor intente de nuevo";
     } else {
       _mensaje.value = "Proceso exitoso";
-      _usuario.value = respuesta;
+      if (respuesta is User) {
+        _usuario.value = respuesta;
+      } else if (respuesta is Session) {
+        _sesion.value = respuesta;
+        print('estado de sesion: ${_sesion.value}');
+      }
     }
   }
 
   dynamic get estadoUser => _response.value;
   String get mensajesUser => _mensaje.value;
-  Session? get userValido =>
-      _usuario.value; // Usa Session en lugar de UserCredential
+  User? get userValido => _usuario.value; // Usa User en lugar de UserCredential
+  Session? get sesionValida =>
+      _sesion.value; // Usa Session en lugar de UserCredential
 }

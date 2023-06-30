@@ -13,9 +13,9 @@ void main() async {
   await Supabase.initialize(
     // Inicializa Supabase con tus credenciales
     url:
-        'https://your-supabase-url.com', // Reemplaza con la URL de tu proyecto de Supabase
+        'https://ilhxudokfcjgwqpegnfk.supabase.co', // Reemplaza con la URL de tu proyecto de Supabase
     anonKey:
-        'your-anon-key', // Reemplaza con tu clave de acceso anónimo de Supabase
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsaHh1ZG9rZmNqZ3dxcGVnbmZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODgwOTQ3NDQsImV4cCI6MjAwMzY3MDc0NH0.x5K8D3KAQDuuoEpfz9Rx47OHJ0QY6Bj-iYSyrrJ8nOY', // Reemplaza con tu clave de acceso anónimo de Supabase
   );
   Get.put(
       ControlUserAuth()); // Reemplaza ControlUserAuth con tu controlador de autenticación de Supabase

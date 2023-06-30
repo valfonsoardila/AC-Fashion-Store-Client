@@ -12,7 +12,7 @@ class Peticiones {
     try {
       var url = '';
       if (foto != null) {
-        url = await Peticiones.cargarfoto(foto, controlua.userValido!.user!.id);
+        url = await Peticiones.cargarfoto(foto, controlua.userValido!.id);
       }
       print(url);
       catalogo['foto'] = url.toString();
@@ -60,9 +60,8 @@ class Peticiones {
       final response = await storage
           .from(folderPath)
           .uploadBinary(fileName, foto.readAsBytesSync());
-    } catch (error) {
-      print('Error en la operación de carga de foto: $error');
-      throw error;
+    } catch (e) {
+      print('Error en la operación de carga de foto: $e');
     }
   }
 }

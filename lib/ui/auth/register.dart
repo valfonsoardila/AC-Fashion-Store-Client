@@ -162,7 +162,10 @@ class Register extends StatelessWidget {
                                 controlua
                                     .crearUser(user.text, pass.text)
                                     .then((value) {
-                                  if (controlua.userValido == null) {
+                                  print(
+                                      'respuesta desde el origen: ${controlua.userValido}');
+                                  if (controlua.mensajesUser == '') {
+                                    print('Error al registrar');
                                     Get.snackbar(
                                         "Error al registrar, Asegurate de que tu contraseña es mayor a 6 caracteres",
                                         controlua.mensajesUser,
@@ -170,17 +173,19 @@ class Register extends StatelessWidget {
                                         backgroundColor: const Color.fromARGB(
                                             255, 73, 73, 73));
                                   } else {
-                                    Get.snackbar("¡Registrado Correctamente!",
-                                        controlua.mensajesUser,
-                                        duration: const Duration(seconds: 4),
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 73, 73, 73));
-                                    String password = pass.text;
-                                    Get.toNamed("/perfil", arguments: [
-                                      nombre.text,
-                                      user.text,
-                                      password
-                                    ]);
+                                    if (controlua.mensajesUser ==
+                                        'Proceso exitoso') {
+                                      Get.snackbar("¡Registrado Correctamente!",
+                                          controlua.mensajesUser,
+                                          duration: const Duration(seconds: 4),
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 73, 73, 73));
+                                      Get.toNamed("/perfil", arguments: [
+                                        nombre.text,
+                                        user.text,
+                                        pass.text
+                                      ]);
+                                    }
                                   }
                                 });
                               }
