@@ -44,13 +44,13 @@ class Peticiones {
 
   static Future<Map<String, dynamic>> obtenerperfil(id) async {
     final instance = _client.storage; // Instancia de SupabaseStorage
-    final folderPath = 'perfiles'; // Carpeta donde deseas almacenar las fotos
+    final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
     Map<String, dynamic> perfil = {}; // Lista de perfiles
     String fileName = '$id.png'; // Nombre del archivo
     try {
       //Intenta obtener el perfil
       final response = await _client
-          .from('perfil')
+          .from(folderPath)
           .select('*')
           .eq('id', id); //Filtra el perfil por id
       if (response[0]["foto"].toString().isNotEmpty) {

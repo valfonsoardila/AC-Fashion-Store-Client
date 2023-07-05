@@ -80,7 +80,7 @@ class Peticioneslogin {
     }
   }
 
-  static Future abandonarSesion() async {
+  static Future cerrarSesion() async {
     try {
       final client = Supabase.instance.client;
       final response = await client.auth.signOut();

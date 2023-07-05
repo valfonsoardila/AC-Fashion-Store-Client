@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   ControlUserAuth controlua = Get.find();
   ControlUserPerfil controlup = Get.put(ControlUserPerfil());
   ControlProducto controlp = Get.put(ControlProducto());
-  //VARIABLES
+  //VARIABLES DE PERFIL
   String? uid = ''; // Variable local para almacenar el ID del usuario
   var foto = "";
   var correo = "";
@@ -26,6 +26,19 @@ class _MainScreenState extends State<MainScreen> {
   var profesion = "";
   var direccion = "";
   var celular = "";
+  //VARIABLES DE PRODUCTOS
+  var idProducto = "";
+  var cantidadProducto = "";
+  var fotoProducto = "";
+  var nombreProducto = "";
+  var descripcionProducto = "";
+  var colorProducto = "";
+  var tallaProducto = "";
+  var categoriaProducto = "";
+  var valoracionProducto = "";
+  var precioProducto = "";
+  //LISTAS
+  List<Map<String, dynamic>> datosProductos = [];
   //FUNCIONES
   @override
   void initState() {
@@ -62,6 +75,18 @@ class _MainScreenState extends State<MainScreen> {
           direccion = datosPerfil['direccion'] ?? "";
           celular = datosPerfil['celular'] ?? "";
           foto = datosPerfil['foto'] ?? "";
+          controlp.obtenerproductos();
+          final datosProductos = snapshot.data ?? {};
+          idProducto = datosProductos['id'] ?? "";
+          cantidadProducto = datosProductos['cantidad'] ?? "";
+          fotoProducto = datosProductos['foto'] ?? "";
+          nombreProducto = datosProductos['nombre'] ?? "";
+          descripcionProducto = datosProductos['descripcion'] ?? "";
+          colorProducto = datosProductos['color'] ?? "";
+          tallaProducto = datosProductos['talla'] ?? "";
+          categoriaProducto = datosProductos['categoria'] ?? "";
+          valoracionProducto = datosProductos['valoracion'] ?? "";
+          precioProducto = datosProductos['precio'] ?? "";
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(

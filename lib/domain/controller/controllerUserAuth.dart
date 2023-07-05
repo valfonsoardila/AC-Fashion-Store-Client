@@ -44,7 +44,7 @@ class ControlUserAuth extends GetxController {
 
   Future<void> cerrarSesion() async {
     _response.value = await Peticioneslogin
-        .abandonarSesion(); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
+        .cerrarSesion(); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
     print(_response.value);
     await controlUser(_response.value);
   }

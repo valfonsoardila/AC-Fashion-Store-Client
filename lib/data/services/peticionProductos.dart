@@ -23,31 +23,41 @@ class Peticiones {
     }
   }
 
-  static Future<dynamic> obtenerproductos() async {
-    final instance = _client.storage; // Instancia de SupabaseStorage
-    final folderPath = 'productoes'; // Carpeta donde deseas almacenar las fotos
-    List<Map<String, dynamic>> productos = []; // Lista de productoes
+  static Future<List<Map<String, dynamic>>> obtenerproductos() async {
+    final instance = _client.storage; // Instancia de Supabase Storage
+    final folderPath = 'productos'; // Carpeta donde estan almacenadas las fotos
+    List<Map<String, dynamic>> productos = []; // Lista de productos
+    var uids =
+        await Peticiones.obtenerListaUids(); // Lista de uids de los productos
     try {
-      //Intenta obtener los productos
-      final response = await _client
-          .from('productos')
-          .select('*'); //Filtra el producto por id
-      if (response != null) {
-        // Si la respuesta no es nula
-        for (var i = 0; i < response.length; i++) {
-          final image = await instance.from(folderPath).getPublicUrl(
-              response[i]['id'].toString() +
-                  '.png'); //Obtiene la url de la imagen
-          response[i]['foto'] =
-              image; //Agrega la url de la imagen a cada producto
+      for (int i = 0; i < uids.length; i++) {
+        final response =
+            await _client.from('producto').select('*').eq('id', uids[i]);
+        if (response[i]["foto"].toString().isNotEmpty) {
+          //Si la respuesta no es una url vacia
+          final image = await instance
+              .from(folderPath)
+              .getPublicUrl('${uids[i]}.png'); //Obtiene la url de la imagen
+          response[i]['foto'] = image; //Agrega la url de la imagen al perfil
         }
-        productos = List<Map<String, dynamic>>.from(
-            response); //Convierte la respuesta en una lista de mapas
+        productos[i] = response;
       }
-      return productos; //Retorna los productos
+      return productos;
     } catch (e) {
       print("error en la peticion:$e");
-      return {};
+      return [];
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> obtenerListaUids() async {
+    List<Map<String, dynamic>> uids = [];
+    try {
+      final response = await _client.from('producto').select('id');
+      uids = List<Map<String, dynamic>>.from(response);
+      return uids;
+    } catch (e) {
+      print("error en la peticion:$e");
+      return [];
     }
   }
 
