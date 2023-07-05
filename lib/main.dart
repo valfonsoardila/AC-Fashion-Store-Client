@@ -1,5 +1,5 @@
-import 'package:acfashion_store/domain/controller/controllerPerfilUser.dart';
-import 'package:acfashion_store/domain/controller/controllerUserControlUserAuthSupabase.dart';
+import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
+import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Importa el paquete supabase_flutter
 import 'package:flutter/material.dart';

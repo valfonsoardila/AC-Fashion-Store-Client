@@ -70,6 +70,7 @@ class _DashboardScreenState extends State<DetailScreen> {
           style: TextStyle(color: MyColors.myPurple),
         ),
         backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: MyColors.myBlack),
         elevation: 0,
         actions: [Image.asset("assets/icons/ic_search.png")],
       ),

@@ -52,8 +52,8 @@ class Peticioneslogin {
     try {
       final client = Supabase.instance.client;
       final User? user = client.auth.currentUser;
-      final respouse = user;
-      return respouse;
+      final response = user;
+      return response;
     } catch (e) {
       print('Error al obtener autenticacion: $e');
     }

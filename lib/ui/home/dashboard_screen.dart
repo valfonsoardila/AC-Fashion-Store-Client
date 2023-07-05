@@ -1,3 +1,4 @@
+import 'package:acfashion_store/ui/home/aside.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/utilities/data.dart';
@@ -5,13 +6,43 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
-
+  final String nombre;
+  final String correo;
+  final String celular;
+  final String direccion;
+  final String foto;
+  final String profesion;
+  DashboardScreen({
+    Key? key,
+    required this.nombre,
+    required this.correo,
+    required this.celular,
+    required this.direccion,
+    required this.foto,
+    required this.profesion,
+  }) : super(key: key);
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  String nombrePerfil = 'Nombre de usuario';
+  String correoPerfil = 'Correo electrónico';
+  String telefonPerfil = 'Teléfono';
+  String direccionPerfil = 'Dirección';
+  String fotoPerfil = 'Foto de perfil';
+  String profesionPerfil = 'Profesión';
+  @override
+  void initState() {
+    super.initState();
+    nombrePerfil = widget.nombre;
+    correoPerfil = widget.correo;
+    telefonPerfil = widget.celular;
+    direccionPerfil = widget.direccion;
+    fotoPerfil = widget.foto;
+    profesionPerfil = widget.profesion;
+  }
+
   List<Widget> buildCategories() {
     return Data.generateCategories()
         .map(
@@ -57,12 +88,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Image.asset("assets/icons/ic_menu.png"),
-            onPressed: () => Navigator.of(context).pop(),
+            icon:
+                Image.asset("assets/icons/ic_menu.png", width: 18, height: 18),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Aside(
+                          nombre: nombrePerfil,
+                          correo: correoPerfil,
+                          telefono: telefonPerfil,
+                          direccion: direccionPerfil,
+                          foto: fotoPerfil,
+                          profesion: profesionPerfil,
+                        ))),
           ),
           backgroundColor: Colors.white,
           elevation: 0,
-          actions: [Image.asset("assets/icons/ic_search.png")],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.shopping_cart_outlined, color: Colors.black),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.notifications_none, color: Colors.black),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Image.asset(
+                "assets/icons/ic_search.png",
+                width: 18,
+                height: 18,
+              ),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: ListView(
           children: [
@@ -82,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         RichText(
                           textAlign: TextAlign.center,
                           text: const TextSpan(
-                            text: "New Release",
+                            text: "Nuevo lanzamiento",
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ),
@@ -92,7 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         RichText(
                           textAlign: TextAlign.start,
                           text: const TextSpan(
-                            text: "Nike Air\nMax 90",
+                            text: "",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -100,10 +159,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 5,
+                          height: 100,
                         ),
                         ElevatedButton(
-                            child: Text("  Buy now  ".toUpperCase(),
+                            child: Text("  Comprar Ahora  ".toUpperCase(),
                                 style: const TextStyle(fontSize: 14)),
                             style: ButtonStyle(
                                 foregroundColor:
@@ -139,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: RichText(
                 textAlign: TextAlign.start,
                 text: const TextSpan(
-                    text: "New Men's",
+                    text: "Nuevos diseños",
                     style: TextStyle(
                         color: Colors.black87,
                         fontSize: 20.0,

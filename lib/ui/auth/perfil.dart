@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_null_aware_operators
 import 'dart:io';
-import 'package:acfashion_store/domain/controller/controllerPerfilUser.dart';
-import 'package:acfashion_store/domain/controller/controllerUserControlUserAuthSupabase.dart';
+import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
+import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -247,7 +247,7 @@ class _PerfilState extends State<Perfil> {
               const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () {
-                  var catalogo = <String, dynamic>{
+                  var perfil = <String, dynamic>{
                     'id': controlua.userValido!.id,
                     'foto': _image != null ? _image.path : null,
                     'correo': controlUser.text,
@@ -260,7 +260,7 @@ class _PerfilState extends State<Perfil> {
                     'direccion': controlDireccion.text,
                     'celular': controlCelular.text,
                   };
-                  controlup.crearcatalogo(catalogo, _image);
+                  controlup.crearperfil(perfil, _image);
                   if (_image != null || _image == null) {
                     Get.snackbar("Perfil Guardado Correctamente",
                         controlup.mensajesPerfil,
@@ -268,13 +268,13 @@ class _PerfilState extends State<Perfil> {
                         backgroundColor: const Color.fromARGB(255, 73, 73, 73));
                     Get.toNamed("/login");
                   } else {
-                    controlup.crearcatalogo(catalogo, null);
+                    controlup.crearperfil(perfil, null);
                     Get.snackbar("No se pudo guardar el perfil",
                         controlup.mensajesPerfil,
                         duration: const Duration(seconds: 4),
                         backgroundColor: const Color.fromARGB(255, 73, 73, 73));
                   }
-                  //Peticiones.crearcatalogo(catalogo, _image);
+                  //Peticiones.crearperfil(perfil, _image);
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

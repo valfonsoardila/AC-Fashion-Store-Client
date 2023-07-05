@@ -16,13 +16,13 @@ class Data {
 
   static List<ProductModel> generateCategories() {
     return [
-      ProductModel(1, "assets/images/shoes_1.png", "Lifestyle", "Men's Shoes",
+      ProductModel(1, "assets/images/shoes_1.png", "Damas", "Men's Shoes",
           "men shoes", 99.56),
-      ProductModel(2, "assets/images/shoes_2.png", "Basketball", "Men's Shoes",
+      ProductModel(2, "assets/images/shoes_2.png", "Caballeros", "Men's Shoes",
           "men shoes", 137.56),
-      ProductModel(3, "assets/images/shoes_3.png", "Running", "Men's Shoes",
+      ProductModel(3, "assets/images/shoes_3.png", "Niños", "Men's Shoes",
           "men shoes", 99.56),
-      ProductModel(4, "assets/images/shoes_4.png", "Rugby", "Men's Shoes",
+      ProductModel(4, "assets/images/shoes_4.png", "Niñas", "Men's Shoes",
           "men shoes", 212.56),
     ];
   }

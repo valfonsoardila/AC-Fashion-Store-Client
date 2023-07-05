@@ -1,4 +1,4 @@
-import 'package:acfashion_store/domain/controller/controllerUserControlUserAuthSupabase.dart';
+import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
                     ),
                     const SizedBox(height: 20.0),
                     const Text(
-                      'AC Fashionn Store',
+                      'AC Fashion Store',
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Color.fromARGB(255, 124, 12, 131),

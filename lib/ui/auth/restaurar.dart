@@ -1,4 +1,4 @@
-import 'package:acfashion_store/domain/controller/controllerUserControlUserAuthSupabase.dart';
+import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -98,7 +98,7 @@ class Restaurar extends StatelessWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 2124, 12, 131),
+                        backgroundColor: Color.fromARGB(255, 124, 12, 131),
                         textStyle: const TextStyle(
                           fontSize: 16.0,
                         ),

@@ -9,34 +9,31 @@ class ControlUserPerfil extends GetxController {
   final Rxn<Session> _perfil =
       Rxn<Session>(); // Usa Session en lugar de UserCredential
 
-  Future<void> crearcatalogo(Map<String, dynamic> catalogo, foto) async {
+  Future<void> crearperfil(Map<String, dynamic> perfil, foto) async {
     try {
       print("llego al controlador");
-      _response.value = await Peticiones.crearcatalogo(catalogo, foto);
+      _response.value = await Peticiones.crearperfil(perfil, foto);
       await controlPerfil(_response.value);
     } catch (error) {
       print('Error en la operación de registro: $error');
       await Future.delayed(Duration(seconds: 2)); // Esperar 2 segundos
-      await crearcatalogo(catalogo, foto); // Reintentar el registro
+      await crearperfil(perfil, foto); // Reintentar el registro
     }
   }
 
-  Future<void> actualizarcatalogo(Map<String, dynamic> catalogo, foto) async {
-    _response.value = await Peticiones.actualizarcatalogo(catalogo, foto);
+  Future<void> actualizarperfil(Map<String, dynamic> perfil, foto) async {
+    _response.value = await Peticiones.actualizarperfil(perfil, foto);
     await controlPerfil(_response.value);
   }
 
-  Future<void> eliminarcatalogo(Map<String, dynamic> catalogo) async {
-    _response.value = await Peticiones.eliminarcatalogo(catalogo);
+  Future<void> eliminarperfil(Map<String, dynamic> perfil) async {
+    _response.value = await Peticiones.eliminarperfil(perfil);
     await controlPerfil(_response.value);
   }
 
-  Future<Map<String, dynamic>> obtenercatalogo(String id) async {
-    print("llego al controlador");
-    _response.value = await Peticiones.obtenercatalogo(id);
+  Future<Map<String, dynamic>> obtenerperfil(String id) async {
+    _response.value = await Peticiones.obtenerperfil(id);
     await controlPerfil(_response.value);
-    print("resultado de la peticion:");
-    print(_response.value);
     return _response.value;
   }
 
@@ -54,12 +51,11 @@ class ControlUserPerfil extends GetxController {
         _perfil.value = respuesta;
       } else {
         _Datos.value = respuesta;
-        print(_Datos.value);
       }
     }
   }
 
-  List<Map<String, dynamic>> get datosPerfil => _Datos.value;
+  Map<String, dynamic> get datosPerfil => _Datos.value;
   dynamic get estadoPerfil => _response.value;
   String get mensajesPerfil => _mensaje.value;
   Session? get perfilValido =>

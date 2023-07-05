@@ -18,7 +18,6 @@ class ControlUserAuth extends GetxController {
   Future<void> consultarUser() async {
     _response.value = await Peticioneslogin
         .obtenerUsurioLogueado(); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
-    print(_response.value);
     await controlUser(_response.value);
   }
 
@@ -61,7 +60,6 @@ class ControlUserAuth extends GetxController {
         _usuario.value = respuesta;
       } else if (respuesta is Session) {
         _sesion.value = respuesta;
-        print('estado de sesion: ${_sesion.value}');
       }
     }
   }

@@ -1,4 +1,4 @@
-import 'package:acfashion_store/domain/controller/controllerUserControlUserAuthSupabase.dart';
+import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

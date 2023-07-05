@@ -42,6 +42,12 @@ class _IntroScreenState extends State<IntroScreen>
   }
 
   @override
+  void dispose() {
+    _controller.dispose(); // Agrega esta línea para eliminar el objeto Ticker
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -149,7 +155,7 @@ class _IntroScreenState extends State<IntroScreen>
                               RichText(
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
-                                    text: "Get Started",
+                                    text: "Dezliza para empezar",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
                               ),
