@@ -29,6 +29,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  bool isSearchOpen = false;
   String nombrePerfil = 'Nombre de usuario';
   String correoPerfil = 'Correo electrónico';
   String telefonPerfil = 'Teléfono';
@@ -47,7 +48,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String valoracionProducto = "";
   String precioProducto = "";
   List<ProductModel> productos = [];
-  var datosProductos = [];
+  List<ProductModel> generateProducts() {
+    return productos;
+  }
 
   @override
   void initState() {
@@ -59,9 +62,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     fotoPerfil = widget.foto;
     profesionPerfil = widget.profesion;
     print(
-      "Esta es la lista de productos: ${widget.productos}",
+      "Esta es la lista de productos en el dash: ${widget.productos}",
     );
-    //productos = widget.productos;
+    productos = widget.productos;
   }
 
   List<Widget> buildCategories() {
@@ -109,8 +112,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon:
-                Image.asset("assets/icons/ic_menu.png", width: 18, height: 18),
+            icon: CircleAvatar(
+              backgroundImage: fotoPerfil != ""
+                  ? NetworkImage(fotoPerfil)
+                  : NetworkImage(
+                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"),
+              radius: 18,
+            ),
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -125,22 +133,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           backgroundColor: Colors.white,
           elevation: 0,
+          flexibleSpace: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: isSearchOpen != false
+                  ? Row(
+                      children: [
+                        SizedBox(
+                          width: size.width * 0.08,
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            //controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Buscar...',
+                            ),
+                            onChanged: (value) {
+                              // Acción al cambiar el texto de búsqueda
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : null),
           actions: [
-            IconButton(
-              icon: Icon(Icons.shopping_cart_outlined, color: Colors.black),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.notifications_none, color: Colors.black),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Image.asset(
-                "assets/icons/ic_search.png",
-                width: 18,
-                height: 18,
-              ),
-              onPressed: () {},
+            Row(
+              children: [
+                isSearchOpen != false
+                    ? IconButton(
+                        icon: Icon(Icons.close, color: Colors.black),
+                        onPressed: () {
+                          setState(() {
+                            isSearchOpen = false;
+                          });
+                        },
+                      )
+                    : Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.notifications_none,
+                                color: Colors.black),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.shopping_cart_outlined,
+                                color: Colors.black),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.search, color: Colors.black),
+                            onPressed: () {
+                              setState(() {
+                                isSearchOpen = true;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+              ],
             ),
           ],
         ),
@@ -233,7 +282,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               childAspectRatio: 0.9,
               crossAxisCount: 2,
               padding: const EdgeInsets.all(5.0),
-              children: Data.generateProducts()
+              children: generateProducts()
                   .map(
                     (e) => Card(
                       shape: BeveledRectangleBorder(
@@ -254,7 +303,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset(
+                              Image.network(
                                 e.image,
                                 height: 90,
                                 width: double.infinity,
@@ -332,7 +381,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onPressed: () {
             print('OK');
           },
-          tooltip: "start FAB",
+          tooltip: "Principal",
           child: Container(
             margin: EdgeInsets.all(15.0),
             child: Icon(
@@ -351,15 +400,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 30,
               ),
               IconButton(
-                icon: Image.asset("assets/icons/ic_shop.png"),
+                icon: Icon(Icons.shopping_bag, color: Colors.black),
+                tooltip: "Tus compras",
                 onPressed: () {},
               ),
               IconButton(
-                icon: Image.asset("assets/icons/ic_wishlist.png"),
+                icon: Icon(Icons.favorite_outline, color: Colors.black),
+                tooltip: "Favoritos",
                 onPressed: () {},
               ),
               IconButton(
-                icon: Image.asset("assets/icons/ic_notif.png"),
+                icon: Icon(Icons.settings, color: Colors.black),
+                tooltip: "Configuración",
                 onPressed: () {},
               ),
               SizedBox(
