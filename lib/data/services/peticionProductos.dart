@@ -23,28 +23,40 @@ class Peticiones {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> obtenerproductos() async {
-    final instance = _client.storage; // Instancia de Supabase Storage
-    final folderPath = 'productos'; // Carpeta donde estan almacenadas las fotos
-    List<Map<String, dynamic>> productos = []; // Lista de productos
-    var uids =
-        await Peticiones.obtenerListaUids(); // Lista de uids de los productos
+  static Future<List<Map<String, dynamic>>> obtenerProductos() async {
     try {
+      final instance = _client.storage; // Instancia de Supabase Storage
+      final folderPath =
+          'producto'; // Carpeta donde estan almacenadas las fotos
+      List<Map<String, dynamic>> productos = []; // Lista de productos
+      var uids =
+          await Peticiones.obtenerListaUids(); // Lista de uids de los productos
       for (int i = 0; i < uids.length; i++) {
-        final response =
-            await _client.from('producto').select('*').eq('id', uids[i]);
-        if (response[i]["foto"].toString().isNotEmpty) {
+        Map<String, dynamic> producto = {}; // Lista de productos
+        var uid = ""; // Uid del producto
+        var response = null; // Respuesta de la peticion
+        uid = uids[i]['id'].toString(); // Obtiene el uid del producto
+        var foto = ''; // Foto del producto
+        var image = null; // Imagen del producto
+
+        response = await _client
+            .from(folderPath)
+            .select('*')
+            .eq('id', uid); // Filtra el producto por id
+        foto = response[0]['foto'].toString(); // Obtiene la foto del producto
+        if (foto.isNotEmpty) {
           //Si la respuesta no es una url vacia
-          final image = await instance
+          image = await instance
               .from(folderPath)
-              .getPublicUrl('${uids[i]}.png'); //Obtiene la url de la imagen
-          response[i]['foto'] = image; //Agrega la url de la imagen al perfil
+              .getPublicUrl('${uid}.png'); //Obtiene la url de la imagen
+          response[0]['foto'] = image; //Agrega la url de la imagen al perfil
         }
-        productos[i] = response;
+        producto = Map<String, dynamic>.from(response[0]);
+        productos.add(producto);
       }
       return productos;
     } catch (e) {
-      print("error en la peticion:$e");
+      print("Error en la peticion:$e");
       return [];
     }
   }
@@ -56,14 +68,14 @@ class Peticiones {
       uids = List<Map<String, dynamic>>.from(response);
       return uids;
     } catch (e) {
-      print("error en la peticion:$e");
+      print("Error en la peticion:$e");
       return [];
     }
   }
 
   static Future<dynamic> filtrarproducto(id) async {
     final instance = _client.storage; // Instancia de SupabaseStorage
-    final folderPath = 'productoes'; // Carpeta donde deseas almacenar las fotos
+    final folderPath = 'producto'; // Carpeta donde deseas almacenar las fotos
     List<Map<String, dynamic>> producto = []; // Lista de productoes
     String fileName = '$id.png'; // Nombre del archivo
     try {
@@ -83,7 +95,7 @@ class Peticiones {
       }
       return producto; //Retorna el producto
     } catch (e) {
-      print("error en la peticion:$e");
+      print("Error en la peticion:$e");
       return {};
     }
   }

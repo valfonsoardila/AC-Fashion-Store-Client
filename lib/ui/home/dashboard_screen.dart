@@ -1,7 +1,8 @@
 import 'package:acfashion_store/ui/home/aside.dart';
+import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
-import 'package:acfashion_store/ui/styles/my_colors.dart';
-import 'package:acfashion_store/utilities/data.dart';
+import 'package:acfashion_store/ui/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -12,6 +13,7 @@ class DashboardScreen extends StatefulWidget {
   final String direccion;
   final String foto;
   final String profesion;
+  final List<ProductModel> productos;
   DashboardScreen({
     Key? key,
     required this.nombre,
@@ -20,6 +22,7 @@ class DashboardScreen extends StatefulWidget {
     required this.direccion,
     required this.foto,
     required this.profesion,
+    required this.productos,
   }) : super(key: key);
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -32,6 +35,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String direccionPerfil = 'Dirección';
   String fotoPerfil = 'Foto de perfil';
   String profesionPerfil = 'Profesión';
+
+  String idProducto = "";
+  String cantidadProducto = "";
+  String fotoProducto = "";
+  String nombreProducto = "";
+  String descripcionProducto = "";
+  String colorProducto = "";
+  String tallaProducto = "";
+  String categoriaProducto = "";
+  String valoracionProducto = "";
+  String precioProducto = "";
+  List<ProductModel> productos = [];
+  var datosProductos = [];
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +58,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     direccionPerfil = widget.direccion;
     fotoPerfil = widget.foto;
     profesionPerfil = widget.profesion;
+    print(
+      "Esta es la lista de productos: ${widget.productos}",
+    );
+    //productos = widget.productos;
   }
 
   List<Widget> buildCategories() {
@@ -62,7 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 10,
                     ),
                     Text(e.title, style: const TextStyle(fontSize: 14)),

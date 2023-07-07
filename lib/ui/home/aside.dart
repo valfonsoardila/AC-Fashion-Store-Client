@@ -57,132 +57,134 @@ class _AsideState extends State<Aside> {
         iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
       ),
-      body: Container(
-        margin: EdgeInsets.only(top: 10.0),
-        color: Colors.white,
-        child: Column(
-          children: [
-            SizedBox(height: 5.0),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  SizedBox(height: 5.0),
-                  NewImage(img: foto, text: ''),
-                  SizedBox(height: 5.0),
-                  //Contenedor de datos de sesión
-                  // DropdownButton(
-                  //   hint: Text('Seleccione un usuario'),
-                  //   items: [],
-                  //   onChanged: (value) {},
-                  // ),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        NewRow(
-                            icon: Icons.work,
-                            textOne: 'Profesion',
-                            textTwo: profesion),
-                        SizedBox(height: 5.0),
-                        NewRow(
-                          icon: Icons.person,
-                          textOne: 'Nombre',
-                          textTwo: nombre,
-                        ),
-                        SizedBox(height: 5.0),
-                        NewRow(
-                          icon: Icons.email,
-                          textOne: 'Correo',
-                          textTwo: correo,
-                        ),
-                        SizedBox(height: 5.0),
-                        NewRow(
-                          icon: Icons.phone,
-                          textOne: 'Teléfono',
-                          textTwo: telefono,
-                        ),
-                        SizedBox(height: 5.0),
-                        NewRow(
-                          icon: Icons.location_on,
-                          textOne: 'Dirección',
-                          textTwo: direccion,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 5.0),
-                  Container(
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(top: 10.0),
+          color: Colors.white,
+          child: Column(
+            children: [
+              SizedBox(height: 5.0),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 5.0),
+                    NewImage(img: foto, text: ''),
+                    SizedBox(height: 5.0),
+                    //Contenedor de datos de sesión
+                    // DropdownButton(
+                    //   hint: Text('Seleccione un usuario'),
+                    //   items: [],
+                    //   onChanged: (value) {},
+                    // ),
+                    Container(
+                      padding: EdgeInsets.all(10.0),
                       child: Column(
-                    children: [
-                      TextButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.person, color: Colors.black),
-                                      Text(
-                                        'Cambiar mis datos',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16.0),
-                                      ),
-                                    ],
+                        children: [
+                          NewRow(
+                              icon: Icons.work,
+                              textOne: 'Profesion',
+                              textTwo: profesion),
+                          SizedBox(height: 5.0),
+                          NewRow(
+                            icon: Icons.person,
+                            textOne: 'Nombre',
+                            textTwo: nombre,
+                          ),
+                          SizedBox(height: 5.0),
+                          NewRow(
+                            icon: Icons.email,
+                            textOne: 'Correo',
+                            textTwo: correo,
+                          ),
+                          SizedBox(height: 5.0),
+                          NewRow(
+                            icon: Icons.phone,
+                            textOne: 'Teléfono',
+                            textTwo: telefono,
+                          ),
+                          SizedBox(height: 5.0),
+                          NewRow(
+                            icon: Icons.location_on,
+                            textOne: 'Dirección',
+                            textTwo: direccion,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5.0),
+                    Container(
+                        child: Column(
+                      children: [
+                        TextButton(
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.person, color: Colors.black),
+                                        Text(
+                                          'Cambiar mis datos',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.0),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          )),
-                      SizedBox(height: 5.0),
-                      TextButton(
-                          onPressed: () {
-                            Get.find<ControlUserAuth>().cerrarSesion();
-                            Get.offAllNamed('/login');
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.exit_to_app,
-                                          color: Colors.black),
-                                      Text(
-                                        'Cerrar sesión',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16.0),
-                                      ),
-                                    ],
+                              ],
+                            )),
+                        SizedBox(height: 5.0),
+                        TextButton(
+                            onPressed: () {
+                              Get.find<ControlUserAuth>().cerrarSesion();
+                              Get.offAllNamed('/login');
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.exit_to_app,
+                                            color: Colors.black),
+                                        Text(
+                                          'Cerrar sesión',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.0),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          )),
-                    ],
-                  )),
+                              ],
+                            )),
+                      ],
+                    )),
+                  ],
+                ),
+              ),
+              SizedBox(height: 35.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.fill,
+                    // width: 200,
+                    height: 100,
+                    alignment: Alignment.center,
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 35.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.fill,
-                  // width: 200,
-                  height: 100,
-                  alignment: Alignment.center,
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

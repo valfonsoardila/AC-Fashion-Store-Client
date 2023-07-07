@@ -2,7 +2,9 @@ import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
-import 'package:acfashion_store/ui/styles/my_colors.dart';
+import 'package:acfashion_store/ui/models/data.dart';
+import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   ControlProducto controlp = Get.put(ControlProducto());
   //VARIABLES DE PERFIL
   String? uid = ''; // Variable local para almacenar el ID del usuario
+  String msg = "";
   var foto = "";
   var correo = "";
   var nombre = "";
@@ -28,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
   var celular = "";
   //VARIABLES DE PRODUCTOS
   var idProducto = "";
-  var cantidadProducto = "";
+  var cantidadProducto = 0;
   var fotoProducto = "";
   var nombreProducto = "";
   var descripcionProducto = "";
@@ -36,9 +39,10 @@ class _MainScreenState extends State<MainScreen> {
   var tallaProducto = "";
   var categoriaProducto = "";
   var valoracionProducto = "";
-  var precioProducto = "";
+  var precioProducto = 0.0;
   //LISTAS
-  List<Map<String, dynamic>> datosProductos = [];
+  List<Map<String, dynamic>> consultaProductos = [];
+  List<ProductModel> productos = [];
   //FUNCIONES
   @override
   void initState() {
@@ -57,10 +61,28 @@ class _MainScreenState extends State<MainScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Mientras se carga el perfil, puedes mostrar un indicador de carga, por ejemplo:
-          return Center(
-            child: CircularProgressIndicator(
-              color: MyColors.myPurple,
-            ),
+          return Container(
+            color: Colors.white,
+            child: Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: MyColors.myPurple,
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  'Cargando perfil...',
+                  style: TextStyle(
+                      color: MyColors.myPurple,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.normal),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )),
           );
         } else if (snapshot.hasError) {
           // Si ocurre un error al obtener el perfil, puedes mostrar un mensaje de error
@@ -76,29 +98,48 @@ class _MainScreenState extends State<MainScreen> {
           celular = datosPerfil['celular'] ?? "";
           foto = datosPerfil['foto'] ?? "";
           controlp.obtenerproductos();
-          final datosProductos = snapshot.data ?? {};
-          idProducto = datosProductos['id'] ?? "";
-          cantidadProducto = datosProductos['cantidad'] ?? "";
-          fotoProducto = datosProductos['foto'] ?? "";
-          nombreProducto = datosProductos['nombre'] ?? "";
-          descripcionProducto = datosProductos['descripcion'] ?? "";
-          colorProducto = datosProductos['color'] ?? "";
-          tallaProducto = datosProductos['talla'] ?? "";
-          categoriaProducto = datosProductos['categoria'] ?? "";
-          valoracionProducto = datosProductos['valoracion'] ?? "";
-          precioProducto = datosProductos['precio'] ?? "";
+          msg = controlp.mensajesProducto;
+          if (msg == "Proceso exitoso") {
+            productos = [];
+            consultaProductos = controlp.datosProductos;
+            // print("Esto trae la lista de productos: ${consultaProductos}");
+            for (int i = 0; i < consultaProductos.length; i++) {
+              idProducto = consultaProductos[i]['id'];
+              cantidadProducto = consultaProductos[i]['cantidad'];
+              fotoProducto = consultaProductos[i]['foto'];
+              nombreProducto = consultaProductos[i]['nombre'];
+              descripcionProducto = consultaProductos[i]['descripcion'];
+              colorProducto = consultaProductos[i]['color'];
+              tallaProducto = consultaProductos[i]['talla'];
+              categoriaProducto = consultaProductos[i]['categoria'];
+              valoracionProducto = consultaProductos[i]['valoracion'];
+              precioProducto = consultaProductos[i]['precio'];
+              var productModel = ProductModel(
+                idProducto,
+                fotoProducto,
+                nombreProducto,
+                categoriaProducto,
+                descripcionProducto,
+                precioProducto,
+              );
+              productos.add(productModel);
+            }
+          }
+          // print("Esto trae la lista de productos: ${productos.length}");
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Stack(
                 children: [
                   DashboardScreen(
-                      nombre: nombre,
-                      correo: correo,
-                      foto: foto,
-                      profesion: profesion,
-                      direccion: direccion,
-                      celular: celular),
+                    nombre: nombre,
+                    correo: correo,
+                    foto: foto,
+                    profesion: profesion,
+                    direccion: direccion,
+                    celular: celular,
+                    productos: productos,
+                  ),
                 ],
               ),
             ),

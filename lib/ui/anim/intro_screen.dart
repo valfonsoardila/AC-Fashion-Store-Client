@@ -1,5 +1,5 @@
 import 'package:acfashion_store/ui/auth/login_screen.dart';
-import 'package:acfashion_store/ui/styles/my_colors.dart';
+import 'package:acfashion_store/ui/models/my_colors.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

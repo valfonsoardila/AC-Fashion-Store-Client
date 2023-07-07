@@ -20,11 +20,8 @@ class ControlProducto extends GetxController {
   }
 
   Future<void> obtenerproductos() async {
-    print("llego al controlador");
-    _response.value = await Peticiones.obtenerproductos();
+    _response.value = await Peticiones.obtenerProductos();
     await controlProducto(_response.value);
-    print("resultado de la peticion:");
-    print(_response.value);
     return _response.value;
   }
 

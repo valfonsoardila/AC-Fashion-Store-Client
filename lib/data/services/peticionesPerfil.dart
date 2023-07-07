@@ -43,38 +43,44 @@ class Peticiones {
   }
 
   static Future<Map<String, dynamic>> obtenerperfil(id) async {
-    final instance = _client.storage; // Instancia de SupabaseStorage
-    final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
-    Map<String, dynamic> perfil = {}; // Lista de perfiles
-    String fileName = '$id.png'; // Nombre del archivo
     try {
-      //Intenta obtener el perfil
-      final response = await _client
-          .from(folderPath)
-          .select('*')
-          .eq('id', id); //Filtra el perfil por id
-      if (response[0]["foto"].toString().isNotEmpty) {
-        print("si hay foto: ${response[0]["foto"]}");
-        //Si la respuesta no es una url vacia
-        final image = await instance
+      print("Esta es la uid a consultar: $id");
+      var response = null;
+      final instance = _client.storage; // Instancia de SupabaseStorage
+      final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
+      Map<String, dynamic> perfil = {}; // Lista de perfiles
+      String fileName = '$id.png'; // Nombre del archivo
+      if (id.isNotEmpty) {
+        //Intenta obtener el perfil
+        response = await _client
             .from(folderPath)
-            .getPublicUrl(fileName); //Obtiene la url de la imagen
-        response![0]['foto'] =
-            image; //Agrega la url de la imagen al perfil //Convierte la respuesta en una lista de mapas
-      } else {
-        print("no hay foto");
+            .select('*')
+            .eq('id', id); //Filtra el perfil por id
+        print("esta es la consulta: $response");
+        var foto = response[0]["foto"].toString();
+        if (foto.isNotEmpty) {
+          print("si hay foto: ${response[0]["foto"]}");
+          //Si la respuesta no es una url vacia
+          final image = await instance
+              .from(folderPath)
+              .getPublicUrl(fileName); //Obtiene la url de la imagen
+          response![0]['foto'] =
+              image; //Agrega la url de la imagen al perfil //Convierte la respuesta en una lista de mapas
+        } else {
+          print("no hay foto");
+        }
       }
       perfil = response[0]; //Agrega el perfil a la lista de perfiles
       return perfil; //Retorna el perfil
     } catch (e) {
-      print("error en la peticion:$e");
+      print("error en la peticion desde consulta de perfil:$e");
       return {};
     }
   }
 
   static Future<dynamic> cargarfoto(var foto, var idArt) async {
     final instance = _client.storage;
-    final folderPath = 'perfiles'; // Carpeta donde deseas almacenar las fotos
+    final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
     String fileName = '$idArt.png';
     final file = File(foto.path);
     try {
