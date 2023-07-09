@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:http/http.dart' as http;
 
 class Peticiones {
   static final ControlUserAuth controlua = Get.find();
@@ -29,17 +28,20 @@ class Peticiones {
       Map<String, dynamic> perfil, foto) async {
     try {
       final tableName = 'perfil';
-      final id = perfil['id'];
+      var id = perfil['id'];
+      String fileName = '$id/profile.png'; // Nombre del archivo
       var url = '';
       if (foto != null) {
-        print("esta es la foto que llego a peticiones: $foto");
-        if (perfil['foto'] != null) {
-          url = await Peticiones.actualizarfoto(foto, id);
+        if (perfil['foto'] != '') {
+          final prueba = await Peticiones.actualizarfoto(foto, id);
+          print("esta es la respuesta de la actualizacion de foto: $prueba");
         } else {
           url = await Peticiones.cargarfoto(foto, id);
+          print("esta es la url de la foto guardad: $url");
+          perfil['foto'] = url.toString();
         }
+        perfil['foto'] = fileName;
       }
-      perfil['foto'] = url.toString();
       await _client.from(tableName).update(perfil).eq('id', id);
       final perfilNuevo =
           await _client.from(tableName).select('*').eq('id', id);
@@ -55,14 +57,17 @@ class Peticiones {
     try {
       final storage = _client.storage;
       final bucketName = 'perfil';
-      final fileName = '$idArt.png';
-      final fotoPerfil = File(foto);
+      final file = File(foto.path);
+      String fileName = 'profile.png';
       final String path = await storage.from(bucketName).update(
-            fileName,
-            fotoPerfil,
+            '$idArt/$fileName',
+            file,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
-      return path;
+      print("este es el path: $path");
+      final response = path;
+      print("esta es la respuesta de la actualizacion de foto: $response");
+      return response;
     } catch (e) {
       print('Error en la operación de actualización de foto: $e');
     }
@@ -80,7 +85,7 @@ class Peticiones {
       final instance = _client.storage; // Instancia de SupabaseStorage
       final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
       Map<String, dynamic> perfil = {}; // Lista de perfiles
-      String fileName = '$id.png'; // Nombre del archivo
+      String fileName = '$id/profile.png'; // Nombre del archivo
       if (id.isNotEmpty) {
         //Intenta obtener el perfil
         response = await _client
@@ -111,12 +116,12 @@ class Peticiones {
 
   static Future<dynamic> cargarfoto(var foto, var idArt) async {
     final instance = _client.storage;
-    final folderPath = 'perfil'; // Carpeta donde deseas almacenar las fotos
-    String fileName = '$idArt.png';
+    final bucketName = 'perfil'; // Carpeta donde deseas almacenar las fotos
+    String fileName = 'profile.png';
     final file = File(foto.path);
     try {
-      final String path = await instance.from(folderPath).upload(
-            fileName,
+      final String path = await instance.from(bucketName).upload(
+            '$idArt/$fileName',
             file,
             fileOptions: FileOptions(cacheControl: '3600', upsert: false),
           );

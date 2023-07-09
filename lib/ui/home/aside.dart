@@ -370,7 +370,7 @@ class _AsideState extends State<Aside> {
                     Navigator.of(context).pop();
                     var perfil = <String, dynamic>{
                       'id': controlId.text,
-                      'foto': _image != null ? _image.path : null,
+                      'foto': foto,
                       'correo': controlcorreo.text,
                       'contrasena': controlContrasena.text,
                       'nombre': controlNombre.text,
@@ -378,6 +378,7 @@ class _AsideState extends State<Aside> {
                       'direccion': controlDireccion.text,
                       'celular': controlTelefono.text,
                     };
+                    print("esta es la foto consultada desde el aside: $foto");
                     controlup.actualizarperfil(perfil, _image).then((value) {
                       if (controlup.mensajesPerfil == "Proceso exitoso" &&
                           controlContrasena.text != "" &&
