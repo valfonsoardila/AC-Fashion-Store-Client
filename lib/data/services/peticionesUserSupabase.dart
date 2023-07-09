@@ -70,13 +70,19 @@ class Peticioneslogin {
     }
   }
 
-  static Future recuperarContrasena(String email) async {
+  static Future restablecerContrasena(String password) async {
     try {
       final client = Supabase.instance.client;
-      final response = await client.auth.resetPasswordForEmail(email);
-      return response;
+      final UserResponse response = await client.auth.updateUser(
+        UserAttributes(
+          password: password,
+        ),
+      );
+      final User? updatedUser = response.user;
+      print("Respuesta: $updatedUser");
+      return updatedUser;
     } catch (e) {
-      print('Error al recuperar contraseña: $e');
+      print('Error al restablecer contraseña: $e');
     }
   }
 

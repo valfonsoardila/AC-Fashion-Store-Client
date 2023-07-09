@@ -74,7 +74,7 @@ class Restaurar extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         if (user.text.isNotEmpty) {
-                          controlua.recuperarPass(user.text).then((value) {
+                          controlua.restablecercontrasena('').then((value) {
                             if (controlua.mensajesUser == "Proceso exitoso") {
                               Get.snackbar("Correo enviado",
                                   "Por favor revise su bandeja de entrada",

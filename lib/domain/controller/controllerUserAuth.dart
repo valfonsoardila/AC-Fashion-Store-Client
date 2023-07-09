@@ -35,11 +35,10 @@ class ControlUserAuth extends GetxController {
     await controlUser(_response.value);
   }
 
-  Future<void> recuperarPass(String email) async {
-    _response.value = await Peticioneslogin.recuperarContrasena(
-        email); // Reemplaza Peticioneslogin con tu servicio de peticiones para Supabase
-    print(_response.value);
+  Future<void> restablecercontrasena(String password) async {
+    _response.value = await Peticioneslogin.restablecerContrasena(password);
     await controlUser(_response.value);
+    return _response.value;
   }
 
   Future<void> cerrarSesion() async {
@@ -58,6 +57,7 @@ class ControlUserAuth extends GetxController {
       _mensaje.value = "Proceso exitoso";
       if (respuesta is User) {
         _usuario.value = respuesta;
+        _sesion.value = null;
       } else if (respuesta is Session) {
         _sesion.value = respuesta;
       }

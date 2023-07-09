@@ -21,9 +21,12 @@ class ControlUserPerfil extends GetxController {
     }
   }
 
-  Future<void> actualizarperfil(Map<String, dynamic> perfil, foto) async {
+  Future<Map<String, dynamic>> actualizarperfil(
+      Map<String, dynamic> perfil, foto) async {
+    print("llego esta foto: $foto");
     _response.value = await Peticiones.actualizarperfil(perfil, foto);
     await controlPerfil(_response.value);
+    return _response.value;
   }
 
   Future<void> eliminarperfil(Map<String, dynamic> perfil) async {
@@ -51,6 +54,8 @@ class ControlUserPerfil extends GetxController {
         _perfil.value = respuesta;
       } else {
         _Datos.value = respuesta;
+        print("este es el mensaje: $_mensaje");
+        print("Estos son los datos del nuevo perfil: $_Datos");
       }
     }
   }

@@ -23,8 +23,10 @@ class _MainScreenState extends State<MainScreen> {
   //VARIABLES DE PERFIL
   String? uid = ''; // Variable local para almacenar el ID del usuario
   String msg = "";
+  var id = "";
   var foto = "";
   var correo = "";
+  var contrasena = "";
   var nombre = "";
   var profesion = "";
   var direccion = "";
@@ -91,7 +93,9 @@ class _MainScreenState extends State<MainScreen> {
           final datosPerfil =
               snapshot.data ?? {}; // Obtener los datos del perfil del snapshot
           // Asignar los valores a las variables correspondientes
+          id = datosPerfil['id'] ?? "";
           correo = datosPerfil['correo'] ?? "";
+          contrasena = datosPerfil['contrasena'] ?? "";
           nombre = datosPerfil['nombre'] ?? "";
           profesion = datosPerfil['profesion'] ?? "";
           direccion = datosPerfil['direccion'] ?? "";
@@ -132,8 +136,10 @@ class _MainScreenState extends State<MainScreen> {
               body: Stack(
                 children: [
                   DashboardScreen(
+                    id: id,
                     nombre: nombre,
                     correo: correo,
+                    contrasena: contrasena,
                     foto: foto,
                     profesion: profesion,
                     direccion: direccion,

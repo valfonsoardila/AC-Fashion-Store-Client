@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 class DashboardScreen extends StatefulWidget {
+  final String id;
   final String nombre;
   final String correo;
+  final String contrasena;
   final String celular;
   final String direccion;
   final String foto;
@@ -16,8 +18,10 @@ class DashboardScreen extends StatefulWidget {
   final List<ProductModel> productos;
   DashboardScreen({
     Key? key,
+    required this.id,
     required this.nombre,
     required this.correo,
+    required this.contrasena,
     required this.celular,
     required this.direccion,
     required this.foto,
@@ -30,8 +34,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool isSearchOpen = false;
+  String id = "";
   String nombrePerfil = 'Nombre de usuario';
-  String correoPerfil = 'Correo electrónico';
+  String correoPerfil = 'correo electrónico';
+  String contrasenaPerfil = 'Contraseña';
   String telefonPerfil = 'Teléfono';
   String direccionPerfil = 'Dirección';
   String fotoPerfil = 'Foto de perfil';
@@ -55,8 +61,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    id = widget.id;
     nombrePerfil = widget.nombre;
     correoPerfil = widget.correo;
+    contrasenaPerfil = widget.contrasena;
     telefonPerfil = widget.celular;
     direccionPerfil = widget.direccion;
     fotoPerfil = widget.foto;
@@ -123,8 +131,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => Aside(
+                          id: id,
                           nombre: nombrePerfil,
                           correo: correoPerfil,
+                          contrasena: contrasenaPerfil,
                           telefono: telefonPerfil,
                           direccion: direccionPerfil,
                           foto: fotoPerfil,
@@ -139,7 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ? Row(
                       children: [
                         SizedBox(
-                          width: size.width * 0.08,
+                          width: size.width * 0.09,
                         ),
                         Expanded(
                           child: TextFormField(
@@ -229,7 +239,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 100,
+                          height: 55,
                         ),
                         ElevatedButton(
                             child: Text("  Comprar Ahora  ".toUpperCase(),
@@ -298,18 +308,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   child: DetailScreen()));
                         },
                         child: Container(
+                          height: 250,
+                          width: 200,
                           margin: const EdgeInsets.only(
                               left: 10.0, right: 10.0, top: 5.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.network(
-                                e.image,
-                                height: 90,
-                                width: double.infinity,
+                              Expanded(
+                                child: Image.network(
+                                  e.image,
+                                  height: 250,
+                                  width: double.infinity,
+                                ),
                               ),
                               const SizedBox(
-                                height: 5,
+                                height: 4,
                               ),
                               RichText(
                                 textAlign: TextAlign.start,

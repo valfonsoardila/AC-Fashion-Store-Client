@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class Peticiones {
   static final ControlUserAuth controlua = Get.find();
@@ -24,17 +25,47 @@ class Peticiones {
     }
   }
 
-  static Future<dynamic> actualizarperfil(
+  static Future<Map<String, dynamic>> actualizarperfil(
       Map<String, dynamic> perfil, foto) async {
-    var url = '';
-    if (foto != null) {
-      url = await Peticiones.cargarfoto(
-          foto, perfil['nombre'] + perfil['apellido']);
+    try {
+      final tableName = 'perfil';
+      final id = perfil['id'];
+      var url = '';
+      if (foto != null) {
+        print("esta es la foto que llego a peticiones: $foto");
+        if (perfil['foto'] != null) {
+          url = await Peticiones.actualizarfoto(foto, id);
+        } else {
+          url = await Peticiones.cargarfoto(foto, id);
+        }
+      }
+      perfil['foto'] = url.toString();
+      await _client.from(tableName).update(perfil).eq('id', id);
+      final perfilNuevo =
+          await _client.from(tableName).select('*').eq('id', id);
+      print("esta es la respuesta de la actualizacion: ${perfilNuevo[0]}");
+      return perfilNuevo[0];
+    } catch (error) {
+      print('Error en la operación de actualización de perfil: $error');
+      throw error;
     }
-    print(url);
-    perfil['foto'] = url.toString();
-    await _client.from('perfil').update(perfil).eq('id', perfil['id']);
-    return true;
+  }
+
+  static Future<dynamic> actualizarfoto(var foto, var idArt) async {
+    try {
+      final storage = _client.storage;
+      final bucketName = 'perfil';
+      final fileName = '$idArt.png';
+      final fotoPerfil = File(foto);
+      final String path = await storage.from(bucketName).update(
+            fileName,
+            fotoPerfil,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+      return path;
+    } catch (e) {
+      print('Error en la operación de actualización de foto: $e');
+    }
   }
 
   static Future<dynamic> eliminarperfil(Map<String, dynamic> perfil) async {
@@ -56,7 +87,7 @@ class Peticiones {
             .from(folderPath)
             .select('*')
             .eq('id', id); //Filtra el perfil por id
-        print("esta es la consulta: $response");
+        print("esta es la consulta: ${response[0]}");
         var foto = response[0]["foto"].toString();
         if (foto.isNotEmpty) {
           print("si hay foto: ${response[0]["foto"]}");
