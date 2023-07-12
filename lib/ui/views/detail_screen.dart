@@ -1,4 +1,4 @@
-import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/data.dart';
 import 'package:flutter/material.dart';
 import 'package:imageview360/imageview360.dart';

@@ -1,8 +1,9 @@
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
+import 'package:acfashion_store/ui/auth/login_screen.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
-import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   String idUsuario = '';
   String? uid;
   String msg = "";
+  int tiempoDeintento = 5;
   //VARIABLES DE PERFIL
   var id = "";
   var foto = "";
@@ -186,7 +188,7 @@ class _MainScreenState extends State<MainScreen> {
                             ],
                           ),
                           Text(
-                            "No se pudo cargar los datos",
+                            "Error: ${snapshot.error}",
                             style: TextStyle(
                               color: Colors.red,
                               fontSize: 20,
@@ -199,6 +201,26 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.red,
                               fontSize: 20,
                               decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CircularProgressIndicator(
+                            color: Colors.black,
+                            backgroundColor: MyColors.myBlack,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Get.offAll(() => MainScreen());
+                            },
+                            child: Text(
+                              "Intentar de nuevo",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ),
                         ],
@@ -227,6 +249,27 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.red,
                               fontSize: 20,
                               decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Volver",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ),
                         ],

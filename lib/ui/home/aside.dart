@@ -1,6 +1,6 @@
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
-import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';

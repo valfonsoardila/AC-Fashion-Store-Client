@@ -1,10 +1,13 @@
 import 'package:acfashion_store/ui/home/aside.dart';
-import 'package:acfashion_store/ui/models/my_colors.dart';
+import 'package:acfashion_store/ui/models/notification_model.dart';
+import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:acfashion_store/ui/models/data.dart';
+import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:badges/badges.dart' as badges;
 
 class DashboardScreen extends StatefulWidget {
   final String id;
@@ -54,15 +57,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String valoracionProducto = "";
   String precioProducto = "";
   List<ProductModel> productos = [];
+  List<NotificationModel> notifications = [];
   List<ProductModel> generateProducts() {
     return productos;
   }
 
+  List<NotificationModel> notificationsList() {
+    return notifications;
+  }
+
   //Pendiente para cambiar esta funcion
   final List<String> bannerImages = [
-    "assets/images/img_banner.png",
-    "assets/images/img_banner2.png",
-    "assets/images/img_banner3.png",
+    "assets/images/banners/img_banner1.png",
+    "assets/images/banners/img_banner2.png",
+    "assets/images/banners/img_banner3.png",
   ];
   int currentPage = 0;
 
@@ -70,6 +78,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
     print("Cargando datos");
     print("Productos: " + widget.productos.toString());
     productos = widget.productos;
+  }
+
+  void _mostrarNotificaciones() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                'Mis Notificaciones',
+                style: TextStyle(color: Colors.black),
+              ),
+              content: Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(10.0),
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(5.0),
+                    child: Center(
+                      child: Column(
+                        children: [],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    // Lógica para guardar los cambios realizados en el perfil
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Marcar como leidas',
+                      style: TextStyle(color: Colors.black)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Borrar', style: TextStyle(color: Colors.black)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -90,9 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   List<Widget> buildCategories() {
     return Data.generateCategories().map((e) {
-      bool isSelected = e.id ==
-          selectedCategoryId; // Verifica si la categoría actual está seleccionada
-
+      bool isSelected = selectedCategoryId == e.id;
       return Container(
         padding: EdgeInsets.only(left: 15, bottom: 10),
         child: ElevatedButton(
@@ -104,8 +161,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: MyColors.grayBackground,
                   child: Image.asset(
                     e.image,
-                    height: 30,
-                    width: 30,
+                    height: 45,
+                    width: 45,
                   ),
                 ),
               ),
@@ -133,8 +190,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           onPressed: () {
             setState(() {
-              selectedCategoryId = e
-                  .category; // Actualiza la categoría seleccionada al tocar el botón
+              selectedCategoryId = e.id;
+              print("Categoría seleccionada: " + e.id);
             });
           },
         ),
@@ -171,186 +228,195 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           backgroundColor: Colors.white,
           elevation: 0,
-          flexibleSpace: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: isSearchOpen != false
-                  ? Row(
-                      children: [
-                        SizedBox(
-                          width: size.width * 0.09,
+          flexibleSpace: isSearchOpen != true
+              ? Container()
+              : Row(children: [
+                  SizedBox(
+                    width: size.width * 0.12,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "Buscar",
+                        suffix: IconButton(
+                          hoverColor: Colors.white,
+                          splashColor: Colors.white,
+                          alignment: Alignment.centerRight,
+                          iconSize: 20,
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isSearchOpen = false;
+                            });
+                          },
                         ),
-                        Expanded(
-                          child: TextFormField(
-                            //controller: _searchController,
-                            decoration: InputDecoration(
-                              hintText: 'Buscar...',
-                            ),
-                            onChanged: (value) {
-                              // Acción al cambiar el texto de búsqueda
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  : null),
-          actions: [
-            Row(
-              children: [
-                isSearchOpen != false
-                    ? IconButton(
-                        icon: Icon(Icons.close, color: Colors.black),
-                        onPressed: () {
-                          setState(() {
-                            isSearchOpen = false;
-                          });
-                        },
-                      )
-                    : Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.notifications_none,
-                                color: Colors.black),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.shopping_cart_outlined,
-                                color: Colors.black),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.search, color: Colors.black),
-                            onPressed: () {
-                              setState(() {
-                                isSearchOpen = true;
-                              });
-                            },
-                          ),
-                        ],
                       ),
-              ],
-            ),
+                    ),
+                  ),
+                ]),
+          actions: [
+            isSearchOpen != false
+                ? Container()
+                : Row(
+                    children: [
+                      badges.Badge(
+                        badgeContent: Text(
+                          '3',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.notifications_none,
+                              color: Colors.black),
+                          onPressed: () {
+                            _mostrarNotificaciones();
+                          },
+                        ),
+                      ),
+                      badges.Badge(
+                        badgeContent: Text(
+                          '2',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.shopping_cart_outlined,
+                              color: Colors.black),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ShopScreen()));
+                          },
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isSearchOpen = true;
+                            });
+                          },
+                          icon: Icon(Icons.search, color: Colors.black)),
+                    ],
+                  ),
           ],
         ),
         body: Container(
           child: ListView(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
                 child: Stack(
                   children: [
                     SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            width: size.width,
-                            height: 200,
-                            child: Stack(
-                              children: [
-                                PageView.builder(
-                                  itemCount: bannerImages.length,
-                                  onPageChanged: (index) {
-                                    setState(() {
-                                      currentPage = index;
-                                    });
-                                  },
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image:
-                                              AssetImage(bannerImages[index]),
-                                          fit: BoxFit.fill,
-                                        ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: size.width,
+                          height: 200,
+                          child: Stack(
+                            children: [
+                              PageView.builder(
+                                itemCount: bannerImages.length,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    currentPage = index;
+                                  });
+                                },
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(bannerImages[index]),
+                                        fit: BoxFit.fill,
                                       ),
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            right: 18,
-                                            left: 18,
-                                            top: 10,
-                                            bottom: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                text: "Nuevo lanzamiento",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            RichText(
-                                              textAlign: TextAlign.start,
-                                              text: TextSpan(
-                                                text: "",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                    fontSize: 28),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 62,
-                                            ),
-                                            ElevatedButton(
-                                                child:
-                                                    Text("  Comprar Ahora  ".toUpperCase(),
-                                                        style: TextStyle(
-                                                            fontSize: 12)),
-                                                style: ButtonStyle(
-                                                    foregroundColor:
-                                                        MaterialStateProperty.all<Color>(
-                                                            MyColors.myBlack),
-                                                    backgroundColor:
-                                                        MaterialStateProperty.all<Color>(
-                                                            Colors.white),
-                                                    shape: MaterialStateProperty.all<
-                                                            RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(30)))),
-                                                onPressed: () {}),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(bottom: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: List<Widget>.generate(
-                                          bannerImages.length, (index) {
-                                        return Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 4),
-                                          child: Container(
-                                            width: 6,
-                                            height: 6,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: currentPage == index
-                                                  ? Colors.white
-                                                  : Colors.grey,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          right: 18,
+                                          left: 18,
+                                          top: 10,
+                                          bottom: 10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              text: "Nuevo lanzamiento",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16),
                                             ),
                                           ),
-                                        );
-                                      }),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          RichText(
+                                            textAlign: TextAlign.start,
+                                            text: TextSpan(
+                                              text: "",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 28),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 62,
+                                          ),
+                                          ElevatedButton(
+                                              child: Text("  Comprar Ahora  ".toUpperCase(),
+                                                  style:
+                                                      TextStyle(fontSize: 12)),
+                                              style: ButtonStyle(
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all<Color>(
+                                                          MyColors.myBlack),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<Color>(
+                                                          Colors.white),
+                                                  shape: MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(30)))),
+                                              onPressed: () {}),
+                                        ],
+                                      ),
                                     ),
+                                  );
+                                },
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List<Widget>.generate(
+                                        bannerImages.length, (index) {
+                                      return Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 4),
+                                        child: Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: currentPage == index
+                                                ? Colors.white
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
