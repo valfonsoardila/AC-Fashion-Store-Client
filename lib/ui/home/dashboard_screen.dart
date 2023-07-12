@@ -58,6 +58,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return productos;
   }
 
+  //Pendiente para cambiar esta funcion
+  final List<String> bannerImages = [
+    "assets/images/img_banner1.png",
+    "assets/images/img_banner2.png",
+    "assets/images/img_banner3.png",
+  ];
+  int currentPage = 0;
+
   void cargarDatos() {
     print("Cargando datos");
     print("Productos: " + widget.productos.toString());
@@ -82,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Data.generateCategories()
         .map(
           (e) => Container(
-            padding: const EdgeInsets.only(left: 15, bottom: 10),
+            padding: EdgeInsets.only(left: 15, bottom: 10),
             child: ElevatedButton(
                 child: Row(
                   children: [
@@ -100,7 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(e.title, style: const TextStyle(fontSize: 14)),
+                    Text(e.title, style: TextStyle(fontSize: 14)),
                   ],
                 ),
                 style: ButtonStyle(
@@ -147,7 +155,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           flexibleSpace: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: isSearchOpen != false
                   ? Row(
                       children: [
@@ -209,60 +217,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
         body: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: Stack(
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset("assets/images/img_banner.png"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            text: "Nuevo lanzamiento",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+                    child: Container(
+                      width: 370.0,
+                      height: 180.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/img_banner.png"),
+                          fit: BoxFit.fill,
                         ),
-                        const SizedBox(
-                          height: 10,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: 18, left: 18, top: 10, bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                text: "Nuevo lanzamiento",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            RichText(
+                              textAlign: TextAlign.start,
+                              text: TextSpan(
+                                text: "",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 28),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 62,
+                            ),
+                            ElevatedButton(
+                                child: Text("  Comprar Ahora  ".toUpperCase(),
+                                    style: TextStyle(fontSize: 14)),
+                                style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            MyColors.myBlack),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30)))),
+                                onPressed: () {}),
+                          ],
                         ),
-                        RichText(
-                          textAlign: TextAlign.start,
-                          text: const TextSpan(
-                            text: "",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 28),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 55,
-                        ),
-                        ElevatedButton(
-                            child: Text("  Comprar Ahora  ".toUpperCase(),
-                                style: const TextStyle(fontSize: 14)),
-                            style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        MyColors.myBlack),
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)))),
-                            onPressed: () {}),
-                      ],
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -273,14 +292,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: buildCategories(),
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: RichText(
                 textAlign: TextAlign.start,
-                text: const TextSpan(
+                text: TextSpan(
                     text: "Nuevos diseños",
                     style: TextStyle(
                         color: Colors.black87,
@@ -288,13 +307,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         fontWeight: FontWeight.bold)),
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
             GridView.count(
               childAspectRatio: 0.9,
               crossAxisCount: 2,
-              padding: const EdgeInsets.all(5.0),
+              padding: EdgeInsets.all(5.0),
               children: generateProducts()
                   .map(
                     (e) => Card(
@@ -313,7 +332,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Container(
                           height: 250,
                           width: 200,
-                          margin: const EdgeInsets.only(
+                          margin: EdgeInsets.only(
                               left: 10.0, right: 10.0, top: 5.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,14 +344,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   width: double.infinity,
                                 ),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 height: 4,
                               ),
                               RichText(
                                 textAlign: TextAlign.start,
                                 text: TextSpan(
                                     text: e.category,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         color: MyColors.myPurple,
                                         fontSize: 16.0)),
                               ),
@@ -343,10 +362,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 textAlign: TextAlign.start,
                                 text: TextSpan(
                                     text: e.title,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         color: Colors.black87, fontSize: 18.0)),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 height: 5,
                               ),
                               Row(
@@ -355,14 +374,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     textAlign: TextAlign.start,
                                     text: TextSpan(
                                         text: "\$ ${e.price}",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                   Spacer(),
                                   ElevatedButton(
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.add,
                                         color: Colors.white,
                                       ),
@@ -387,7 +406,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   )
                   .toList(),
               shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
+              physics: ClampingScrollPhysics(),
             )
           ],
         ),
