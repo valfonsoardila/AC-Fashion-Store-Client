@@ -59,7 +59,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void cargarDatos() {
-    // Resto del código para obtener los datos de productos
     print("Cargando datos");
     print("Productos: " + widget.productos.toString());
     productos = widget.productos;
