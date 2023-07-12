@@ -60,7 +60,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   //Pendiente para cambiar esta funcion
   final List<String> bannerImages = [
-    "assets/images/img_banner1.png",
+    "assets/images/img_banner.png",
     "assets/images/img_banner2.png",
     "assets/images/img_banner3.png",
   ];
@@ -86,43 +86,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
     cargarDatos();
   }
 
+  String selectedCategoryId = "Damas"; // ID de la categoría seleccionada
+
   List<Widget> buildCategories() {
-    return Data.generateCategories()
-        .map(
-          (e) => Container(
-            padding: EdgeInsets.only(left: 15, bottom: 10),
-            child: ElevatedButton(
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                        color: MyColors.grayBackground,
-                        child: Image.asset(
-                          e.image,
-                          height: 30,
-                          width: 30,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(e.title, style: TextStyle(fontSize: 14)),
-                  ],
+    return Data.generateCategories().map((e) {
+      bool isSelected = e.id ==
+          selectedCategoryId; // Verifica si la categoría actual está seleccionada
+
+      return Container(
+        padding: EdgeInsets.only(left: 15, bottom: 10),
+        child: ElevatedButton(
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  color: MyColors.grayBackground,
+                  child: Image.asset(
+                    e.image,
+                    height: 30,
+                    width: 30,
+                  ),
                 ),
-                style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all<Color>(
-                        e.id == 1 ? Colors.white : Colors.black38),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        e.id == 1 ? MyColors.myPurple : Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)))),
-                onPressed: () {}),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                e.category,
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
           ),
-        )
-        .toList();
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(
+              isSelected ? Colors.white : Colors.black38,
+            ),
+            backgroundColor: MaterialStateProperty.all<Color>(
+              isSelected ? MyColors.myPurple : Colors.white,
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+          onPressed: () {
+            setState(() {
+              selectedCategoryId = e
+                  .category; // Actualiza la categoría seleccionada al tocar el botón
+            });
+          },
+        ),
+      );
+    }).toList();
   }
 
   @override
@@ -214,201 +231,259 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
-        body: ListView(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      width: 370.0,
-                      height: 180.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/img_banner.png"),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+        body: Container(
+          child: ListView(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            right: 18, left: 18, top: 10, bottom: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: "Nuevo lanzamiento",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                text: "",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 28),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 62,
-                            ),
-                            ElevatedButton(
-                                child: Text("  Comprar Ahora  ".toUpperCase(),
-                                    style: TextStyle(fontSize: 14)),
-                                style: ButtonStyle(
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            MyColors.myBlack),
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.white),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30)))),
-                                onPressed: () {}),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 60,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: buildCategories(),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                    text: "Nuevos diseños",
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold)),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            GridView.count(
-              childAspectRatio: 0.9,
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(5.0),
-              children: generateProducts()
-                  .map(
-                    (e) => Card(
-                      shape: BeveledRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0),
-                      ),
-                      elevation: 0,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.leftToRight,
-                                  child: DetailScreen()));
-                        },
-                        child: Container(
-                          height: 250,
-                          width: 200,
-                          margin: EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 5.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Image.network(
-                                  e.image,
-                                  height: 250,
-                                  width: double.infinity,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              RichText(
-                                textAlign: TextAlign.start,
-                                text: TextSpan(
-                                    text: e.category,
-                                    style: TextStyle(
-                                        color: MyColors.myPurple,
-                                        fontSize: 16.0)),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              RichText(
-                                textAlign: TextAlign.start,
-                                text: TextSpan(
-                                    text: e.title,
-                                    style: TextStyle(
-                                        color: Colors.black87, fontSize: 18.0)),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                children: [
-                                  RichText(
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(
-                                        text: "\$ ${e.price}",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                  Spacer(),
-                                  ElevatedButton(
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
+                        padding: EdgeInsets.all(5),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            width: size.width,
+                            height: 200,
+                            child: Stack(
+                              children: [
+                                PageView.builder(
+                                  itemCount: bannerImages.length,
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      currentPage = index;
+                                    });
+                                  },
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image:
+                                              AssetImage(bannerImages[index]),
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.black87),
-                                          shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30)))),
-                                      onPressed: () {})
-                                ],
-                              )
-                            ],
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 18,
+                                            left: 18,
+                                            top: 10,
+                                            bottom: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            RichText(
+                                              textAlign: TextAlign.center,
+                                              text: TextSpan(
+                                                text: "Nuevo lanzamiento",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            RichText(
+                                              textAlign: TextAlign.start,
+                                              text: TextSpan(
+                                                text: "",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                    fontSize: 28),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 62,
+                                            ),
+                                            ElevatedButton(
+                                                child:
+                                                    Text("  Comprar Ahora  ".toUpperCase(),
+                                                        style: TextStyle(
+                                                            fontSize: 12)),
+                                                style: ButtonStyle(
+                                                    foregroundColor:
+                                                        MaterialStateProperty.all<Color>(
+                                                            MyColors.myBlack),
+                                                    backgroundColor:
+                                                        MaterialStateProperty.all<Color>(
+                                                            Colors.white),
+                                                    shape: MaterialStateProperty.all<
+                                                            RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(30)))),
+                                                onPressed: () {}),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: List<Widget>.generate(
+                                          bannerImages.length, (index) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 4),
+                                          child: Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: currentPage == index
+                                                  ? Colors.white
+                                                  : Colors.grey,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                  .toList(),
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-            )
-          ],
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 60,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: buildCategories(),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: RichText(
+                  textAlign: TextAlign.start,
+                  text: TextSpan(
+                      text: "Nuevos diseños",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold)),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              GridView.count(
+                childAspectRatio: 0.9,
+                crossAxisCount: 2,
+                padding: EdgeInsets.all(5.0),
+                children: generateProducts()
+                    .map(
+                      (e) => Card(
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        elevation: 0,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRight,
+                                    child: DetailScreen()));
+                          },
+                          child: Container(
+                            height: 250,
+                            width: 200,
+                            margin: EdgeInsets.only(
+                                left: 10.0, right: 10.0, top: 5.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Image.network(
+                                    e.image,
+                                    height: 250,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                      text: e.category,
+                                      style: TextStyle(
+                                          color: MyColors.myPurple,
+                                          fontSize: 16.0)),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                      text: e.title,
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 18.0)),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    RichText(
+                                      textAlign: TextAlign.start,
+                                      text: TextSpan(
+                                          text: "\$ ${e.price}",
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    Spacer(),
+                                    ElevatedButton(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.black87),
+                                            shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30)))),
+                                        onPressed: () {})
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+              )
+            ],
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation
             .startDocked, //specify the location of the FAB
