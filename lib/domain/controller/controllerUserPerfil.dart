@@ -10,15 +10,9 @@ class ControlUserPerfil extends GetxController {
       Rxn<Session>(); // Usa Session en lugar de UserCredential
 
   Future<void> crearperfil(Map<String, dynamic> perfil, foto) async {
-    try {
-      print("llego al controlador");
-      _response.value = await Peticiones.crearperfil(perfil, foto);
-      await controlPerfil(_response.value);
-    } catch (error) {
-      print('Error en la operación de registro: $error');
-      await Future.delayed(Duration(seconds: 2)); // Esperar 2 segundos
-      await crearperfil(perfil, foto); // Reintentar el registro
-    }
+    print("llego al controlador");
+    _response.value = await Peticiones.crearperfil(perfil, foto);
+    await controlPerfil(_response.value);
   }
 
   Future<Map<String, dynamic>> actualizarperfil(
@@ -35,6 +29,7 @@ class ControlUserPerfil extends GetxController {
   }
 
   Future<Map<String, dynamic>> obtenerperfil(String id) async {
+    print("llego al controlador");
     _response.value = await Peticiones.obtenerperfil(id);
     await controlPerfil(_response.value);
     return _response.value;
@@ -60,7 +55,8 @@ class ControlUserPerfil extends GetxController {
     }
   }
 
-  Map<String, dynamic> get datosPerfil => _Datos.value;
+  Map<String, dynamic> get datosPerfil =>
+      _Datos?.value ?? {}; // Valor predeterminado: un mapa vacío
   dynamic get estadoPerfil => _response.value;
   String get mensajesPerfil => _mensaje.value;
   Session? get perfilValido =>

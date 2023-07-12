@@ -16,14 +16,14 @@ class Data {
 
   static List<ProductModel> generateCategories() {
     return [
-      ProductModel("1", "assets/images/categories/woman/1.png", "Damas",
-          "Blusas", "blusas", 28.000),
-      ProductModel("2", "assets/images/categories/man/2.png", "Caballeros",
-          "Sueters", "", 28.000),
-      ProductModel("3", "assets/images/categories/boy/3.png", "Niños",
-          "Sueters", "men shoes", 28.000),
-      ProductModel("4", "assets/images/shoes_4.png", "Niñas", "Men's Shoes",
-          "men shoes", 28.000),
+      ProductModel("1", "assets/images/categories/woman/1.png", "Azul", "M",
+          "Damas", "Blusas", "blusas", 28.000),
+      ProductModel("2", "assets/images/categories/man/2.png", "Negra", "L",
+          "Caballeros", "Sueters", "", 28.000),
+      ProductModel("3", "assets/images/categories/boy/3.png", "Roja", "S",
+          "Niños", "Sueters", "men shoes", 28.000),
+      ProductModel("4", "assets/images/shoes_4.png", "Niñas", "Negra", "Unica",
+          "Men's Shoes", "men shoes", 28.000),
     ];
   }
 }

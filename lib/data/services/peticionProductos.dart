@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 
 class Peticiones {
+  static final ControlProducto controlp = Get.find();
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<dynamic> crearProducto(
@@ -11,8 +13,7 @@ class Peticiones {
     try {
       var url = '';
       if (foto != null) {
-        url = await Peticiones.cargarImagen(
-            foto, producto['nombre'] + producto['apellido']);
+        url = await Peticiones.cargarImagen(foto);
       }
       producto['foto'] = url.toString();
       await _client.from('productos').insert([producto]);
@@ -38,17 +39,18 @@ class Peticiones {
         uid = uids[i]['id'].toString(); // Obtiene el uid del producto
         var foto = ''; // Foto del producto
         var image = null; // Imagen del producto
-
         response = await _client
             .from(folderPath)
             .select('*')
             .eq('id', uid); // Filtra el producto por id
         foto = response[0]['foto'].toString(); // Obtiene la foto del producto
+        print("esta es la foto de la base de datos: $foto");
         if (foto.isNotEmpty) {
           //Si la respuesta no es una url vacia
           image = await instance
               .from(folderPath)
-              .getPublicUrl('${uid}.png'); //Obtiene la url de la imagen
+              .getPublicUrl(foto); //Obtiene la url de la imagen
+          print("esta es la imagen: $image");
           response[0]['foto'] = image; //Agrega la url de la imagen al perfil
         }
         producto = Map<String, dynamic>.from(response[0]);
@@ -76,7 +78,7 @@ class Peticiones {
   static Future<dynamic> filtrarproducto(id) async {
     final instance = _client.storage; // Instancia de SupabaseStorage
     final folderPath = 'producto'; // Carpeta donde deseas almacenar las fotos
-    List<Map<String, dynamic>> producto = []; // Lista de productoes
+    Map<String, dynamic> producto = {}; // Lista de productoes
     String fileName = '$id.png'; // Nombre del archivo
     try {
       //Intenta obtener el producto
@@ -86,13 +88,18 @@ class Peticiones {
           .eq('id', id); //Filtra el producto por id
       if (response != null) {
         // Si la respuesta no es nula
-        final image = await instance
-            .from(folderPath)
-            .getPublicUrl(fileName); //Obtiene la url de la imagen
-        response![0]['foto'] = image; //Agrega la url de la imagen al producto
-        producto = List<Map<String, dynamic>>.from(
-            response); //Convierte la respuesta en una lista de mapas
+        var foto = ''; // Foto del producto
+        var image = null; // Imagen del producto
+        foto = response[0]['foto'].toString(); // Obtiene la foto del producto
+        if (foto.isNotEmpty) {
+          //Si la respuesta no es una url vacia
+          image = await instance
+              .from(folderPath)
+              .getPublicUrl(fileName); //Obtiene la url de la imagen
+          response[0]['foto'] = image; //Agrega la url de la imagen al perfil
+        }
       }
+      producto = Map<String, dynamic>.from(response[0]);
       return producto; //Retorna el producto
     } catch (e) {
       print("Error en la peticion:$e");
@@ -100,10 +107,10 @@ class Peticiones {
     }
   }
 
-  static Future<dynamic> cargarImagen(var foto, var idArt) async {
+  static Future<dynamic> cargarImagen(var foto) async {
     final instance = _client.storage;
     final folderPath = 'productos'; // Carpeta donde deseas almacenar las fotos
-    String fileName = '$idArt.png';
+    final fileName = '${foto.path.split('/').last}/fotoCatalogo.png';
     final file = File(foto.path);
     try {
       final String path = await instance.from(folderPath).upload(

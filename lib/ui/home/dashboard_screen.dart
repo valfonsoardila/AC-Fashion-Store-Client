@@ -58,6 +58,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return productos;
   }
 
+  void cargarDatos() {
+    // Resto del código para obtener los datos de productos
+    print("Cargando datos");
+    print("Productos: " + widget.productos.toString());
+    productos = widget.productos;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,10 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     direccionPerfil = widget.direccion;
     fotoPerfil = widget.foto;
     profesionPerfil = widget.profesion;
-    print(
-      "Esta es la lista de productos en el dash: ${widget.productos}",
-    );
-    productos = widget.productos;
+    cargarDatos();
   }
 
   List<Widget> buildCategories() {
@@ -328,7 +332,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               RichText(
                                 textAlign: TextAlign.start,
                                 text: TextSpan(
-                                    text: e.type,
+                                    text: e.category,
                                     style: const TextStyle(
                                         color: MyColors.myPurple,
                                         fontSize: 16.0)),

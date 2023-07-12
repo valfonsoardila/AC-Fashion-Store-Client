@@ -2,7 +2,9 @@ class ProductModel {
   String id;
   String image;
   String title;
-  String type;
+  String color;
+  String talla;
+  String category;
   String description;
   double price;
 
@@ -10,7 +12,9 @@ class ProductModel {
     this.id,
     this.image,
     this.title,
-    this.type,
+    this.color,
+    this.talla,
+    this.category,
     this.description,
     this.price,
   );

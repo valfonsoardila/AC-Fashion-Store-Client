@@ -2,17 +2,16 @@ import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
-import 'package:acfashion_store/ui/models/data.dart';
 import 'package:acfashion_store/ui/models/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-//CLASE PRINCIPAL
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({Key? key}) : super(key: key);
+
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -20,9 +19,11 @@ class _MainScreenState extends State<MainScreen> {
   ControlUserAuth controlua = Get.find();
   ControlUserPerfil controlup = Get.put(ControlUserPerfil());
   ControlProducto controlp = Get.put(ControlProducto());
-  //VARIABLES DE PERFIL
-  String? uid = ''; // Variable local para almacenar el ID del usuario
+  //VARIABLES DE CONTROL
+  String idUsuario = '';
+  String? uid;
   String msg = "";
+  //VARIABLES DE PERFIL
   var id = "";
   var foto = "";
   var correo = "";
@@ -31,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   var profesion = "";
   var direccion = "";
   var celular = "";
-  //VARIABLES DE PRODUCTOS
+  //VARIABLES PRODUCTOS
   var idProducto = "";
   var cantidadProducto = 0;
   var fotoProducto = "";
@@ -45,97 +46,117 @@ class _MainScreenState extends State<MainScreen> {
   //LISTAS
   List<Map<String, dynamic>> consultaProductos = [];
   List<ProductModel> productos = [];
-  //FUNCIONES
+  //MAPAS
+  Map<String, dynamic> perfil = {};
+
   @override
   void initState() {
     super.initState();
+    //Se consulta el uid del perfil autenticado
     controlua.consultarUser().then((value) {
       setState(() {
-        uid = controlua.userValido?.id;
+        uid = controlua.uidValido;
+        idUsuario = uid!;
       });
+      cargarDatos();
+    });
+  }
+
+  void cargarDatos() {
+    //Se obtienen datos de perfil autenticado
+    controlup.obtenerperfil(idUsuario).then((value) {
+      setState(() {
+        msg = controlup.mensajesPerfil;
+      });
+      if (msg == "Proceso exitoso") {
+        setState(() {
+          perfil = controlup.datosPerfil;
+          id = perfil['id'] ?? '';
+          foto = perfil['foto'] ?? '';
+          correo = perfil['correo'] ?? '';
+          contrasena = perfil['contrasena'] ?? '';
+          nombre = perfil['nombre'] ?? '';
+          profesion = perfil['profesion'] ?? '';
+          direccion = perfil['direccion'] ?? '';
+          celular = perfil['celular'] ?? '';
+          print("Datos perfil recibidos en MainScreen: $perfil");
+        });
+      } else {
+        print("Error al cargar datos del perfil");
+      }
+    });
+    //Se obtienen datos de productos
+    controlp.obtenerproductos().then((value) {
+      setState(() {
+        msg = controlp.mensajesProducto;
+      });
+      if (msg == "Proceso exitoso") {
+        setState(() {
+          consultaProductos = controlp.datosProductos;
+          print(
+              "Datos de productos recibidos en MainScreen: $consultaProductos");
+          for (var i = 0; i < consultaProductos.length; i++) {
+            idProducto = consultaProductos[i]['id'] ?? '';
+            cantidadProducto = consultaProductos[i]['cantidad'] ?? 0;
+            fotoProducto = consultaProductos[i]['foto'] ?? '';
+            nombreProducto = consultaProductos[i]['nombre'] ?? '';
+            descripcionProducto = consultaProductos[i]['descripcion'] ?? '';
+            colorProducto = consultaProductos[i]['color'] ?? '';
+            tallaProducto = consultaProductos[i]['talla'] ?? '';
+            categoriaProducto = consultaProductos[i]['categoria'] ?? '';
+            valoracionProducto = consultaProductos[i]['valoracion'] ?? '';
+            precioProducto = consultaProductos[i]['precio'] ?? 0.0;
+            productos.add(ProductModel(
+              idProducto,
+              fotoProducto,
+              nombreProducto,
+              colorProducto,
+              tallaProducto,
+              categoriaProducto,
+              descripcionProducto,
+              precioProducto,
+            ));
+          }
+        });
+      } else {
+        print("Error al cargar datos de productos");
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: controlup.obtenerperfil(uid!),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // Mientras se carga el perfil, puedes mostrar un indicador de carga, por ejemplo:
-          return Container(
-            color: Colors.white,
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(
-                  color: MyColors.myPurple,
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text(
-                  'Cargando perfil...',
-                  style: TextStyle(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Container(
+          color: Colors.white,
+          alignment: Alignment.center,
+          child: FutureBuilder(
+            future: Future.delayed(
+                Duration(seconds: 6)), //Establece el tiempo de carga
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
                       color: MyColors.myPurple,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.normal),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            )),
-          );
-        } else if (snapshot.hasError) {
-          // Si ocurre un error al obtener el perfil, puedes mostrar un mensaje de error
-          return Text('Error al obtener el perfil');
-        } else {
-          final datosPerfil =
-              snapshot.data ?? {}; // Obtener los datos del perfil del snapshot
-          // Asignar los valores a las variables correspondientes
-          id = datosPerfil['id'] ?? "";
-          correo = datosPerfil['correo'] ?? "";
-          contrasena = datosPerfil['contrasena'] ?? "";
-          nombre = datosPerfil['nombre'] ?? "";
-          profesion = datosPerfil['profesion'] ?? "";
-          direccion = datosPerfil['direccion'] ?? "";
-          celular = datosPerfil['celular'] ?? "";
-          foto = datosPerfil['foto'] ?? "";
-          controlp.obtenerproductos();
-          msg = controlp.mensajesProducto;
-          if (msg == "Proceso exitoso") {
-            productos = [];
-            consultaProductos = controlp.datosProductos;
-            // print("Esto trae la lista de productos: ${consultaProductos}");
-            for (int i = 0; i < consultaProductos.length; i++) {
-              idProducto = consultaProductos[i]['id'];
-              cantidadProducto = consultaProductos[i]['cantidad'];
-              fotoProducto = consultaProductos[i]['foto'];
-              nombreProducto = consultaProductos[i]['nombre'];
-              descripcionProducto = consultaProductos[i]['descripcion'];
-              colorProducto = consultaProductos[i]['color'];
-              tallaProducto = consultaProductos[i]['talla'];
-              categoriaProducto = consultaProductos[i]['categoria'];
-              valoracionProducto = consultaProductos[i]['valoracion'];
-              precioProducto = consultaProductos[i]['precio'];
-              var productModel = ProductModel(
-                idProducto,
-                fotoProducto,
-                nombreProducto,
-                categoriaProducto,
-                descripcionProducto,
-                precioProducto,
-              );
-              productos.add(productModel);
-            }
-          }
-          // print("Esto trae la lista de productos: ${productos.length}");
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Scaffold(
-              body: Stack(
-                children: [
-                  DashboardScreen(
+                      backgroundColor: Colors.purple[400],
+                    ),
+                    Text(
+                      "Cargando...",
+                      style: TextStyle(
+                        color: MyColors.myPurple,
+                        fontSize: 20,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                if (productos.isNotEmpty && perfil.isNotEmpty) {
+                  return DashboardScreen(
                     id: id,
                     nombre: nombre,
                     correo: correo,
@@ -145,13 +166,79 @@ class _MainScreenState extends State<MainScreen> {
                     direccion: direccion,
                     celular: celular,
                     productos: productos,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
+                  );
+                } else {
+                  if (snapshot.hasError) {
+                    return Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.network_check,
+                                color: Colors.red,
+                              ),
+                              Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "No se pudo cargar los datos",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          Text(
+                            "Verifique su conexión a internet",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.help_outline,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            "Error desconocido",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          Text(
+                            "Por favor vuelva a ingresar",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }
