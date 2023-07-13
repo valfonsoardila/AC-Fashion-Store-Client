@@ -3,6 +3,7 @@ import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/auth/login_screen.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
+import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
@@ -158,17 +159,48 @@ class _MainScreenState extends State<MainScreen> {
                 );
               } else {
                 if (productos.isNotEmpty && perfil.isNotEmpty) {
-                  return DashboardScreen(
-                    id: id,
-                    nombre: nombre,
-                    correo: correo,
-                    contrasena: contrasena,
-                    foto: foto,
-                    profesion: profesion,
-                    direccion: direccion,
-                    celular: celular,
-                    productos: productos,
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    home: Scaffold(
+                      body: Stack(
+                        children: [
+                          DrawerScreen(
+                            uid: id,
+                            nombre: nombre,
+                            correo: correo,
+                            contrasena: contrasena,
+                            celular: celular,
+                            direccion: direccion,
+                            foto: foto,
+                            profesion: profesion,
+                          ),
+                          //MainScreen(uid: uid, foto: foto), //Pantalla principal
+                          DashboardScreen(
+                            id: id,
+                            nombre: nombre,
+                            correo: correo,
+                            contrasena: contrasena,
+                            foto: foto,
+                            profesion: profesion,
+                            direccion: direccion,
+                            celular: celular,
+                            productos: productos,
+                          ),
+                        ],
+                      ),
+                    ),
                   );
+                  // return DashboardScreen(
+                  //           id: id,
+                  //           nombre: nombre,
+                  //           correo: correo,
+                  //           contrasena: contrasena,
+                  //           foto: foto,
+                  //           profesion: profesion,
+                  //           direccion: direccion,
+                  //           celular: celular,
+                  //           productos: productos,
+                  //         ),
                 } else {
                   if (snapshot.hasError) {
                     return Container(
@@ -256,12 +288,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Login(),
-                                ),
-                              );
+                              Get.offAllNamed("/login");
                             },
                             child: Text(
                               "Volver",

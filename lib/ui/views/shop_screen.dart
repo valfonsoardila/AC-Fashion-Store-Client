@@ -1,3 +1,4 @@
+import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:flutter/material.dart';
 
 class ShopScreen extends StatefulWidget {
@@ -33,12 +34,25 @@ class _ShopScreenState extends State<ShopScreen> {
       body: Container(
         child: ListView(
           children: [
-            Text(
-              'Artículos seleccionados',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
+            Container(
+              color: MyColors.myPurple,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 30,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Artículos seleccionados',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

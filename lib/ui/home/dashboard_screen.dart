@@ -1,4 +1,5 @@
 import 'package:acfashion_store/ui/home/aside.dart';
+import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
@@ -7,6 +8,7 @@ import 'package:acfashion_store/ui/models/data.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:badges/badges.dart' as badges;
 
 class DashboardScreen extends StatefulWidget {
@@ -35,8 +37,14 @@ class DashboardScreen extends StatefulWidget {
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  bool isSearchOpen = false;
+class _DashboardScreenState extends State<DashboardScreen>
+    with TickerProviderStateMixin {
+  var currentIndex = 0;
+  bool isSearchOpen = false; // Índice del icono seleccionado
+  double tamano = 0.0;
+  double xOffset = 0;
+  double yOffset = 0;
+  bool isDrawerOpen = false;
   String id = "";
   String nombrePerfil = 'Nombre de usuario';
   String correoPerfil = 'correo electrónico';
@@ -145,6 +153,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     cargarDatos();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   String selectedCategoryId = "Damas"; // ID de la categoría seleccionada
 
   List<Widget> buildCategories() {
@@ -201,31 +214,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double displayWidth = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return AnimatedContainer(
+      transform: Matrix4.translationValues(xOffset, yOffset, 0)
+        ..scale(isDrawerOpen ? 0.85 : 1.00)
+        ..rotateZ(isDrawerOpen ? 0 : 0),
+      // ..rotateZ(isDrawerOpen ? -50 : 0),
+      duration: Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius:
+            isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
+      ),
+      child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: CircleAvatar(
-              backgroundImage: fotoPerfil != ""
-                  ? NetworkImage(fotoPerfil)
-                  : NetworkImage(
-                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"),
-              radius: 18,
-            ),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Aside(
-                          id: id,
-                          nombre: nombrePerfil,
-                          correo: correoPerfil,
-                          contrasena: contrasenaPerfil,
-                          telefono: telefonPerfil,
-                          direccion: direccionPerfil,
-                          foto: fotoPerfil,
-                          profesion: profesionPerfil,
-                        ))),
+          leading: SizedBox(
+            width: 20, // Ajusta el ancho según sea necesario
+            child: isDrawerOpen
+                ? GestureDetector(
+                    child: CircleAvatarOpen(img: fotoPerfil, text: ''),
+                    onTap: () {
+                      setState(() {
+                        xOffset = 0;
+                        yOffset = 0;
+                        isDrawerOpen = false;
+                      });
+                    },
+                  )
+                : GestureDetector(
+                    child: CircleAvatarClose(img: fotoPerfil, text: ''),
+                    onTap: () {
+                      setState(() {
+                        FocusScope.of(context).unfocus(); // Cierra el teclado
+                        xOffset = 290;
+                        yOffset = 80;
+                        isDrawerOpen = true;
+                      });
+                    },
+                  ),
           ),
+          //IconButton(
+          //     icon: CircleAvatar(
+          //       backgroundImage: fotoPerfil != ""
+          //           ? NetworkImage(fotoPerfil)
+          //           : NetworkImage(
+          //               "https://cdn-icons-png.flaticon.com/512/149/149071.png"),
+          //       radius: 18,
+          //     ),
+          //     onPressed: () {
+          //       setState(() {
+          //         FocusScope.of(context).unfocus(); // Cierra el teclado
+          //         xOffset = 290;
+          //         yOffset = 80;
+          //         isDrawerOpen = true;
+          //       });
+          //     }
+          //() => Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => DrawerScreen(
+          //               uid: id,
+          //               nombre: nombrePerfil,
+          //               correo: correoPerfil,
+          //               // contrasena: contrasenaPerfil,
+          //               celular: telefonPerfil,
+          //               direccion: direccionPerfil,
+          //               foto: fotoPerfil,
+          //               profesion: profesionPerfil,
+          //             ))),
+          // builder: (context) => Aside(
+          //       id: id,
+          //       nombre: nombrePerfil,
+          //       correo: correoPerfil,
+          //       contrasena: contrasenaPerfil,
+          //       telefono: telefonPerfil,
+          //       direccion: direccionPerfil,
+          //       foto: fotoPerfil,
+          //       profesion: profesionPerfil,
+          //     ))),
+          //),
           backgroundColor: Colors.white,
           elevation: 0,
           flexibleSpace: isSearchOpen != true
@@ -551,51 +619,225 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation
-            .startDocked, //specify the location of the FAB
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: MyColors.myPurple,
-          onPressed: () {
-            print('OK');
-          },
-          tooltip: "Principal",
-          child: Container(
-            margin: EdgeInsets.all(15.0),
-            child: Icon(
-              Icons.home_outlined,
-              color: Colors.white,
-            ),
-          ),
-          elevation: 4.0,
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              SizedBox(
-                width: 30,
-              ),
-              IconButton(
-                icon: Icon(Icons.shopping_bag, color: Colors.black),
-                tooltip: "Tus compras",
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.favorite_outline, color: Colors.black),
-                tooltip: "Favoritos",
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.settings, color: Colors.black),
-                tooltip: "Configuración",
-                onPressed: () {},
-              ),
-              SizedBox(
-                width: 2,
+        bottomNavigationBar: Container(
+          margin: EdgeInsets.all(displayWidth * .05),
+          height: displayWidth * .155,
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(247, 232, 253, 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.1),
+                blurRadius: 30,
+                offset: Offset(0, 10),
               ),
             ],
+            borderRadius: BorderRadius.circular(50),
           ),
-        ));
+          child: ListView.builder(
+            itemCount: 4,
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: displayWidth * .02),
+            itemBuilder: (context, index) => InkWell(
+              onTap: () {
+                setState(() {
+                  currentIndex = index;
+                  //HapticFeedback.lightImpact();
+                });
+              },
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              child: Stack(
+                children: [
+                  AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    curve: Curves.fastLinearToSlowEaseIn,
+                    width: index == currentIndex
+                        ? displayWidth * .32
+                        : displayWidth * .18,
+                    alignment: Alignment.center,
+                    child: AnimatedContainer(
+                      duration: Duration(seconds: 1),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      height: index == currentIndex ? displayWidth * .12 : 0,
+                      width: index == currentIndex ? displayWidth * .32 : 0,
+                      decoration: BoxDecoration(
+                        color: index == currentIndex
+                            ? MyColors.myPurple
+                            : Colors.black.withOpacity(.1),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    curve: Curves.fastLinearToSlowEaseIn,
+                    width: index == currentIndex
+                        ? displayWidth * .31
+                        : displayWidth * .18,
+                    alignment: Alignment.center,
+                    child: Stack(
+                      children: [
+                        Row(
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(seconds: 1),
+                              curve: Curves.fastLinearToSlowEaseIn,
+                              width: index == currentIndex
+                                  ? displayWidth * .13
+                                  : 0,
+                            ),
+                            AnimatedOpacity(
+                              opacity: index == currentIndex ? 1 : 0,
+                              duration: Duration(seconds: 1),
+                              curve: Curves.fastLinearToSlowEaseIn,
+                              child: Text(
+                                index == currentIndex
+                                    ? '${listOfStrings[index]}'
+                                    : '',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(seconds: 1),
+                              curve: Curves.fastLinearToSlowEaseIn,
+                              width: index == currentIndex
+                                  ? displayWidth * .03
+                                  : 20,
+                            ),
+                            Icon(
+                              listOfIcons[index],
+                              size: displayWidth * .076,
+                              color: index == currentIndex
+                                  ? Colors.white
+                                  : Colors.black26,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<IconData> listOfIcons = [
+    Icons.home_rounded,
+    Icons.favorite_rounded,
+    Icons.shopping_bag_rounded,
+    Icons.settings_rounded,
+  ];
+
+  List<String> listOfStrings = [
+    'Inicio',
+    'Favoritos',
+    'Almacen',
+    'Ajustes',
+  ];
+}
+
+class CircleAvatarOpen extends StatelessWidget {
+  final dynamic img;
+  final String text;
+
+  CircleAvatarOpen({
+    Key? key,
+    required this.text,
+    required this.img,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget imageWidget;
+    if (img != null && Uri.parse(img).isAbsolute) {
+      // Si img es una URL válida, carga la imagen desde la URL
+      imageWidget = CircleAvatar(
+        radius: 25,
+        backgroundImage: NetworkImage(img),
+        child: Container(
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white.withOpacity(0.5),
+          ),
+        ),
+      );
+    } else {
+      // Si img no es una URL válida, carga la imagen desde el recurso local
+      imageWidget = CircleAvatar(
+        radius: 25,
+        backgroundImage: AssetImage('assets/images/user.png'),
+        child: Container(
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white.withOpacity(0.5),
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Expanded(child: imageWidget),
+        SizedBox(
+          width: 20,
+        ),
+      ],
+    );
+  }
+}
+
+//Clase para el avatar del panel superior de la aplicacion
+class CircleAvatarClose extends StatelessWidget {
+  final dynamic img;
+  final String text;
+
+  CircleAvatarClose({
+    Key? key,
+    required this.text,
+    required this.img,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget imageWidget;
+
+    if (img != null && Uri.parse(img).isAbsolute) {
+      // Si img es una URL válida, carga la imagen desde la URL
+      imageWidget = CircleAvatar(
+        radius: 25,
+        backgroundImage: NetworkImage(img),
+      );
+    } else {
+      // Si img no es una URL válida, carga la imagen desde el recurso local
+      imageWidget = CircleAvatar(
+        radius: 25,
+        backgroundImage: AssetImage('assets/images/user.png'),
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Expanded(child: imageWidget),
+        SizedBox(
+          width: 20,
+        ),
+      ],
+    );
   }
 }
