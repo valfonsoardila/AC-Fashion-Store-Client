@@ -1,35 +1,81 @@
+import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/data.dart';
+import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:imageview360/imageview360.dart';
-import 'package:acfashion_store/ui/models/product_model.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+  final String id;
+  final int cantidad;
+  final String image;
+  final String title;
+  final String color;
+  final String talla;
+  final String category;
+  final String description;
+  final String valoration;
+  final double price;
+
+  DetailScreen({
+    Key? key,
+    required this.id,
+    required this.cantidad,
+    required this.image,
+    required this.title,
+    required this.color,
+    required this.talla,
+    required this.category,
+    required this.description,
+    required this.valoration,
+    required this.price,
+  }) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DetailScreen> {
-  List<ImageProvider> imageList = <ImageProvider>[];
+  ControlProducto controlp = new ControlProducto();
+  List<Map<String, dynamic>> carrito = [];
+  bool _isFavorited = false;
   bool autoRotate = false;
   int rotationCount = 22;
   int swipeSensitivity = 2;
   bool allowSwipeToRotate = true;
   bool imagePrecached = true;
 
+  var idProducto = "";
+  var cantidad = 0;
+  var imagen = "";
+  var titulo = "";
+  var color = "";
+  var talla = "";
+  var categoria = "";
+  var descripcion = "";
+  var valoracion = "";
+  var precio = 0.0;
+
   @override
   void initState() {
     super.initState();
-    updateImageList(context);
+    idProducto = widget.id;
+    imagen = widget.image;
+    titulo = widget.title;
+    color = widget.color;
+    talla = widget.talla;
+    categoria = widget.category;
+    descripcion = widget.description;
+    valoracion = widget.valoration;
+    precio = widget.price;
+    cantidad = widget.cantidad;
+    //updateImageList(context);
   }
 
-  void updateImageList(BuildContext context) {
-    for (int i = 1; i <= 21; i++) {
-      imageList.add(AssetImage('assets/images/s$i.png'));
-    }
-  }
+  // void updateImageList(BuildContext context) {
+  //   for (int i = 1; i <= 21; i++) {
+  //     imageList.add(AssetImage('assets/images/s$i.png'));
+  //   }
+  // }
 
   List<Widget> buildColorWidgets() {
     return Data.generateCategories()
@@ -45,7 +91,7 @@ class _DashboardScreenState extends State<DetailScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
-                  e.image,
+                  e.modelo,
                   height: 30,
                   width: 30,
                 ),
@@ -67,13 +113,59 @@ class _DashboardScreenState extends State<DetailScreen> {
         ),
         centerTitle: true,
         title: Text(
-          "Men's Shoes",
+          categoria,
           style: TextStyle(color: MyColors.myPurple),
         ),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: MyColors.myBlack),
         elevation: 0,
-        actions: [Image.asset("assets/icons/ic_search.png")],
+        actions: [
+          _isFavorited != false
+              ? IconButton(
+                  icon: Icon(Icons.favorite, color: Colors.red),
+                  onPressed: () {
+                    setState(() {
+                      _isFavorited = !_isFavorited;
+                    });
+                  },
+                )
+              : IconButton(
+                  icon: Icon(Icons.favorite_border, color: Colors.black),
+                  onPressed: () {
+                    setState(() {
+                      _isFavorited = !_isFavorited;
+                    });
+                  },
+                ),
+          IconButton(
+            icon: Icon(Icons.add_shopping_cart_outlined),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            color: Colors.black,
+            onPressed: () {
+              if (cantidad >= 1) {
+                carrito.add({
+                  "id": idProducto,
+                  "cantidad": cantidad,
+                  "imagen": imagen,
+                  "titulo": titulo,
+                  "color": color,
+                  "talla": talla,
+                  "categoria": categoria,
+                  "descripcion": descripcion,
+                  "valoracion": valoracion,
+                  "precio": precio,
+                });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ShopScreen(
+                              compra: carrito,
+                            )));
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -82,24 +174,38 @@ class _DashboardScreenState extends State<DetailScreen> {
             children: [
               Container(
                 height: size.width - 30,
-                child: Stack(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 70),
-                          child: Image.asset("assets/images/ring.png"),
-                        )),
-                    ImageView360(
-                      key: UniqueKey(),
-                      imageList: imageList,
-                      autoRotate: autoRotate,
-                      rotationCount: rotationCount,
-                      swipeSensitivity: swipeSensitivity,
-                      allowSwipeToRotate: allowSwipeToRotate,
-                      onImageIndexChanged: (currentImageIndex) {
-                        print("currentImageIndex: $currentImageIndex");
-                      },
+                    Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: size.width * 0.2,
+                            width: size.width * 0.9,
+                            margin: EdgeInsets.only(bottom: 20),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/ring.png"),
+                                fit: BoxFit.fill,
+                                alignment: Alignment.bottomCenter,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: size.width * 0.8,
+                          width: size.width * 0.9,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(imagen),
+                              fit: BoxFit.fill,
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -120,8 +226,8 @@ class _DashboardScreenState extends State<DetailScreen> {
                       children: [
                         RichText(
                           textAlign: TextAlign.start,
-                          text: const TextSpan(
-                              text: "Nike Air Max Pre-Day",
+                          text: TextSpan(
+                              text: titulo,
                               style: TextStyle(
                                   color: Colors.black87,
                                   fontSize: 24.0,
@@ -138,8 +244,8 @@ class _DashboardScreenState extends State<DetailScreen> {
                             ),
                             RichText(
                               textAlign: TextAlign.start,
-                              text: const TextSpan(
-                                  text: "5.0",
+                              text: TextSpan(
+                                  text: valoracion,
                                   style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 16.0,
@@ -164,9 +270,8 @@ class _DashboardScreenState extends State<DetailScreen> {
                         ),
                         RichText(
                           textAlign: TextAlign.start,
-                          text: const TextSpan(
-                              text:
-                                  "Men's sneakers are made with leather upper features for durability and support, while perforations provide airflow during every shoe wear.",
+                          text: TextSpan(
+                              text: descripcion,
                               style: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 16.0,

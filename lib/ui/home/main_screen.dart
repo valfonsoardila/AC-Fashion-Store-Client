@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
-import 'package:acfashion_store/ui/auth/login_screen.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
 import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
@@ -38,7 +38,8 @@ class _MainScreenState extends State<MainScreen> {
   //VARIABLES PRODUCTOS
   var idProducto = "";
   var cantidadProducto = 0;
-  var fotoProducto = "";
+  var catalogoProducto = "";
+  var modeloProducto = "";
   var nombreProducto = "";
   var descripcionProducto = "";
   var colorProducto = "";
@@ -101,7 +102,8 @@ class _MainScreenState extends State<MainScreen> {
           for (var i = 0; i < consultaProductos.length; i++) {
             idProducto = consultaProductos[i]['id'] ?? '';
             cantidadProducto = consultaProductos[i]['cantidad'] ?? 0;
-            fotoProducto = consultaProductos[i]['foto'] ?? '';
+            catalogoProducto = consultaProductos[i]['catalogo'] ?? '';
+            modeloProducto = consultaProductos[i]['modelo'] ?? '';
             nombreProducto = consultaProductos[i]['nombre'] ?? '';
             descripcionProducto = consultaProductos[i]['descripcion'] ?? '';
             colorProducto = consultaProductos[i]['color'] ?? '';
@@ -111,12 +113,15 @@ class _MainScreenState extends State<MainScreen> {
             precioProducto = consultaProductos[i]['precio'] ?? 0.0;
             productos.add(ProductModel(
               idProducto,
-              fotoProducto,
+              cantidadProducto,
+              catalogoProducto,
+              modeloProducto,
               nombreProducto,
               colorProducto,
               tallaProducto,
               categoriaProducto,
               descripcionProducto,
+              valoracionProducto,
               precioProducto,
             ));
           }
@@ -137,7 +142,7 @@ class _MainScreenState extends State<MainScreen> {
           alignment: Alignment.center,
           child: FutureBuilder(
             future: Future.delayed(
-                Duration(seconds: 6)), //Establece el tiempo de carga
+                Duration(seconds: 4)), //Establece el tiempo de carga
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Column(
@@ -174,7 +179,7 @@ class _MainScreenState extends State<MainScreen> {
                             foto: foto,
                             profesion: profesion,
                           ),
-                          //MainScreen(uid: uid, foto: foto), //Pantalla principal
+                          //MainScreen(uid: uid, catalogo: catalogo), //Pantalla principal
                           DashboardScreen(
                             id: id,
                             nombre: nombre,
@@ -195,7 +200,7 @@ class _MainScreenState extends State<MainScreen> {
                   //           nombre: nombre,
                   //           correo: correo,
                   //           contrasena: contrasena,
-                  //           foto: foto,
+                  //           catalogo: catalogo,
                   //           profesion: profesion,
                   //           direccion: direccion,
                   //           celular: celular,

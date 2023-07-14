@@ -1,5 +1,3 @@
-import 'package:acfashion_store/ui/home/aside.dart';
-import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
@@ -8,7 +6,7 @@ import 'package:acfashion_store/ui/models/data.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:animated_icon_button/animated_icon_button.dart';
+import 'package:get/get.dart';
 import 'package:badges/badges.dart' as badges;
 
 class DashboardScreen extends StatefulWidget {
@@ -40,6 +38,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   var currentIndex = 0;
+  RxInt itemCount = 0.obs;
   bool isSearchOpen = false; // Índice del icono seleccionado
   double tamano = 0.0;
   double xOffset = 0;
@@ -55,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   String profesionPerfil = 'Profesión';
 
   String idProducto = "";
-  String cantidadProducto = "";
+  int cantidadProducto = 0;
   String fotoProducto = "";
   String nombreProducto = "";
   String descripcionProducto = "";
@@ -64,8 +63,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   String categoriaProducto = "";
   String valoracionProducto = "";
   String precioProducto = "";
+  List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
   List<NotificationModel> notifications = [];
+
   List<ProductModel> generateProducts() {
     return productos;
   }
@@ -173,7 +174,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 child: Container(
                   color: MyColors.grayBackground,
                   child: Image.asset(
-                    e.image,
+                    e.catalogo,
                     height: 45,
                     width: 45,
                   ),
@@ -280,7 +281,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           //               // contrasena: contrasenaPerfil,
           //               celular: telefonPerfil,
           //               direccion: direccionPerfil,
-          //               foto: fotoPerfil,
+          //               catalogo: fotoPerfil,
           //               profesion: profesionPerfil,
           //             ))),
           // builder: (context) => Aside(
@@ -290,7 +291,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           //       contrasena: contrasenaPerfil,
           //       telefono: telefonPerfil,
           //       direccion: direccionPerfil,
-          //       foto: fotoPerfil,
+          //       catalogo: fotoPerfil,
           //       profesion: profesionPerfil,
           //     ))),
           //),
@@ -343,22 +344,38 @@ class _DashboardScreenState extends State<DashboardScreen>
                           },
                         ),
                       ),
-                      badges.Badge(
-                        badgeContent: Text(
-                          '2',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.shopping_cart_outlined,
-                              color: Colors.black),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ShopScreen()));
-                          },
-                        ),
-                      ),
+                      itemCount > 0
+                          ? badges.Badge(
+                              badgeContent: Obx(
+                                () => Text(
+                                  itemCount.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              child: IconButton(
+                                icon: Icon(Icons.shopping_cart_outlined,
+                                    color: Colors.black),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ShopScreen(
+                                                compra: carrito,
+                                              )));
+                                },
+                              ),
+                            )
+                          : IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ShopScreen(
+                                              compra: carrito,
+                                            )));
+                              },
+                              icon: Icon(Icons.shopping_cart_outlined,
+                                  color: Colors.black)),
                       IconButton(
                           onPressed: () {
                             setState(() {
@@ -534,7 +551,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.leftToRight,
-                                    child: DetailScreen()));
+                                    child: DetailScreen(
+                                      id: e.id,
+                                      cantidad: e.cantidad,
+                                      image: e.modelo,
+                                      title: e.title,
+                                      color: e.color,
+                                      talla: e.talla,
+                                      category: e.category,
+                                      description: e.description,
+                                      valoration: e.valoration,
+                                      price: e.price,
+                                    )));
                           },
                           child: Container(
                             height: 250,
@@ -546,7 +574,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               children: [
                                 Expanded(
                                   child: Image.network(
-                                    e.image,
+                                    e.catalogo,
                                     height: 250,
                                     width: double.infinity,
                                   ),
@@ -590,7 +618,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                     Spacer(),
                                     ElevatedButton(
                                         child: Icon(
-                                          Icons.add,
+                                          Icons.add_shopping_cart_outlined,
                                           color: Colors.white,
                                         ),
                                         style: ButtonStyle(
@@ -603,7 +631,29 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             30)))),
-                                        onPressed: () {})
+                                        onPressed: () {
+                                          if (e.cantidad > itemCount.value) {
+                                            itemCount.value++;
+                                            carrito.add({
+                                              "id": e.id,
+                                              "cantidad": e.cantidad,
+                                              "imagen": e.modelo,
+                                              "titulo": e.title,
+                                              "color": e.color,
+                                              "talla": e.talla,
+                                              "categoria": e.category,
+                                              "descripcion": e.description,
+                                              "valoracion": e.valoration,
+                                              "precio": e.price,
+                                            });
+                                            print(carrito);
+                                            WidgetsBinding.instance!
+                                                .addPostFrameCallback((_) {
+                                              setState(
+                                                  () {}); // Actualizar inmediatamente después de cambiar el valor
+                                            });
+                                          }
+                                        })
                                   ],
                                 )
                               ],

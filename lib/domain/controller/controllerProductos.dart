@@ -6,14 +6,21 @@ class ControlProducto extends GetxController {
   final _Datos = Rxn();
   final _mensaje = "".obs;
 
-  Future<void> agregarproducto(Map<String, dynamic> perfil, foto) async {
-    _response.value = await Peticiones.crearProducto(perfil, foto);
+  Future<void> agregarproducto(
+      Map<String, dynamic> perfil, catalogo, modelo) async {
+    _response.value = await Peticiones.crearProducto(perfil, catalogo, modelo);
     await controlProducto(_response.value);
     return _response.value;
   }
 
   Future<void> obtenerproductos() async {
     _response.value = await Peticiones.obtenerProductos();
+    await controlProducto(_response.value);
+    return _response.value;
+  }
+
+  Future<void> obtenerproductosporid(String id) async {
+    _response.value = await Peticiones.filtrarproducto(id);
     await controlProducto(_response.value);
     return _response.value;
   }

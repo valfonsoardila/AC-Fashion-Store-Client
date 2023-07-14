@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PaymentGateway extends StatefulWidget {
-  const PaymentGateway({super.key});
+  final compra;
+  PaymentGateway({super.key, this.compra});
 
   @override
   State<PaymentGateway> createState() => _PaymentGatewayState();
@@ -10,6 +11,20 @@ class PaymentGateway extends StatefulWidget {
 class _PaymentGatewayState extends State<PaymentGateway> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Payment Gateway'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Payment Gateway',
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
