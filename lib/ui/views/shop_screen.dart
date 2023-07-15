@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 class ShopScreen extends StatefulWidget {
   final compra;
+  final itemCount;
   const ShopScreen({
     Key? key,
     this.compra,
+    this.itemCount,
   }) : super(key: key);
 
   @override
@@ -15,6 +17,7 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
   List<Map<String, dynamic>> compra = [];
+  var count;
   double total() {
     double total = 0;
     for (var i = 0; i < compra.length; i++) {
@@ -27,7 +30,7 @@ class _ShopScreenState extends State<ShopScreen> {
   void initState() {
     super.initState();
     compra = widget.compra;
-    print("estado de compra: $compra");
+    count = widget.itemCount;
   }
 
   @override
@@ -264,6 +267,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   onPressed: () {
                                     setState(() {
                                       compra.removeAt(index);
+                                      count = count - 1;
                                     });
                                   },
                                   icon: Icon(

@@ -2,7 +2,7 @@ import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
-import 'package:acfashion_store/ui/models/data.dart';
+import 'package:acfashion_store/ui/models/assets_model.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -65,6 +65,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   String precioProducto = "";
   List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
+  List<ProductModel> productosAux = [];
+  List<ProductModel> categories = [];
+  List<ProductModel> colors = [];
   List<NotificationModel> notifications = [];
 
   List<ProductModel> generateProducts() {
@@ -84,9 +87,32 @@ class _DashboardScreenState extends State<DashboardScreen>
   int currentPage = 0;
 
   void cargarDatos() {
-    print("Cargando datos");
-    print("Productos: " + widget.productos.toString());
+    id = widget.id;
+    nombrePerfil = widget.nombre;
+    correoPerfil = widget.correo;
+    contrasenaPerfil = widget.contrasena;
+    telefonPerfil = widget.celular;
+    direccionPerfil = widget.direccion;
+    fotoPerfil = widget.foto;
+    profesionPerfil = widget.profesion;
     productos = widget.productos;
+    productosAux = productos;
+  }
+
+  void seleccionarCategoria(categoria) {
+    categories = [];
+    productos = productosAux;
+    if (categoria != "Todos") {
+      for (var i = 0; i < productos.length; i++) {
+        if (productos[i].category == categoria) {
+          categories.add(productos[i]);
+        }
+      }
+      productos = [];
+      productos = categories;
+    } else {
+      productos = productosAux;
+    }
   }
 
   void _mostrarNotificaciones() {
@@ -143,14 +169,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    id = widget.id;
-    nombrePerfil = widget.nombre;
-    correoPerfil = widget.correo;
-    contrasenaPerfil = widget.contrasena;
-    telefonPerfil = widget.celular;
-    direccionPerfil = widget.direccion;
-    fotoPerfil = widget.foto;
-    profesionPerfil = widget.profesion;
     cargarDatos();
   }
 
@@ -159,10 +177,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  String selectedCategoryId = "Damas"; // ID de la categoría seleccionada
-
+  String selectedCategoryId = "0"; // ID de la categoría seleccionada
   List<Widget> buildCategories() {
-    return Data.generateCategories().map((e) {
+    return AssetsModel.generateCategories().map((e) {
       bool isSelected = selectedCategoryId == e.id;
       return Container(
         padding: EdgeInsets.only(left: 15, bottom: 10),
@@ -173,11 +190,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                 borderRadius: BorderRadius.circular(30),
                 child: Container(
                   color: MyColors.grayBackground,
-                  child: Image.asset(
-                    e.catalogo,
-                    height: 45,
-                    width: 45,
-                  ),
+                  child: e.modelo.isNotEmpty
+                      ? Image.asset(
+                          e.modelo,
+                          height: 45,
+                          width: 45,
+                        )
+                      : Container(),
                 ),
               ),
               SizedBox(
@@ -205,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           onPressed: () {
             setState(() {
               selectedCategoryId = e.id;
-              print("Categoría seleccionada: " + e.id);
+              seleccionarCategoria(e.category);
             });
           },
         ),
@@ -355,24 +374,41 @@ class _DashboardScreenState extends State<DashboardScreen>
                               child: IconButton(
                                 icon: Icon(Icons.shopping_cart_outlined,
                                     color: Colors.black),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ShopScreen(
-                                                compra: carrito,
-                                              )));
+                                onPressed: () async {
+                                  print('itemCount: ${itemCount.value}');
+                                  final result = await Navigator.push<int>(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ShopScreen(
+                                        compra: carrito,
+                                        itemCount: itemCount,
+                                      ),
+                                    ),
+                                  );
+                                  if (result != null) {
+                                    setState(() {
+                                      itemCount.value = result;
+                                    });
+                                  }
                                 },
                               ),
                             )
                           : IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ShopScreen(
-                                              compra: carrito,
-                                            )));
+                              onPressed: () async {
+                                final result = await Navigator.push<int>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ShopScreen(
+                                      compra: carrito,
+                                      itemCount: itemCount,
+                                    ),
+                                  ),
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    itemCount.value = result;
+                                  });
+                                }
                               },
                               icon: Icon(Icons.shopping_cart_outlined,
                                   color: Colors.black)),
@@ -546,8 +582,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                         elevation: 0,
                         child: InkWell(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async{
+                            final result = await Navigator.push(
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.leftToRight,
@@ -563,6 +599,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       valoration: e.valoration,
                                       price: e.price,
                                     )));
+                                    if (result != null) {
+                                  setState(() {
+                                    itemCount.value = result;
+                                  });
+                                }
                           },
                           child: Container(
                             height: 250,

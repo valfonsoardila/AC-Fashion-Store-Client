@@ -1,6 +1,6 @@
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
+import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
-import 'package:acfashion_store/ui/models/data.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +43,8 @@ class _DashboardScreenState extends State<DetailScreen> {
   int swipeSensitivity = 2;
   bool allowSwipeToRotate = true;
   bool imagePrecached = true;
-
+  List<ProductModel> productos = [];
+  var itemCount;
   var idProducto = "";
   var cantidad = 0;
   var imagen = "";
@@ -71,14 +72,12 @@ class _DashboardScreenState extends State<DetailScreen> {
     //updateImageList(context);
   }
 
-  // void updateImageList(BuildContext context) {
-  //   for (int i = 1; i <= 21; i++) {
-  //     imageList.add(AssetImage('assets/images/s$i.png'));
-  //   }
-  // }
+  List<ProductModel> colorCategories() {
+    return productos;
+  }
 
   List<Widget> buildColorWidgets() {
-    return Data.generateCategories()
+    return colorCategories()
         .map(
           (e) => Container(
             padding: const EdgeInsets.only(left: 5, bottom: 10, top: 15),
@@ -142,7 +141,7 @@ class _DashboardScreenState extends State<DetailScreen> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             color: Colors.black,
-            onPressed: () {
+            onPressed: () async {
               if (cantidad >= 1) {
                 carrito.add({
                   "id": idProducto,
@@ -156,12 +155,18 @@ class _DashboardScreenState extends State<DetailScreen> {
                   "valoracion": valoracion,
                   "precio": precio,
                 });
-                Navigator.push(
+                final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ShopScreen(
                               compra: carrito,
+                              itemCount: 1,
                             )));
+                if (result != null) {
+                  setState(() {
+                    itemCount = result;
+                  });
+                }
               }
             },
           ),
@@ -283,7 +288,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                         RichText(
                           textAlign: TextAlign.start,
                           text: const TextSpan(
-                              text: "Select Color :",
+                              text: "Selecciona el color :",
                               style: TextStyle(
                                 color: Colors.black87,
                                 fontSize: 20.0,

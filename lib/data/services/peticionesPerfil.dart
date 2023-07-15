@@ -4,15 +4,33 @@ import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Peticiones {
+class PeticionesPerfil {
   static final ControlUserAuth controlua = Get.find();
   static final SupabaseClient _client = Supabase.instance.client;
+
+  static Future<Map<String, dynamic>> buscarcorreo(String correo) async {
+    try {
+      Map<String, dynamic> perfil = {};
+      print("llego al servicio");
+      print("este es el correo: $correo");
+      final tableName = 'perfil';
+      final response =
+          await _client.from(tableName).select('*').eq('correo', correo);
+      print("esta es la respuesta: ${response}");
+      // perfil = response.data[0];
+      // print("este es el perfil: $perfil");
+      return perfil;
+    } catch (error) {
+      print('Error en la operación de restauración de contraseña: $error');
+      throw error;
+    }
+  }
 
   static Future<dynamic> crearperfil(Map<String, dynamic> perfil, foto) async {
     try {
       var url = '';
       if (foto != null) {
-        url = await Peticiones.cargarfoto(foto, controlua.userValido!.id);
+        url = await PeticionesPerfil.cargarfoto(foto, controlua.userValido!.id);
         print('esta es la url de la foto: $url');
       }
       perfil['foto'] = url.toString();
@@ -33,10 +51,10 @@ class Peticiones {
       var url = '';
       if (foto != null) {
         if (perfil['foto'] != '') {
-          final prueba = await Peticiones.actualizarfoto(foto, id);
+          final prueba = await PeticionesPerfil.actualizarfoto(foto, id);
           print("esta es la respuesta de la actualizacion de foto: $prueba");
         } else {
-          url = await Peticiones.cargarfoto(foto, id);
+          url = await PeticionesPerfil.cargarfoto(foto, id);
           print("esta es la url de la foto guardad: $url");
           perfil['foto'] = url.toString();
         }

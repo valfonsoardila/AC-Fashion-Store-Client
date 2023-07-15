@@ -37,8 +37,8 @@ class ControlUserAuth extends GetxController {
     await controlUser(_response.value);
   }
 
-  Future<void> restablecercontrasena(String password) async {
-    _response.value = await Peticioneslogin.restablecerContrasena(password);
+  Future<void> restablecercontrasena(String correo) async {
+    _response.value = await Peticioneslogin.restablecerContrasena(correo);
     await controlUser(_response.value);
     return _response.value;
   }
