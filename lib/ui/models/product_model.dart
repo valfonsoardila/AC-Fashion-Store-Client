@@ -24,4 +24,6 @@ class ProductModel {
     this.valoration,
     this.price,
   );
+
+  static fromMap(Map<String, dynamic> item) {}
 }

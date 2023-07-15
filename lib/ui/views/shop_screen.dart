@@ -285,41 +285,55 @@ class _ShopScreenState extends State<ShopScreen> {
                   )),
                   Container(
                     width: MediaQuery.of(context).size.width,
+                    height: 30,
+                    color: const Color.fromARGB(255, 96, 6, 102),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Total de compra: \$' + total().toString(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
                     height: 70,
                     color: MyColors.myPurple,
                     alignment: Alignment.center,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Total: \$' + total().toString(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PaymentGateway(
-                                        compra: compra,
-                                      )),
-                            );
-                          },
-                          child: Text('Pagar'),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PaymentGateway(
+                                    compra: compra,
+                                  )),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Pagar',
+                              textAlign: TextAlign.center,
                             ),
-                          ),
+                            Icon(
+                              Icons.monetization_on_outlined,
+                            )
+                          ],
                         ),
-                      ],
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                        ),
+                      ),
                     ),
                   ),
                 ],

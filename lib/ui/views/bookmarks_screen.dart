@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 
-class BookMarks extends StatefulWidget {
-  const BookMarks({super.key});
+class BookMarksScreen extends StatefulWidget {
+  const BookMarksScreen({super.key});
 
   @override
-  State<BookMarks> createState() => _BookMarksState();
+  State<BookMarksScreen> createState() => _BookMarksScreenState();
 }
 
-class _BookMarksState extends State<BookMarks> {
+class _BookMarksScreenState extends State<BookMarksScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Text('Productos favoritos',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black)),
+          SizedBox(height: 20),
+        ],
+      ),
+    );
   }
 }
