@@ -1,12 +1,18 @@
+import 'dart:async';
+import 'package:connectivity/connectivity.dart';
+import 'package:get/get.dart';
+import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
-import 'package:acfashion_store/ui/views/payment_gateway.dart';
+import 'package:acfashion_store/ui/views/payment_screen.dart';
 import 'package:flutter/material.dart';
 
 class ShopScreen extends StatefulWidget {
+  final String id;
   final compra;
   final itemCount;
   const ShopScreen({
     Key? key,
+    required this.id,
     this.compra,
     this.itemCount,
   }) : super(key: key);
@@ -16,6 +22,10 @@ class ShopScreen extends StatefulWidget {
 }
 
 class _ShopScreenState extends State<ShopScreen> {
+  ControlConectividad controlconect = ControlConectividad();
+  Timer? _timer;
+  bool _controllerconectivity = true;
+  String id = '';
   List<Map<String, dynamic>> compra = [];
   var count;
   double total() {
@@ -26,15 +36,35 @@ class _ShopScreenState extends State<ShopScreen> {
     return total;
   }
 
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    id = widget.id;
+    _initConnectivity();
     compra = widget.compra;
     count = widget.itemCount;
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -206,14 +236,23 @@ class _ShopScreenState extends State<ShopScreen> {
                               Container(
                                 width: 100,
                                 height: 100,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image:
-                                        NetworkImage(compra[index]['imagen']),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                                decoration: _controllerconectivity != false
+                                    ? BoxDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              compra[index]['imagen']),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                    : BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/icons/ic_not_signal.png'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                               ),
                               SizedBox(
                                 width: 10,
@@ -297,45 +336,67 @@ class _ShopScreenState extends State<ShopScreen> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 70,
-                    color: MyColors.myPurple,
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PaymentGateway(
-                                    compra: compra,
-                                  )),
-                        );
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Pagar',
-                              textAlign: TextAlign.center,
-                            ),
-                            Icon(
-                              Icons.monetization_on_outlined,
+                      width: MediaQuery.of(context).size.width,
+                      height: 70,
+                      color: MyColors.myPurple,
+                      alignment: Alignment.center,
+                      child: _controllerconectivity != false
+                          ? ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PaymentScreen(
+                                            compra: compra,
+                                          )),
+                                );
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Pagar',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Icon(
+                                      Icons.monetization_on_outlined,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32.0),
+                                ),
+                              ),
                             )
-                          ],
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                      ),
-                    ),
-                  ),
+                          : Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/ic_not_signal.png",
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'No hay conexión a internet',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            )),
                 ],
               ),
       ),

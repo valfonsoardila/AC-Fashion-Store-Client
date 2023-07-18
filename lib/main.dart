@@ -1,3 +1,4 @@
+import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/ui/app.dart';
@@ -22,5 +23,6 @@ void main() async {
   Get.put(ControlUserPerfil());
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  Get.put(ControlFavoritos());
   runApp(App());
 }

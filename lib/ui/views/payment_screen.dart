@@ -1,17 +1,16 @@
 import 'package:acfashion_store/ui/models/assets_model.dart';
-import 'package:acfashion_store/ui/models/mcommerce_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:flutter/material.dart';
 
-class PaymentGateway extends StatefulWidget {
+class PaymentScreen extends StatefulWidget {
   final compra;
-  PaymentGateway({super.key, this.compra});
+  PaymentScreen({super.key, this.compra});
 
   @override
-  State<PaymentGateway> createState() => _PaymentGatewayState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _PaymentGatewayState extends State<PaymentGateway> {
+class _PaymentScreenState extends State<PaymentScreen> {
   void seleccionarCategoria(categoria) {}
   String selectedCategoryName =
       "Ahorro a la mano"; // ID de la categoría seleccionada

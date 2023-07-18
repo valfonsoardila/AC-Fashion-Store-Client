@@ -1,19 +1,28 @@
+import 'dart:async';
+
+import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/assets_model.dart';
+import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
+  final List<FavoriteModel> favoritos;
   final List<ProductModel> productos;
+  final String id;
   final Function(int) onProductosSeleccionados;
   final Function(List<Map<String, dynamic>>) onCarrito;
   const HomeScreen({
     super.key,
+    required this.favoritos,
     required this.productos,
+    required this.id,
     required this.onProductosSeleccionados,
     required this.onCarrito,
   });
@@ -23,6 +32,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ControlConectividad controlconect = ControlConectividad();
+  bool _controllerconectivity = true;
+  Timer? _timer;
+  String id = "";
+  bool _isFavorite = false;
   RxInt itemCount = 0.obs;
   String idProducto = "";
   int cantidadProducto = 0;
@@ -34,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String categoriaProducto = "";
   String valoracionProducto = "";
   String precioProducto = "";
+  List<FavoriteModel> favoritos = [];
   List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
   List<ProductModel> productosAux = [];
@@ -70,8 +85,21 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
 
   void cargarDatos() {
+    id = widget.id;
     productos = widget.productos;
     productosAux = productos;
+    favoritos = widget.favoritos;
+  }
+
+  void obteneridfavorito(String id) {
+    for (var i = 0; i < favoritos.length; i++) {
+      if (favoritos[i].uid == id) {
+        print("id del favorito: ${favoritos[i].uid} es igual a $id");
+        _isFavorite = true;
+      } else {
+        _isFavorite = false;
+      }
+    }
   }
 
   void seleccionarCategoria(categoria) {
@@ -90,65 +118,33 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _mostrarNotificaciones() {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Mis Notificaciones',
-                style: TextStyle(color: Colors.black),
-              ),
-              content: Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(5.0),
-                    child: Center(
-                      child: Column(
-                        children: [],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    // Lógica para guardar los cambios realizados en el perfil
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Marcar como leidas',
-                      style: TextStyle(color: Colors.black)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Borrar', style: TextStyle(color: Colors.black)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    _initConnectivity();
     cargarDatos();
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -355,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 10,
           ),
           GridView.count(
-            childAspectRatio: 0.9,
+            childAspectRatio: 0.5,
             crossAxisCount: 2,
             padding: EdgeInsets.all(5.0),
             children: generateProducts()
@@ -367,11 +363,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     elevation: 0,
                     child: InkWell(
                       onTap: () async {
+                        obteneridfavorito(e.id);
                         final result = await Navigator.push(
                             context,
                             PageTransition(
                                 type: PageTransitionType.leftToRight,
                                 child: DetailScreen(
+                                  isFavorited: _isFavorite,
+                                  idUser: id,
                                   id: e.id,
                                   cantidad: e.cantidad,
                                   image: e.modelo,
@@ -393,18 +392,46 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Container(
                         height: 250,
-                        width: 200,
+                        width: 250,
                         margin:
                             EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: Image.network(
-                                e.catalogo,
-                                height: 250,
-                                width: double.infinity,
-                              ),
+                              child: FutureBuilder<bool>(
+                                  future: controlconect.verificarConexion(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      print("Cargando");
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else {
+                                      if (snapshot.hasError) {
+                                        print("Error");
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else {
+                                        print("Conectado");
+                                        return _controllerconectivity != false
+                                            ? Image.network(
+                                                e.catalogo,
+                                                height: 250,
+                                                width: double.infinity,
+                                              )
+                                            : Center(
+                                                child: Image.asset(
+                                                  "assets/icons/ic_not_signal.png",
+                                                  height: 50,
+                                                  width: 50,
+                                                ),
+                                              );
+                                      }
+                                    }
+                                  }),
                             ),
                             SizedBox(
                               height: 4,

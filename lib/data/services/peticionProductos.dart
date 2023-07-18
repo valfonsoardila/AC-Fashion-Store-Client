@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 
 class Peticiones {
-  static final ControlProducto controlp = Get.find();
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<dynamic> crearProducto(

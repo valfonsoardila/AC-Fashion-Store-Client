@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
+import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
@@ -7,6 +11,7 @@ import 'package:acfashion_store/ui/views/home_screen.dart';
 import 'package:acfashion_store/ui/views/purchases_screen.dart';
 import 'package:acfashion_store/ui/views/settings_screen.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:badges/badges.dart' as badges;
@@ -21,6 +26,7 @@ class DashboardScreen extends StatefulWidget {
   final String foto;
   final String profesion;
   final List<ProductModel> productos;
+  final List<FavoriteModel> favoritos;
   DashboardScreen({
     Key? key,
     required this.id,
@@ -32,6 +38,7 @@ class DashboardScreen extends StatefulWidget {
     required this.foto,
     required this.profesion,
     required this.productos,
+    required this.favoritos,
   }) : super(key: key);
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -39,6 +46,9 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
+  ControlConectividad controlconect = ControlConectividad();
+  bool _controllerconectivity = false;
+  Timer? _timer;
   int _page = 0;
   RxInt itemCount = 0.obs;
   bool isSearchOpen = false; // Índice del icono seleccionado
@@ -67,6 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   String precioProducto = "";
   List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
+  List<FavoriteModel> productosFavoritos = [];
   List<ProductModel> productosAux = [];
   List<ProductModel> categories = [];
   List<ProductModel> colors = [];
@@ -88,6 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   ];
   int currentPage = 0;
   int cantidadProductosSeleccionados = 0;
+
   void obtenerCantidadProductosSeleccionados(
       int cantidadProductosSeleccionados) {
     // Asigna el valor de la cantidad de productos seleccionados a la variable
@@ -101,6 +113,12 @@ class _DashboardScreenState extends State<DashboardScreen>
     this.carrito = carrito;
   }
 
+  void _mostrarAlerta() {
+    Get.snackbar("Error de conexion", "No se pudo conectar con el servidor",
+        duration: const Duration(seconds: 4),
+        backgroundColor: const Color.fromARGB(255, 73, 73, 73));
+  }
+
   void cargarDatos() {
     id = widget.id;
     nombrePerfil = widget.nombre;
@@ -112,6 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     profesionPerfil = widget.profesion;
     productos = widget.productos;
     productosAux = productos;
+    productosFavoritos = widget.favoritos;
   }
 
   void seleccionarCategoria(categoria) {
@@ -181,9 +200,27 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _initConnectivity();
     cargarDatos();
   }
 
@@ -254,11 +291,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     final List<Widget> _widgetOptions = <Widget>[
       HomeScreen(
+        favoritos: productosFavoritos,
         productos: productos,
+        id: id,
         onProductosSeleccionados: obtenerCantidadProductosSeleccionados,
         onCarrito: obtenerCarrito,
       ),
-      BookMarksScreen(),
+      BookMarksScreen(favoritos: productosFavoritos),
       PurchasesScreen(),
       SettingsScreen(),
     ];
@@ -279,7 +318,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 20, // Ajusta el ancho según sea necesario
             child: isDrawerOpen
                 ? GestureDetector(
-                    child: CircleAvatarOpen(img: fotoPerfil, text: ''),
+                    child: CircleAvatarOpen(
+                        controller: _controllerconectivity,
+                        img: fotoPerfil,
+                        text: ''),
                     onTap: () {
                       setState(() {
                         xOffset = 0;
@@ -289,7 +331,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                     },
                   )
                 : GestureDetector(
-                    child: CircleAvatarClose(img: fotoPerfil, text: ''),
+                    child: CircleAvatarClose(
+                        controller: _controllerconectivity,
+                        img: fotoPerfil,
+                        text: ''),
                     onTap: () {
                       setState(() {
                         FocusScope.of(context).unfocus(); // Cierra el teclado
@@ -401,20 +446,24 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 icon: Icon(Icons.shopping_cart_outlined,
                                     color: Colors.black),
                                 onPressed: () async {
-                                  print('itemCount: ${itemCount.value}');
-                                  final result = await Navigator.push<int>(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ShopScreen(
-                                        compra: carrito,
-                                        itemCount: itemCount,
+                                  if (_controllerconectivity == true) {
+                                    final result = await Navigator.push<int>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ShopScreen(
+                                          compra: carrito,
+                                          itemCount: itemCount,
+                                          id: id.isNotEmpty ? "" : id,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                  if (result != null) {
-                                    setState(() {
-                                      itemCount.value = result;
-                                    });
+                                    );
+                                    if (result != null) {
+                                      setState(() {
+                                        itemCount.value = result;
+                                      });
+                                    }
+                                  } else {
+                                    _mostrarAlerta();
                                   }
                                 },
                               ),
@@ -425,6 +474,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ShopScreen(
+                                      id: id.isNotEmpty ? "" : id,
                                       compra: carrito,
                                       itemCount: itemCount,
                                     ),
@@ -580,29 +630,42 @@ class _DashboardScreenState extends State<DashboardScreen>
 class CircleAvatarOpen extends StatelessWidget {
   final dynamic img;
   final String text;
-
+  final bool controller;
   CircleAvatarOpen({
     Key? key,
     required this.text,
     required this.img,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
+    bool _controllerconectivity = controller;
     if (img != null && Uri.parse(img).isAbsolute) {
       // Si img es una URL válida, carga la imagen desde la URL
-      imageWidget = CircleAvatar(
-        radius: 25,
-        backgroundImage: NetworkImage(img),
-        child: Container(
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white.withOpacity(0.5),
-          ),
-        ),
-      );
+      imageWidget = _controllerconectivity != false
+          ? CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(img),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            )
+          : CircleAvatar(
+              backgroundImage: AssetImage("assets/images/user.png"),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            );
     } else {
       // Si img no es una URL válida, carga la imagen desde el recurso local
       imageWidget = CircleAvatar(
@@ -634,23 +697,43 @@ class CircleAvatarOpen extends StatelessWidget {
 class CircleAvatarClose extends StatelessWidget {
   final dynamic img;
   final String text;
-
+  final bool controller;
   CircleAvatarClose({
     Key? key,
     required this.text,
     required this.img,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-
+    bool _controllerconectivity = controller;
+    print("controller: $_controllerconectivity");
     if (img != null && Uri.parse(img).isAbsolute) {
       // Si img es una URL válida, carga la imagen desde la URL
-      imageWidget = CircleAvatar(
-        radius: 25,
-        backgroundImage: NetworkImage(img),
-      );
+      imageWidget = _controllerconectivity != false
+          ? CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(img),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            )
+          : CircleAvatar(
+              backgroundImage: AssetImage("assets/images/user.png"),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            );
     } else {
       // Si img no es una URL válida, carga la imagen desde el recurso local
       imageWidget = CircleAvatar(

@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,6 +35,8 @@ class DrawerScreen extends StatefulWidget {
 }
 
 class _DrawerScreenState extends State<DrawerScreen> {
+  ControlConectividad controlconect = ControlConectividad();
+  bool _controllerconectivity = false;
   ControlUserAuth controlua = Get.find();
   ControlUserPerfil controlPerfil = Get.find();
   TextEditingController controlId = TextEditingController();
@@ -418,9 +423,27 @@ class _DrawerScreenState extends State<DrawerScreen> {
     );
   }
 
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _initConnectivity();
     uid = widget.uid;
     correo = widget.correo;
     contrasena = widget.contrasena;
@@ -429,6 +452,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
     direccion = widget.direccion;
     celular = widget.celular;
     foto = widget.foto;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -461,7 +489,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 ),
               ],
             ),
-            NewImage(img: foto, text: ''),
+            NewImage(controller: _controllerconectivity, img: foto, text: ''),
             NewRow(
               textOne: 'Coreo electronico',
               icon: Icons.person_pin_rounded,
@@ -631,23 +659,43 @@ class NewRow extends StatelessWidget {
 class NewImage extends StatelessWidget {
   final dynamic img;
   final String text;
-
+  final bool controller;
   NewImage({
     Key? key,
     required this.text,
     required this.img,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-
+    bool _controllerconectivity = controller;
     if (img != null && Uri.parse(img).isAbsolute) {
       // Si img es una URL válida, carga la imagen desde la URL
-      imageWidget = CircleAvatar(
-        radius: 50,
-        backgroundImage: NetworkImage(img),
-      );
+      imageWidget = _controllerconectivity != false
+          ? CircleAvatar(
+              radius: 50,
+              backgroundImage: NetworkImage(img),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            )
+          : CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage("assets/images/user.png"),
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white.withOpacity(0.5),
+                ),
+              ),
+            );
     } else {
       // Si img no es una URL válida, carga la imagen desde el recurso local
       imageWidget = CircleAvatar(

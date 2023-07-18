@@ -1,10 +1,18 @@
+import 'dart:async';
+
+import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
+import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:get/get.dart';
 
 class DetailScreen extends StatefulWidget {
+  final bool isFavorited;
+  final String idUser;
   final String id;
   final int cantidad;
   final String image;
@@ -18,6 +26,8 @@ class DetailScreen extends StatefulWidget {
 
   DetailScreen({
     Key? key,
+    required this.isFavorited,
+    required this.idUser,
     required this.id,
     required this.cantidad,
     required this.image,
@@ -35,10 +45,16 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DetailScreen> {
+  ControlConectividad controlconect = ControlConectividad();
   ControlProducto controlp = new ControlProducto();
+  ControlFavoritos controlf = new ControlFavoritos();
   List<Map<String, dynamic>> carrito = [];
+  List<Map<String, dynamic>> nuevaconsultafavoritos = [];
+  bool _controllerconectivity = true;
   bool _isFavorited = false;
   bool autoRotate = false;
+  String idUser = "";
+  String msg = "";
   int rotationCount = 22;
   int swipeSensitivity = 2;
   bool allowSwipeToRotate = true;
@@ -55,10 +71,29 @@ class _DashboardScreenState extends State<DetailScreen> {
   var descripcion = "";
   var valoracion = "";
   var precio = 0.0;
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _initConnectivity();
+    _isFavorited = widget.isFavorited;
+    idUser = widget.idUser;
     idProducto = widget.id;
     imagen = widget.image;
     titulo = widget.title;
@@ -69,7 +104,11 @@ class _DashboardScreenState extends State<DetailScreen> {
     valoracion = widget.valoration;
     precio = widget.price;
     cantidad = widget.cantidad;
-    //updateImageList(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   List<ProductModel> colorCategories() {
@@ -125,6 +164,28 @@ class _DashboardScreenState extends State<DetailScreen> {
                   onPressed: () {
                     setState(() {
                       _isFavorited = !_isFavorited;
+                      print("id del producto: $idProducto");
+                      controlf.eliminarfavorito(idProducto).then((value) {
+                        print("Eliminado");
+                        setState(() {
+                          msg = controlf.mensajesFavorio;
+                          print(msg);
+                        });
+                        if (msg == "Proceso exitoso") {
+                          controlf.obtenerfavoritos(idUser).then((value) {
+                            setState(() {
+                              msg = controlf.mensajesFavorio;
+                            });
+                            if (msg == "Proceso exitoso") {
+                              setState(() {
+                                nuevaconsultafavoritos =
+                                    controlf.datosFavoritos;
+                              });
+                            }
+                            Get.offAndToNamed("/principal", arguments: idUser);
+                          });
+                        }
+                      });
                     });
                   },
                 )
@@ -133,6 +194,32 @@ class _DashboardScreenState extends State<DetailScreen> {
                   onPressed: () {
                     setState(() {
                       _isFavorited = !_isFavorited;
+                      var favorito = {
+                        "id": idUser,
+                        "uid": idProducto,
+                        "cantidad": cantidad,
+                        "imagen": imagen,
+                        "nombre": titulo,
+                        "color": color,
+                        "talla": talla,
+                        "categoria": categoria,
+                        "descripcion": descripcion,
+                        "valoracion": valoracion,
+                        "precio": precio,
+                      };
+                      controlf.agregarfavorito(favorito);
+                      print(idUser);
+                      controlf.obtenerfavoritos(idUser).then((value) {
+                        setState(() {
+                          msg = controlf.mensajesFavorio;
+                        });
+                        if (msg == "Proceso exitoso") {
+                          setState(() {
+                            nuevaconsultafavoritos = controlf.datosFavoritos;
+                          });
+                          Get.offAndToNamed("/principal", arguments: idUser);
+                        }
+                      });
                     });
                   },
                 ),
@@ -161,6 +248,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                         builder: (context) => ShopScreen(
                               compra: carrito,
                               itemCount: 1,
+                              id: idUser,
                             )));
                 if (result != null) {
                   setState(() {
@@ -202,13 +290,22 @@ class _DashboardScreenState extends State<DetailScreen> {
                         Container(
                           height: size.width * 0.8,
                           width: size.width * 0.9,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(imagen),
-                              fit: BoxFit.fill,
-                              alignment: Alignment.center,
-                            ),
-                          ),
+                          decoration: _controllerconectivity != false
+                              ? BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(imagen),
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.center,
+                                  ),
+                                )
+                              : BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        "assets/icons/ic_not_signal.png"),
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
                         ),
                       ],
                     ),

@@ -1,9 +1,10 @@
-import 'dart:convert';
+import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
 import 'package:acfashion_store/ui/home/drawer_screen.dart';
+import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   ControlUserAuth controlua = Get.find();
   ControlUserPerfil controlup = Get.put(ControlUserPerfil());
   ControlProducto controlp = Get.put(ControlProducto());
+  ControlFavoritos controlf = Get.put(ControlFavoritos());
   //VARIABLES DE CONTROL
   String idUsuario = '';
   String? uid;
@@ -49,6 +51,8 @@ class _MainScreenState extends State<MainScreen> {
   var precioProducto = 0.0;
   //LISTAS
   List<Map<String, dynamic>> consultaProductos = [];
+  List<Map<String, dynamic>> consultaFavoritos = [];
+  List<FavoriteModel> favoritos = [];
   List<ProductModel> productos = [];
   //MAPAS
   Map<String, dynamic> perfil = {};
@@ -130,6 +134,43 @@ class _MainScreenState extends State<MainScreen> {
         print("Error al cargar datos de productos");
       }
     });
+    controlf.obtenerfavoritos(idUsuario).then((value) {
+      setState(() {
+        msg = controlf.mensajesFavorio;
+      });
+      if (msg == "Proceso exitoso") {
+        setState(() {
+          consultaFavoritos = controlf.datosFavoritos;
+          for (var i = 0; i < consultaFavoritos.length; i++) {
+            idUsuario = consultaFavoritos[i]['uid'] ?? '';
+            cantidadProducto = consultaFavoritos[i]['cantidad'] ?? 0;
+            catalogoProducto = consultaFavoritos[i]['imagen'] ?? '';
+            nombreProducto = consultaFavoritos[i]['nombre'] ?? '';
+            descripcionProducto = consultaFavoritos[i]['descripcion'] ?? '';
+            colorProducto = consultaFavoritos[i]['color'] ?? '';
+            tallaProducto = consultaFavoritos[i]['talla'] ?? '';
+            categoriaProducto = consultaFavoritos[i]['categoria'] ?? '';
+            valoracionProducto = consultaFavoritos[i]['valoracion'] ?? '';
+            precioProducto = consultaFavoritos[i]['precio'] ?? 0.0;
+            idProducto = consultaFavoritos[i]['id'] ?? '';
+            favoritos.add(FavoriteModel(
+                idUsuario,
+                cantidadProducto,
+                catalogoProducto,
+                nombreProducto,
+                colorProducto,
+                tallaProducto,
+                categoriaProducto,
+                descripcionProducto,
+                valoracionProducto,
+                precioProducto,
+                idProducto));
+          }
+        });
+      } else {
+        print("Error al cargar datos de favoritos");
+      }
+    });
   }
 
   @override
@@ -142,7 +183,7 @@ class _MainScreenState extends State<MainScreen> {
           alignment: Alignment.center,
           child: FutureBuilder(
             future: Future.delayed(
-                Duration(seconds: 4)), //Establece el tiempo de carga
+                Duration(seconds: 3)), //Establece el tiempo de carga
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Column(
@@ -190,6 +231,7 @@ class _MainScreenState extends State<MainScreen> {
                             direccion: direccion,
                             celular: celular,
                             productos: productos,
+                            favoritos: favoritos,
                           ),
                         ],
                       ),
