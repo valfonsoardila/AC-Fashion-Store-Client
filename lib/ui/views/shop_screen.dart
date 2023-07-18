@@ -28,10 +28,15 @@ class _ShopScreenState extends State<ShopScreen> {
   String id = '';
   List<Map<String, dynamic>> compra = [];
   var count;
-  double total() {
-    double total = 0;
+
+  int total() {
+    int total = 0;
+    double precio = 0;
+    int nuevoPrecio = 0;
     for (var i = 0; i < compra.length; i++) {
-      total = total + compra[i]['precio'];
+      precio = double.parse(compra[i]['precio']);
+      nuevoPrecio = precio.toInt() * 1000;
+      total = total + nuevoPrecio;
     }
     return total;
   }

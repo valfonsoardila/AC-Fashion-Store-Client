@@ -436,13 +436,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(
                               height: 4,
                             ),
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                  text: e.category,
+                            Row(
+                              children: [
+                                RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                      text: e.category,
+                                      style: TextStyle(
+                                          color: MyColors.myPurple,
+                                          fontSize: 16.0)),
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow[700],
+                                  size: 16,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  e.valoration.toString(),
                                   style: TextStyle(
-                                      color: MyColors.myPurple,
-                                      fontSize: 16.0)),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                              ],
                             ),
                             SizedBox(
                               height: 5,

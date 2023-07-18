@@ -112,11 +112,20 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                             child: Container(
                                               width: double.infinity,
                                               height: 250,
-                                              child: Image.network(
-                                                e.imagen,
-                                                height: 150,
-                                                fit: BoxFit.cover,
-                                              ),
+                                              child: _controllerconectivity !=
+                                                      false
+                                                  ? Image.network(
+                                                      e.imagen,
+                                                      height: 89,
+                                                      width: double.infinity,
+                                                    )
+                                                  : Center(
+                                                      child: Image.asset(
+                                                        "assets/icons/ic_not_signal.png",
+                                                        height: 50,
+                                                        width: 50,
+                                                      ),
+                                                    ),
                                             ),
                                           ),
                                           SizedBox(height: 5),
