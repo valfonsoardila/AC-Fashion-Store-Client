@@ -8,7 +8,7 @@ class FavoriteModel {
   String talla;
   String category;
   String valoration;
-  double price;
+  String price;
   String id;
 
   FavoriteModel(

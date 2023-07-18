@@ -22,7 +22,7 @@ class DetailScreen extends StatefulWidget {
   final String category;
   final String description;
   final String valoration;
-  final double price;
+  final String price;
 
   DetailScreen({
     Key? key,
@@ -70,7 +70,7 @@ class _DashboardScreenState extends State<DetailScreen> {
   var categoria = "";
   var descripcion = "";
   var valoracion = "";
-  var precio = 0.0;
+  var precio = "";
   void _initConnectivity() async {
     // Obtiene el estado de la conectividad al inicio
     final connectivityResult = await Connectivity().checkConnectivity();

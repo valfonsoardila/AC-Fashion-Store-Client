@@ -9,6 +9,7 @@ import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   String? uid;
   String msg = "";
   int tiempoDeintento = 5;
+  String precioFormateado = "";
   //VARIABLES DE PERFIL
   var id = "";
   var foto = "";
@@ -115,6 +117,8 @@ class _MainScreenState extends State<MainScreen> {
             categoriaProducto = consultaProductos[i]['categoria'] ?? '';
             valoracionProducto = consultaProductos[i]['valoracion'] ?? '';
             precioProducto = consultaProductos[i]['precio'] ?? 0.0;
+            precioFormateado =
+                NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
             productos.add(ProductModel(
               idProducto,
               cantidadProducto,
@@ -126,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
               categoriaProducto,
               descripcionProducto,
               valoracionProducto,
-              precioProducto,
+              precioFormateado,
             ));
           }
         });
@@ -163,7 +167,7 @@ class _MainScreenState extends State<MainScreen> {
                 categoriaProducto,
                 descripcionProducto,
                 valoracionProducto,
-                precioProducto,
+                precioFormateado,
                 idProducto));
           }
         });
