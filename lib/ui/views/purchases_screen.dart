@@ -283,23 +283,23 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
               child: Column(
                 children: [
                   SizedBox(height: 16),
-                  Text('No hay productos favoritos',
+                  Text('No ha realizado ninguna compra',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
                   SizedBox(height: 16),
-                  Text('Agrega productos a favoritos',
+                  Text('¡No te preocupes!',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
-                  Text('para verlos aquí',
+                  Text('Haz una compra de algún producto',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
-                  Text('más tarde',
+                  Text('En la app store',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -317,25 +317,28 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('presionar el corazón',
+                      Text('presionar el carrito de compras',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black)),
                       Icon(
-                        Icons.favorite_border,
+                        Icons.add_shopping_cart,
                         color: Colors.black,
                       ),
-                      Text(' en la parte superior',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black)),
-                      Icon(
-                        Icons.arrow_upward,
-                        color: Colors.black,
-                      )
                     ],
+                  ),
+                  Text('del catalogo del producto',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  Text(
+                    'Y ¡listo!',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                 ],
               ),

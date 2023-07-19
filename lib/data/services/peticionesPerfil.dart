@@ -11,8 +11,6 @@ class PeticionesPerfil {
   static Future<Map<String, dynamic>> buscarcorreo(String correo) async {
     try {
       Map<String, dynamic> perfil = {};
-      print("llego al servicio");
-      print("este es el correo: $correo");
       final tableName = 'perfil';
       final response =
           await _client.from(tableName).select('*').eq('correo', correo);

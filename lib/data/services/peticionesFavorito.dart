@@ -18,7 +18,7 @@ class PeticionesFavorito {
     final tableName = "favorito";
     List<Map<String, dynamic>> favoritos = [];
     try {
-      final response = await _client.from(tableName).select('*');
+      final response = await _client.from(tableName).select('*').eq('id', id);
       if (response.isNotEmpty) {
         favoritos = List<Map<String, dynamic>>.from(response);
         print("favoritos: $favoritos");

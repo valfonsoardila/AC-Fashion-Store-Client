@@ -53,18 +53,24 @@ class ControlUserAuth extends GetxController {
   Future<void> controlUser(dynamic respuesta) async {
     if (respuesta == null) {
       _mensaje.value = "Por favor intente de nuevo";
-    } else if (respuesta == "1" || respuesta == "2") {
+    } else if (respuesta == "existe") {
+      _response.value = null;
       _mensaje.value = "Por favor intente de nuevo";
     } else {
-      _mensaje.value = "Proceso exitoso";
-      if (respuesta is User) {
-        print("Si es un usuario");
-        _usuario.value = respuesta;
-        _uid.value = _usuario.value!.id;
-        _sesion.value = null;
-        print("Este es el uid: ${_usuario.value!.id}");
-      } else if (respuesta is Session) {
-        _sesion.value = respuesta;
+      if (respuesta == {}) {
+        _usuario.value = null;
+        _mensaje.value = "Por favor intente de nuevo";
+      } else {
+        _mensaje.value = "Proceso exitoso";
+        if (respuesta is User) {
+          print("Si es un usuario");
+          _usuario.value = respuesta;
+          _uid.value = _usuario.value!.id;
+          _sesion.value = null;
+          print("Este es el uid: ${_usuario.value!.id}");
+        } else if (respuesta is Session) {
+          _sesion.value = respuesta;
+        }
       }
     }
   }

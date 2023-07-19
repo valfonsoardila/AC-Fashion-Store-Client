@@ -1,13 +1,42 @@
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class Register extends StatelessWidget {
-  bool _isDarkMode = false;
+class Register extends StatefulWidget {
+  const Register({super.key});
 
-  Register({super.key});
+  @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
+  bool _isDarkMode = false;
+  bool _controllerconectivity = false;
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +53,7 @@ class Register extends StatelessWidget {
     } else {
       _isDarkMode = false;
     }
+
     return Container(
       child: Scaffold(
         appBar: AppBar(
@@ -180,85 +210,65 @@ class Register extends StatelessWidget {
                           child: IconButton(
                             color: Colors.white,
                             onPressed: () {
-                              if (nombre.text.isEmpty &&
-                                  user.text.isEmpty &&
-                                  pass.text.isEmpty) {
-                                Get.snackbar(
+                              _initConnectivity();
+                              if (_controllerconectivity == true) {
+                                if (nombre.text.isEmpty &&
+                                    user.text.isEmpty &&
+                                    pass.text.isEmpty) {
+                                  Get.snackbar(
                                     "Por favor llene todos los campos",
-                                    colorText: _isDarkMode != false
-                                        ? Colors.white
-                                        : Colors.black,
                                     controlua.mensajesUser,
                                     duration: Duration(seconds: 4),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 73, 73, 73));
-                              } else if (nombre.text.isEmpty) {
-                                Get.snackbar(
+                                  );
+                                } else if (nombre.text.isEmpty) {
+                                  Get.snackbar(
                                     "Por favor llene el campo de nombre",
-                                    colorText: _isDarkMode != false
-                                        ? Colors.white
-                                        : Colors.black,
                                     controlua.mensajesUser,
                                     duration: Duration(seconds: 4),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 73, 73, 73));
-                              } else if (user.text.isEmpty) {
-                                Get.snackbar(
+                                  );
+                                } else if (user.text.isEmpty) {
+                                  Get.snackbar(
                                     "Por favor llene el campo de correo",
-                                    colorText: _isDarkMode != false
-                                        ? Colors.white
-                                        : Colors.black,
                                     controlua.mensajesUser,
                                     duration: Duration(seconds: 4),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 73, 73, 73));
-                              } else if (pass.text.isEmpty) {
-                                Get.snackbar(
+                                  );
+                                } else if (pass.text.isEmpty) {
+                                  Get.snackbar(
                                     "Por favor llene el campo de contraseña",
-                                    colorText: _isDarkMode != false
-                                        ? Colors.white
-                                        : Colors.black,
                                     controlua.mensajesUser,
                                     duration: Duration(seconds: 4),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 73, 73, 73));
-                              } else {
-                                controlua
-                                    .crearUser(user.text, pass.text)
-                                    .then((value) {
-                                  print(
-                                      'respuesta desde el origen: ${controlua.userValido}');
-                                  if (controlua.mensajesUser == '') {
-                                    print('Error al registrar');
-                                    Get.snackbar(
-                                        "Error al registrar, Asegurate de que tu contraseña es mayor a 6 caracteres",
-                                        colorText: _isDarkMode != false
-                                            ? Colors.white
-                                            : Colors.black,
-                                        controlua.mensajesUser,
-                                        duration: Duration(seconds: 4),
-                                        backgroundColor:
-                                            Color.fromARGB(255, 73, 73, 73));
-                                  } else {
-                                    if (controlua.mensajesUser ==
-                                        'Proceso exitoso') {
+                                  );
+                                } else {
+                                  controlua
+                                      .crearUser(user.text, pass.text)
+                                      .then((value) {
+                                    if (controlua.estadoUser == null) {
+                                      print('Error al registrar');
                                       Get.snackbar(
+                                        "Esta cuenta ya existe",
+                                        controlua.mensajesUser,
+                                        duration: Duration(seconds: 2),
+                                      );
+                                    } else {
+                                      if (controlua.mensajesUser ==
+                                          'Proceso exitoso') {
+                                        Get.snackbar(
                                           "¡Registrado Correctamente!",
-                                          colorText: _isDarkMode != false
-                                              ? Colors.white
-                                              : Colors.black,
                                           controlua.mensajesUser,
                                           duration: Duration(seconds: 4),
-                                          backgroundColor:
-                                              Color.fromARGB(255, 73, 73, 73));
-                                      Get.toNamed("/perfil", arguments: [
-                                        nombre.text,
-                                        user.text,
-                                        pass.text
-                                      ]);
+                                        );
+                                        Get.toNamed("/perfil", arguments: [
+                                          nombre.text,
+                                          user.text,
+                                          pass.text
+                                        ]);
+                                      }
                                     }
-                                  }
-                                });
+                                  });
+                                }
+                              } else {
+                                Get.snackbar("No hay conexión a internet",
+                                    "Por favor conectese a una red");
                               }
                             },
                             icon: Icon(Icons.arrow_forward),

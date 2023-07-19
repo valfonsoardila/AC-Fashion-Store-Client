@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,6 +39,8 @@ class _PerfilState extends State<Perfil> {
   var _image;
 
   bool _isDarkMode = false;
+
+  bool _controllerconectivity = false;
   _galeria() async {
     XFile? image =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
@@ -57,8 +60,26 @@ class _PerfilState extends State<Perfil> {
     });
   }
 
+  void _initConnectivity() async {
+    // Obtiene el estado de la conectividad al inicio
+    final connectivityResult = await Connectivity().checkConnectivity();
+    _updateConnectionStatus(connectivityResult);
+
+    // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
+    Connectivity().onConnectivityChanged.listen((connectivityResult) {
+      _updateConnectionStatus(connectivityResult);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+    setState(() {
+      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+    });
+  }
+
   void initState() {
     super.initState();
+    _initConnectivity();
     final args =
         Get.arguments; // Obtener los argumentos pasados desde la vista anterior
     registroSesion = args ?? "";
@@ -269,7 +290,7 @@ class _PerfilState extends State<Perfil> {
                           _isDarkMode != false ? Colors.white : Colors.black),
                 ),
                 dropdownColor:
-                    _isDarkMode != false ? Colors.white : Colors.grey[800],
+                    _isDarkMode != false ? Colors.grey[800] : Colors.white,
                 icon: Icon(Icons.arrow_drop_down,
                     color: _isDarkMode != false ? Colors.white : Colors.black),
                 iconSize: 36,
@@ -277,7 +298,7 @@ class _PerfilState extends State<Perfil> {
                 underline: SizedBox(),
                 style: TextStyle(
                     color: _isDarkMode != false ? Colors.white : Colors.black),
-                value: 'Masculino',
+                value: generoSeleccionado,
                 onChanged: (newValue) {
                   setState(() {
                     generoSeleccionado =
@@ -307,25 +328,33 @@ class _PerfilState extends State<Perfil> {
                     'direccion': controlDireccion.text,
                     'celular': controlCelular.text,
                   };
-                  controlup.crearperfil(perfil, _image);
-                  if (_image != null || _image == null) {
-                    Get.snackbar(
-                        "Perfil Guardado Correctamente",
-                        colorText: Colors.white,
-                        controlup.mensajesPerfil,
-                        duration: Duration(seconds: 4),
-                        backgroundColor: Color.fromARGB(255, 73, 73, 73));
-                    Get.toNamed("/login");
+                  if (_controllerconectivity == true) {
+                    controlup.crearperfil(perfil, _image).then((value) => {
+                          if (controlup.mensajesPerfil == "Proceso exitoso")
+                            {
+                              Get.snackbar(
+                                "Perfil Guardado Correctamente",
+                                controlup.mensajesPerfil,
+                                duration: Duration(seconds: 2),
+                              ),
+                              Get.toNamed("/login"),
+                            }
+                          else
+                            {
+                              Get.snackbar(
+                                "No se pudo guardar el perfil",
+                                "Por favor, revise su conexion a internet",
+                                duration: Duration(seconds: 2),
+                              )
+                            }
+                        });
                   } else {
-                    controlup.crearperfil(perfil, null);
                     Get.snackbar(
-                        "No se pudo guardar el perfil",
-                        colorText: Colors.white,
-                        controlup.mensajesPerfil,
-                        duration: Duration(seconds: 4),
-                        backgroundColor: Color.fromARGB(255, 73, 73, 73));
+                      "No se pudo guardar el perfil",
+                      "Por favor, revise su conexion a internet",
+                      duration: Duration(seconds: 2),
+                    );
                   }
-                  //Peticiones.crearperfil(perfil, _image);
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

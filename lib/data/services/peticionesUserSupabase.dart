@@ -1,15 +1,23 @@
+import 'package:acfashion_store/data/services/PeticionesPerfil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Peticioneslogin {
   static Future login(String email, String password) async {
     try {
       final client = Supabase.instance.client;
-      final AuthResponse authResponse = await client.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-      final Session? sesion = authResponse.session;
-      final response = sesion;
+      var response = null;
+      final database = await PeticionesPerfil.buscarcorreo(email);
+      if (database != {}) {
+        final AuthResponse authResponse = await client.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+        final Session? sesion = authResponse.session;
+        response = sesion;
+      } else {
+        response = {};
+      }
+      print(response);
       return response;
     } catch (e) {
       print('Error al iniciar sesion: $e');
@@ -19,12 +27,18 @@ class Peticioneslogin {
   static Future register(String email, String password) async {
     try {
       final client = Supabase.instance.client;
-      final AuthResponse authResponse = await client.auth.signUp(
-        email: email,
-        password: password,
-      );
-      final User? user = authResponse.user;
-      final response = user;
+      var response = null;
+      final database = await PeticionesPerfil.buscarcorreo(email);
+      if (database == {}) {
+        final AuthResponse authResponse = await client.auth.signUp(
+          email: email,
+          password: password,
+        );
+        final User? user = authResponse.user;
+        response = user;
+      } else {
+        response = "existe";
+      }
       return response;
     } catch (e) {
       print('Error al registrar autenticacion: $e');

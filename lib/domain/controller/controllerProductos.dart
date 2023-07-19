@@ -8,19 +8,20 @@ class ControlProducto extends GetxController {
 
   Future<void> agregarproducto(
       Map<String, dynamic> perfil, catalogo, modelo) async {
-    _response.value = await Peticiones.crearProducto(perfil, catalogo, modelo);
+    _response.value =
+        await PeticionesProducto.crearProducto(perfil, catalogo, modelo);
     await controlProducto(_response.value);
     return _response.value;
   }
 
   Future<void> obtenerproductos() async {
-    _response.value = await Peticiones.obtenerProductos();
+    _response.value = await PeticionesProducto.obtenerProductos();
     await controlProducto(_response.value);
     return _response.value;
   }
 
   Future<void> obtenerproductosporid(String id) async {
-    _response.value = await Peticiones.filtrarproducto(id);
+    _response.value = await PeticionesProducto.filtrarproducto(id);
     await controlProducto(_response.value);
     return _response.value;
   }

@@ -262,29 +262,24 @@ class _RestaurarState extends State<Restaurar> {
                               // datos = controlp.datosPerfil;
                               //_cambiarContrasena(datos);
                               Get.snackbar(
-                                  "Correo enviado",
-                                  colorText: Colors.white,
-                                  "Se ha enviado un correo a su cuenta",
-                                  duration: Duration(seconds: 4),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 73, 73, 73));
+                                "Correo enviado",
+                                "Se ha enviado un correo a su cuenta",
+                                duration: Duration(seconds: 4),
+                              );
                             } else {
                               Get.snackbar(
-                                  "Correo no registrado",
-                                  colorText: Colors.white,
-                                  "Por favor intente de nuevo",
-                                  duration: Duration(seconds: 4),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 73, 73, 73));
+                                "Correo no registrado",
+                                "Por favor intente de nuevo",
+                                duration: Duration(seconds: 4),
+                              );
                             }
                           });
                         } else {
                           Get.snackbar(
-                              "No ha ingresado un correo",
-                              colorText: Colors.white,
-                              "Por favor intente de nuevo",
-                              duration: Duration(seconds: 4),
-                              backgroundColor: Color.fromARGB(255, 73, 73, 73));
+                            "No ha ingresado un correo",
+                            "Por favor intente de nuevo",
+                            duration: Duration(seconds: 4),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(

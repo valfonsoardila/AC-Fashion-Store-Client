@@ -11,126 +11,98 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isDarkMode = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
+    return Scaffold(
+      body: Column(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Ajustes',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 20,
+          Container(
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(
+                    _isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
+                    color: _isDarkMode ? Colors.grey : Colors.black,
                   ),
-                  Row(
-                    children: [
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.brightness_4,
-                          color: Colors.black,
-                        ),
-                        label: Text(
-                          'Tema',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        onPressed: () {
-                          // Lógica a ejecutar al presionar el botón
-                          var temaActual = theme.getTheme();
-                          print(temaActual);
-                          if (temaActual == ThemeData.light()) {
-                            theme.setTheme(ThemeData.dark());
-                          } else {
-                            if (temaActual == ThemeData.dark()) {
-                              theme.setTheme(ThemeData.light());
-                            }
-                          }
-                        },
-                      ),
-                    ],
+                  title: Text(
+                    _isDarkMode ? 'Modo oscuro' : 'Modo claro',
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 20,
+                    ),
                   ),
-                  Row(
-                    children: [
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.language,
-                          color: Colors.black,
-                        ),
-                        label: Text('Idioma',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        onPressed: () {
-                          // Lógica a ejecutar al presionar el botón
-                        },
-                      ),
-                    ],
+                  trailing: Switch(
+                    value: _isDarkMode,
+                    onChanged: (value) {
+                      setState(() {
+                        _isDarkMode = value;
+                      });
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.help,
-                          color: Colors.black,
-                        ),
-                        label: Text('Ayuda',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        onPressed: () {
-                          // Lógica a ejecutar al presionar el botón
-                        },
-                      ),
-                    ],
+                ),
+                ListTile(
+                  leading: Icon(Icons.language),
+                  title: Text(
+                    'Idioma',
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 20,
+                    ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                ListTile(
+                  leading: Icon(Icons.help),
+                  title: Text(
+                    'Ayuda',
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Container(
-            alignment: Alignment.bottomRight,
-            width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height * 0.28,
+            width: MediaQuery.of(context).size.width,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 NewRow(
-                    icon: SimpleIcons.codeberg,
-                    colorIcon: Colors.green,
-                    textOne: 'Desarrollado por: ',
-                    textTwo: ""),
+                  mode: _isDarkMode ? Colors.white : Colors.black,
+                  icon: SimpleIcons.codeberg,
+                  colorIcon: Colors.green,
+                  textOne: 'Desarrollado por: ',
+                  textTwo: "Victor Ardila",
+                  type: 'text',
+                ),
                 NewRow(
-                    icon: SimpleIcons.gmail,
-                    colorIcon: Colors.red,
-                    textOne: 'Contacto: ',
-                    textTwo: ""),
+                  mode: _isDarkMode ? Colors.white : Colors.black,
+                  icon: SimpleIcons.gmail,
+                  colorIcon: Colors.red,
+                  textOne: 'Contacto: ',
+                  textTwo: "victoradila@gmail.com",
+                  type: 'link',
+                ),
                 NewRow(
-                    icon: SimpleIcons.git,
-                    colorIcon: Colors.orange,
-                    textOne: 'Git Hub:',
-                    textTwo: ""),
+                  mode: _isDarkMode ? Colors.white : Colors.black,
+                  icon: SimpleIcons.git,
+                  colorIcon: Colors.orange,
+                  textOne: 'Git Hub:',
+                  textTwo: "Aqui",
+                  type: 'link',
+                ),
               ],
             ),
           )
@@ -141,21 +113,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
 }
 
 class NewRow extends StatelessWidget {
+  final Color mode;
   final IconData icon;
   final Color colorIcon;
   final String textOne;
   final String textTwo;
+  final String type;
 
   NewRow({
     Key? key,
+    required this.mode,
     required this.icon,
     required this.colorIcon,
     required this.textOne,
     required this.textTwo,
+    required this.type,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color modeColor = this.mode;
+    bool isLink = this.type == 'link';
     return Row(
       children: <Widget>[
         Expanded(
@@ -193,8 +171,11 @@ class NewRow extends StatelessWidget {
                             Text(
                               textTwo,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: isLink ? Colors.blue : modeColor,
                                 fontSize: 16,
+                                decoration: isLink
+                                    ? TextDecoration.underline
+                                    : TextDecoration.none,
                               ),
                             ),
                           ],

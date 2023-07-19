@@ -47,7 +47,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   ControlConectividad controlconect = ControlConectividad();
-  PageController _pageController = PageController();
+  // PageController _pageController = PageController();
   bool _controllerconectivity = false;
   int _page = 0;
   RxInt itemCount = 0.obs;

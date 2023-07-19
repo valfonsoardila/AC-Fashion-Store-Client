@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Peticiones {
+class PeticionesProducto {
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<dynamic> crearProducto(
@@ -11,12 +11,12 @@ class Peticiones {
       var urlCatalogo = '';
       var urlModelo = '';
       if (catalogo != null) {
-        urlCatalogo = await Peticiones.cargarImagen(
+        urlCatalogo = await PeticionesProducto.cargarImagen(
             "Catalogo", catalogo, producto['categoria']);
       }
       if (modelo != null) {
-        urlModelo =
-            await Peticiones.cargarImagen("Modelo", modelo, producto['modelo']);
+        urlModelo = await PeticionesProducto.cargarImagen(
+            "Modelo", modelo, producto['modelo']);
       }
       producto['catalogo'] = urlCatalogo.toString();
       producto['modelo'] = urlModelo.toString();
@@ -34,8 +34,8 @@ class Peticiones {
       final folderPath =
           'producto'; // Carpeta donde estan almacenadas las fotos
       List<Map<String, dynamic>> productos = []; // Lista de productos
-      var uids =
-          await Peticiones.obtenerListaUids(); // Lista de uids de los productos
+      var uids = await PeticionesProducto
+          .obtenerListaUids(); // Lista de uids de los productos
       for (int i = 0; i < uids.length; i++) {
         Map<String, dynamic> producto = {}; // Lista de productos
         var uid = ""; // Uid del producto
