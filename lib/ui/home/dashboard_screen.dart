@@ -47,8 +47,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   ControlConectividad controlconect = ControlConectividad();
+  PageController _pageController = PageController();
   bool _controllerconectivity = false;
-  Timer? _timer;
   int _page = 0;
   RxInt itemCount = 0.obs;
   bool isSearchOpen = false; // Índice del icono seleccionado
@@ -298,7 +298,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         onCarrito: obtenerCarrito,
       ),
       BookMarksScreen(favoritos: productosFavoritos),
-      PurchasesScreen(),
+      PurchasesScreen(favoritos: productosFavoritos),
       SettingsScreen(),
     ];
     return AnimatedContainer(
@@ -504,6 +504,15 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: _widgetOptions[_page],
           ),
         ),
+        // body: PageView(
+        //   controller: _pageController,
+        //   onPageChanged: (index) {
+        //     setState(() {
+        //       _page = index;
+        //     });
+        //   },
+        //   children: _widgetOptions,
+        // ),
         bottomNavigationBar: Container(
           margin: EdgeInsets.all(displayWidth * .05),
           height: displayWidth * .155,

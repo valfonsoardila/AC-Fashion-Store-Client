@@ -1,13 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_null_aware_operators
+// ignore_for_file: prefer__ructors, prefer_null_aware_operators
 import 'dart:io';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class Perfil extends StatefulWidget {
-  const Perfil({super.key});
+  Perfil({super.key});
 
   @override
   State<Perfil> createState() => _PerfilState();
@@ -34,6 +36,8 @@ class _PerfilState extends State<Perfil> {
   ];
   @override
   var _image;
+
+  bool _isDarkMode = false;
   _galeria() async {
     XFile? image =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
@@ -65,15 +69,22 @@ class _PerfilState extends State<Perfil> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 254, 12, 131),
-        title: const Text("Completar Perfil",
-            style: TextStyle(color: Colors.white)),
+        backgroundColor: Color.fromARGB(255, 124, 12, 131),
+        title: Text("Completar Perfil",
+            style: TextStyle(
+                color: _isDarkMode != false ? Colors.black : Colors.white)),
       ),
       body: Container(
-        color: Colors.black,
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(10.0),
         child: Center(
           child: ListView(
             children: <Widget>[
@@ -83,7 +94,7 @@ class _PerfilState extends State<Perfil> {
                     _opcioncamara(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                     height: 220,
                     width: double.maxFinite,
                     child: Card(
@@ -106,22 +117,28 @@ class _PerfilState extends State<Perfil> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10.0),
+              SizedBox(height: 10.0),
               TextFormField(
                 enabled: false,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: controlua.userValido!.email,
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon: const Icon(Icons.email, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.email,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
               TextFormField(
@@ -129,107 +146,137 @@ class _PerfilState extends State<Perfil> {
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: "Confirme su nombre",
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon:
-                      const Icon(Icons.accessibility_new, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.accessibility_new,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: controlProfesion,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: 'Profesion',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon:
-                      const Icon(Icons.psychology_rounded, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.psychology_rounded,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: controlCiudad,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: 'Ciudad',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon:
-                      const Icon(Icons.add_location, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.add_location,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: controlDireccion,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: 'Direccion',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon:
-                      const Icon(Icons.add_home_work, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.add_home_work,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: controlCelular,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 254, 12, 131)),
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 254, 12, 131)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        color:
+                            _isDarkMode != false ? Colors.white : Colors.black),
                   ),
                   labelText: 'Celular',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  prefixIcon:
-                      const Icon(Icons.phone_android, color: Colors.white),
+                  labelStyle: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
+                  prefixIcon: Icon(Icons.phone_android,
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               DropdownButton(
-                hint: const Text(
+                hint: Text(
                   'Genero',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      color:
+                          _isDarkMode != false ? Colors.white : Colors.black),
                 ),
-                dropdownColor: Colors.grey[800],
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                dropdownColor:
+                    _isDarkMode != false ? Colors.white : Colors.grey[800],
+                icon: Icon(Icons.arrow_drop_down,
+                    color: _isDarkMode != false ? Colors.white : Colors.black),
                 iconSize: 36,
                 isExpanded: true,
-                underline: const SizedBox(),
-                style: const TextStyle(color: Colors.white),
+                underline: SizedBox(),
+                style: TextStyle(
+                    color: _isDarkMode != false ? Colors.white : Colors.black),
                 value: 'Masculino',
                 onChanged: (newValue) {
                   setState(() {
@@ -244,7 +291,7 @@ class _PerfilState extends State<Perfil> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 10.0),
+              SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () {
                   var perfil = <String, dynamic>{
@@ -262,17 +309,21 @@ class _PerfilState extends State<Perfil> {
                   };
                   controlup.crearperfil(perfil, _image);
                   if (_image != null || _image == null) {
-                    Get.snackbar("Perfil Guardado Correctamente",
+                    Get.snackbar(
+                        "Perfil Guardado Correctamente",
+                        colorText: Colors.white,
                         controlup.mensajesPerfil,
-                        duration: const Duration(seconds: 4),
-                        backgroundColor: const Color.fromARGB(255, 73, 73, 73));
+                        duration: Duration(seconds: 4),
+                        backgroundColor: Color.fromARGB(255, 73, 73, 73));
                     Get.toNamed("/login");
                   } else {
                     controlup.crearperfil(perfil, null);
-                    Get.snackbar("No se pudo guardar el perfil",
+                    Get.snackbar(
+                        "No se pudo guardar el perfil",
+                        colorText: Colors.white,
                         controlup.mensajesPerfil,
-                        duration: const Duration(seconds: 4),
-                        backgroundColor: const Color.fromARGB(255, 73, 73, 73));
+                        duration: Duration(seconds: 4),
+                        backgroundColor: Color.fromARGB(255, 73, 73, 73));
                   }
                   //Peticiones.crearperfil(perfil, _image);
                 },
@@ -304,15 +355,15 @@ class _PerfilState extends State<Perfil> {
               child: Wrap(
                 children: <Widget>[
                   ListTile(
-                      leading: const Icon(Icons.photo_library),
-                      title: const Text('Imagen de Galeria'),
+                      leading: Icon(Icons.photo_library),
+                      title: Text('Imagen de Galeria'),
                       onTap: () {
                         _galeria();
                         Navigator.of(context).pop();
                       }),
                   ListTile(
-                    leading: const Icon(Icons.photo_camera),
-                    title: const Text('Capturar Imagen'),
+                    leading: Icon(Icons.photo_camera),
+                    title: Text('Capturar Imagen'),
                     onTap: () {
                       _camara();
                       Navigator.of(context).pop();

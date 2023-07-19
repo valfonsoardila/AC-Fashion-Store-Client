@@ -63,14 +63,26 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   Widget build(BuildContext context) {
     return favoritos.isNotEmpty
         ? Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+            ),
             child: Column(
               children: [
                 SizedBox(height: 16),
-                Text('Productos favoritos',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black)),
+                Container(
+                  height: 30,
+                  color: MyColors.myPurple,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Productos favoritos',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 16),
                 favoritos.isNotEmpty
                     ? Container(
@@ -81,6 +93,10 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                           children: generateFavoritos()
                               .map(
                                 (e) => Card(
+                                    color: Color.fromARGB(255, 230, 223, 245),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
                                     elevation: 0,
                                     child: InkWell(
                                       onTap: () {
@@ -104,80 +120,84 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                               )),
                                         );
                                       },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 250,
-                                              child: _controllerconectivity !=
-                                                      false
-                                                  ? Image.network(
-                                                      e.imagen,
-                                                      height: 89,
-                                                      width: double.infinity,
-                                                    )
-                                                  : Center(
-                                                      child: Image.asset(
-                                                        "assets/icons/ic_not_signal.png",
-                                                        height: 50,
-                                                        width: 50,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 250,
+                                                child: _controllerconectivity !=
+                                                        false
+                                                    ? Image.network(
+                                                        e.imagen,
+                                                        height: 89,
+                                                        width: double.infinity,
+                                                      )
+                                                    : Center(
+                                                        child: Image.asset(
+                                                          "assets/icons/ic_not_signal.png",
+                                                          height: 50,
+                                                          width: 50,
+                                                        ),
                                                       ),
-                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            e.nombre,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            e.description,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            '\$${e.price}',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                color: Colors.yellow[700],
-                                                size: 16,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                e.valoration.toString(),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black),
-                                              ),
-                                              SizedBox(width: 125),
-                                              Icon(
-                                                Icons.favorite,
-                                                color: Colors.red,
-                                                size: 24,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 5),
-                                        ],
+                                            SizedBox(height: 5),
+                                            Text(
+                                              e.nombre,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              e.color,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              '${e.category}',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Colors.yellow[700],
+                                                  size: 16,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  e.valoration.toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black),
+                                                ),
+                                                SizedBox(width: 115),
+                                                Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                  size: 24,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 5),
+                                          ],
+                                        ),
                                       ),
                                     )),
                               )

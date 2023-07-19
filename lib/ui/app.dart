@@ -4,8 +4,10 @@ import 'package:acfashion_store/ui/auth/perfil.dart';
 import 'package:acfashion_store/ui/auth/register.dart';
 import 'package:acfashion_store/ui/auth/restaurar.dart';
 import 'package:acfashion_store/ui/home/main_screen.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 // import 'package:netduino_upc_app/ui/anim/introFull_app.dart';
 class App extends StatelessWidget {
@@ -14,10 +16,30 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ThemeChanger(ThemeData.light()),
+      child: Consumer<ThemeChanger>(
+        builder: (context, themeProvider, child) {
+          return MaterialAppWithTheme();
+        },
+      ),
+    );
+  }
+}
+
+class MaterialAppWithTheme extends StatelessWidget {
+  const MaterialAppWithTheme({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    print(theme);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ac Fashion App',
-      theme: ThemeData.dark(),
+      theme: theme.getTheme(),
       initialRoute: '/',
       routes: {
         // "/": (context) =>  IntroSimple(),

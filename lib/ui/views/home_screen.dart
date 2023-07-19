@@ -5,12 +5,14 @@ import 'package:acfashion_store/ui/models/assets_model.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<FavoriteModel> favoritos;
@@ -34,7 +36,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ControlConectividad controlconect = ControlConectividad();
   bool _controllerconectivity = true;
-  Timer? _timer;
+
   String id = "";
   bool _isFavorite = false;
   RxInt itemCount = 0.obs;
@@ -144,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel();
     super.dispose();
   }
 
@@ -164,8 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: e.modelo.isNotEmpty
                       ? Image.asset(
                           e.modelo,
-                          height: 45,
-                          width: 45,
+                          height: 55,
+                          width: 55,
                         )
                       : Container(),
                 ),
@@ -206,343 +207,353 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      child: ListView(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      width: size.width,
-                      height: 200,
-                      child: Stack(
-                        children: [
-                          PageView.builder(
-                            itemCount: bannerImages.length,
-                            onPageChanged: (index) {
-                              setState(() {
-                                currentPage = index;
-                              });
-                            },
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(bannerImages[index]),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right: 18, left: 18, top: 10, bottom: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        textAlign: TextAlign.center,
-                                        text: TextSpan(
-                                          text: "Nuevo lanzamiento",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      RichText(
-                                        textAlign: TextAlign.start,
-                                        text: TextSpan(
-                                          text: "",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              fontSize: 28),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 62,
-                                      ),
-                                      ElevatedButton(
-                                          child: Text(
-                                              "  Comprar Ahora  ".toUpperCase(),
-                                              style: TextStyle(fontSize: 12)),
-                                          style: ButtonStyle(
-                                              foregroundColor:
-                                                  MaterialStateProperty.all<Color>(
-                                                      MyColors.myBlack),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<Color>(
-                                                      Colors.white),
-                                              shape: MaterialStateProperty.all<
-                                                      RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(30)))),
-                                          onPressed: () {}),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List<Widget>.generate(
-                                    bannerImages.length, (index) {
-                                  return Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    child: Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: currentPage == index
-                                            ? Colors.white
-                                            : Colors.grey,
-                                      ),
+    return Scaffold(
+      body: Container(
+        child: ListView(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: size.width,
+                        height: 200,
+                        child: Stack(
+                          children: [
+                            PageView.builder(
+                              itemCount: bannerImages.length,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentPage = index;
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(bannerImages[index]),
+                                      fit: BoxFit.fill,
                                     ),
-                                  );
-                                }),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 18,
+                                        left: 18,
+                                        top: 10,
+                                        bottom: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            text: "Nuevo lanzamiento",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        RichText(
+                                          textAlign: TextAlign.start,
+                                          text: TextSpan(
+                                            text: "",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 28),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 62,
+                                        ),
+                                        ElevatedButton(
+                                            child: Text("  Comprar Ahora  ".toUpperCase(),
+                                                style: TextStyle(fontSize: 12)),
+                                            style: ButtonStyle(
+                                                foregroundColor:
+                                                    MaterialStateProperty.all<Color>(
+                                                        MyColors.myBlack),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<Color>(
+                                                        Colors.white),
+                                                shape: MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(30)))),
+                                            onPressed: () {}),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List<Widget>.generate(
+                                      bannerImages.length, (index) {
+                                    return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 4),
+                                      child: Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: currentPage == index
+                                              ? Colors.white
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 60,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: buildCategories(),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: RichText(
-              textAlign: TextAlign.start,
-              text: TextSpan(
-                  text: "Nuevos diseños",
-                  style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold)),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          GridView.count(
-            childAspectRatio: 0.5,
-            crossAxisCount: 2,
-            padding: EdgeInsets.all(5.0),
-            children: generateProducts()
-                .map(
-                  (e) => Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                    ),
-                    elevation: 0,
-                    child: InkWell(
-                      onTap: () async {
-                        obteneridfavorito(e.id);
-                        final result = await Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.leftToRight,
-                                child: DetailScreen(
-                                  isFavorited: _isFavorite,
-                                  idUser: id,
-                                  id: e.id,
-                                  cantidad: e.cantidad,
-                                  image: e.modelo,
-                                  title: e.title,
-                                  color: e.color,
-                                  talla: e.talla,
-                                  category: e.category,
-                                  description: e.description,
-                                  valoration: e.valoration,
-                                  price: e.price,
-                                )));
-                        if (result != null) {
-                          setState(() {
-                            itemCount.value = result;
-                            print(itemCount.value);
-                            //seleccionarProductos(itemCount.value, );
-                          });
-                        }
-                      },
-                      child: Container(
-                        height: 250,
-                        width: 250,
-                        margin:
-                            EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: FutureBuilder<bool>(
-                                  future: controlconect.verificarConexion(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      print("Cargando");
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else {
-                                      if (snapshot.hasError) {
-                                        print("Error");
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else {
-                                        print("Conectado");
-                                        return _controllerconectivity != false
-                                            ? Image.network(
-                                                e.catalogo,
-                                                height: 250,
-                                                width: double.infinity,
-                                              )
-                                            : Center(
-                                                child: Image.asset(
-                                                  "assets/icons/ic_not_signal.png",
-                                                  height: 50,
-                                                  width: 50,
-                                                ),
-                                              );
-                                      }
-                                    }
-                                  }),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Row(
-                              children: [
-                                RichText(
-                                  textAlign: TextAlign.start,
-                                  text: TextSpan(
-                                      text: e.category,
-                                      style: TextStyle(
-                                          color: MyColors.myPurple,
-                                          fontSize: 16.0)),
-                                ),
-                                SizedBox(
-                                  width: 50,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow[700],
-                                  size: 16,
-                                ),
-                                SizedBox(width: 5),
-                                Text(
-                                  e.valoration.toString(),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                  text: e.title,
-                                  style: TextStyle(
-                                      color: Colors.black87, fontSize: 18.0)),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                RichText(
-                                  textAlign: TextAlign.start,
-                                  text: TextSpan(
-                                      text: "\$ ${e.price}",
-                                      style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                                Spacer(),
-                                ElevatedButton(
-                                    child: Icon(
-                                      Icons.add_shopping_cart_outlined,
-                                      color: Colors.white,
-                                    ),
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.black87),
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        30)))),
-                                    onPressed: () {
-                                      if (e.cantidad > itemCount.value) {
-                                        itemCount.value++;
-                                        carrito.add({
-                                          "id": e.id,
-                                          "cantidad": e.cantidad,
-                                          "imagen": e.modelo,
-                                          "titulo": e.title,
-                                          "color": e.color,
-                                          "talla": e.talla,
-                                          "categoria": e.category,
-                                          "descripcion": e.description,
-                                          "valoracion": e.valoration,
-                                          "precio": e.price,
-                                        });
-                                        print(carrito);
-                                        print(itemCount.value);
-                                        seleccionarProductos(
-                                            itemCount.value, carrito);
-                                        WidgetsBinding.instance!
-                                            .addPostFrameCallback((_) {
-                                          setState(
-                                              () {}); // Actualizar inmediatamente después de cambiar el valor
-                                        });
-                                      }
-                                    })
-                              ],
-                            )
                           ],
                         ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-          )
-        ],
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 60,
+              child: Container(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: buildCategories(),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(
+                    text: "Nuevos diseños",
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GridView.count(
+              childAspectRatio: 0.6,
+              crossAxisCount: 2,
+              padding: EdgeInsets.all(5.0),
+              children: generateProducts()
+                  .map(
+                    (e) => Card(
+                      borderOnForeground: false,
+                      color: Color.fromARGB(255, 250, 228, 231),
+                      clipBehavior: Clip.antiAlias,
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 0,
+                      child: InkWell(
+                        onTap: () async {
+                          obteneridfavorito(e.id);
+                          final result = await Navigator.push(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.leftToRight,
+                                  child: DetailScreen(
+                                    isFavorited: _isFavorite,
+                                    idUser: id,
+                                    id: e.id,
+                                    cantidad: e.cantidad,
+                                    image: e.modelo,
+                                    title: e.title,
+                                    color: e.color,
+                                    talla: e.talla,
+                                    category: e.category,
+                                    description: e.description,
+                                    valoration: e.valoration,
+                                    price: e.price,
+                                  )));
+                          if (result != null) {
+                            setState(() {
+                              itemCount.value = result;
+                              print(itemCount.value);
+                              //seleccionarProductos(itemCount.value, );
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 250,
+                          width: 250,
+                          margin: EdgeInsets.only(
+                              left: 10.0, right: 10.0, top: 5.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: FutureBuilder<bool>(
+                                    future: controlconect.verificarConexion(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        print("Cargando");
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else {
+                                        if (snapshot.hasError) {
+                                          print("Error");
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else {
+                                          print("Conectado");
+                                          return _controllerconectivity != false
+                                              ? Image.network(
+                                                  e.catalogo,
+                                                  height: 250,
+                                                  width: double.infinity,
+                                                )
+                                              : Center(
+                                                  child: Image.asset(
+                                                    "assets/icons/ic_not_signal.png",
+                                                    height: 50,
+                                                    width: 50,
+                                                  ),
+                                                );
+                                        }
+                                      }
+                                    }),
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: [
+                                  RichText(
+                                    textAlign: TextAlign.start,
+                                    text: TextSpan(
+                                        text: e.category,
+                                        style: TextStyle(
+                                            color: MyColors.myPurple,
+                                            fontSize: 16.0)),
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.yellow[700],
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    e.valoration.toString(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              RichText(
+                                textAlign: TextAlign.start,
+                                text: TextSpan(
+                                    text: e.title,
+                                    style: TextStyle(
+                                        color: Colors.black87, fontSize: 18.0)),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  RichText(
+                                    textAlign: TextAlign.start,
+                                    text: TextSpan(
+                                        text: "\$ ${e.price}",
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  Spacer(),
+                                  ElevatedButton(
+                                      child: Icon(
+                                        Icons.add_shopping_cart_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black87),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30)))),
+                                      onPressed: () {
+                                        if (e.cantidad > itemCount.value) {
+                                          itemCount.value++;
+                                          carrito.add({
+                                            "id": e.id,
+                                            "cantidad": e.cantidad,
+                                            "imagen": e.modelo,
+                                            "titulo": e.title,
+                                            "color": e.color,
+                                            "talla": e.talla,
+                                            "categoria": e.category,
+                                            "descripcion": e.description,
+                                            "valoracion": e.valoration,
+                                            "precio": e.price,
+                                          });
+                                          print(carrito);
+                                          print(itemCount.value);
+                                          seleccionarProductos(
+                                              itemCount.value, carrito);
+                                          WidgetsBinding.instance!
+                                              .addPostFrameCallback((_) {
+                                            setState(
+                                                () {}); // Actualizar inmediatamente después de cambiar el valor
+                                          });
+                                        }
+                                      })
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+            )
+          ],
+        ),
       ),
     );
   }

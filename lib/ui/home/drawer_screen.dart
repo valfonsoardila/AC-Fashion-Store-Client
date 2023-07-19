@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class DrawerScreen extends StatefulWidget {
   final String uid;
@@ -59,6 +62,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   var celular = "";
   var foto = "";
   var uid = '';
+
+  bool _isDarkMode = false;
   //FUNCIONES
   _galeria() async {
     XFile? image =
@@ -461,8 +466,17 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Container(
-      color: Colors.grey[900],
+      color: _isDarkMode != false
+          ? Colors.grey[900]
+          : Color.fromARGB(255, 247, 241, 241),
       child: Padding(
         padding: EdgeInsets.only(top: 50, left: 40, bottom: 70),
         child: Column(
@@ -491,11 +505,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
             ),
             NewImage(controller: _controllerconectivity, img: foto, text: ''),
             NewRow(
+              mode: _isDarkMode,
               textOne: 'Coreo electronico',
               icon: Icons.person_pin_rounded,
               textTwo: correo,
             ),
             NewRow(
+              mode: _isDarkMode,
               textOne: 'Nombre de usuario',
               icon: Icons.person_outline,
               textTwo: nombre,
@@ -504,6 +520,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               height: 20,
             ),
             NewRow(
+              mode: _isDarkMode,
               textOne: 'Profesion',
               icon: Icons.work_outline,
               textTwo: profesion,
@@ -512,6 +529,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               height: 20,
             ),
             NewRow(
+              mode: _isDarkMode,
               textOne: 'Direccion',
               icon: Icons.home_outlined,
               textTwo: direccion,
@@ -520,6 +538,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               height: 20,
             ),
             NewRow(
+              mode: _isDarkMode,
               textOne: 'Celular',
               icon: Icons.phone_outlined,
               textTwo: celular,
@@ -559,6 +578,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   controlua.userValido == null && controlua.estadoUser == null
                       ? Get.offAllNamed("/home")
                       : Get.offAllNamed("/login");
+                  controlua.userValido.val("");
                 });
               },
               child: Row(
@@ -587,12 +607,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
 }
 
 class NewRow extends StatelessWidget {
+  final bool mode;
   final IconData icon;
   final String textOne;
   final String textTwo;
 
   NewRow({
     Key? key,
+    required this.mode,
     required this.icon,
     required this.textOne,
     required this.textTwo,
@@ -600,6 +622,7 @@ class NewRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isDarkMode = false;
     return Row(
       children: <Widget>[
         Expanded(
@@ -618,7 +641,9 @@ class NewRow extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Icon(
                             icon,
-                            color: Colors.white,
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
                         SizedBox(
@@ -637,7 +662,9 @@ class NewRow extends StatelessWidget {
                             Text(
                               textTwo,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
                                 fontSize: 16,
                               ),
                             ),
@@ -681,7 +708,7 @@ class NewImage extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white,
                 ),
               ),
             )

@@ -1,9 +1,11 @@
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key});
+  Login({Key? key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -13,19 +15,25 @@ class _LoginState extends State<Login> {
   ControlUserAuth controlua = Get.find();
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
-
+  bool _isDarkMode = false;
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.black,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Stack(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding: EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -37,8 +45,8 @@ class _LoginState extends State<Login> {
                       height:
                           130, // Ajusta la altura de la imagen según tus necesidades
                     ),
-                    const SizedBox(height: 20.0),
-                    const Text(
+                    SizedBox(height: 20.0),
+                    Text(
                       'AC Fashion Store',
                       style: TextStyle(
                         fontSize: 20.0,
@@ -47,8 +55,8 @@ class _LoginState extends State<Login> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 10.0),
-                    const Text(
+                    SizedBox(height: 10.0),
+                    Text(
                       'Iniciar sesión',
                       style: TextStyle(
                         fontSize: 24.0,
@@ -56,45 +64,62 @@ class _LoginState extends State<Login> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 40.0),
+                    SizedBox(height: 40.0),
                     TextFormField(
                       controller: user,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                               color: Color.fromARGB(255, 254, 12, 131)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.white),
+                          borderSide: BorderSide(
+                              color: _isDarkMode != false
+                                  ? Colors.white
+                                  : Colors.black),
                         ),
                         labelText: 'Correo electrónico',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        prefixIcon:
-                            const Icon(Icons.email, color: Colors.white),
+                        labelStyle: TextStyle(
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black),
+                        prefixIcon: Icon(Icons.email,
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black),
                       ),
                     ),
-                    const SizedBox(height: 20.0),
+                    SizedBox(height: 20.0),
                     TextFormField(
                       controller: pass,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                               color: Color.fromARGB(255, 254, 12, 131)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.white),
+                          borderSide: BorderSide(
+                              color: _isDarkMode != false
+                                  ? Colors.white
+                                  : Colors.black),
                         ),
                         labelText: 'Contraseña',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+                        labelStyle: TextStyle(
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black),
+                        prefixIcon: Icon(Icons.lock,
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black),
                       ),
                       obscureText: true,
                     ),
-                    const SizedBox(height: 40.0),
+                    SizedBox(height: 40.0),
                     ElevatedButton(
                       onPressed: () {
                         //Proceso de validación de usuario
@@ -119,16 +144,16 @@ class _LoginState extends State<Login> {
                               Get.snackbar(
                                   "El usuario o contraseña no son correctos",
                                   controlua.mensajesUser,
-                                  duration: const Duration(seconds: 4),
+                                  duration: Duration(seconds: 4),
                                   backgroundColor:
-                                      const Color.fromARGB(255, 73, 73, 73));
+                                      Color.fromARGB(255, 73, 73, 73));
                             } else {
                               if (controlua.sesionValida != null) {
                                 // Get.snackbar("Ha iniciado sesión correctamente",
                                 //     controlua.mensajesUser,
-                                //     duration: const Duration(seconds: 4),
+                                //     duration:  Duration(seconds: 4),
                                 //     backgroundColor:
-                                //         const Color.fromARGB(255, 73, 73, 73));
+                                //          Color.fromARGB(255, 73, 73, 73));
                                 // controlua.userValido!.user?.uid;
                                 String uid = controlua.sesionValida!.user.id;
                                 Get.toNamed("/principal", arguments: uid);
@@ -140,16 +165,16 @@ class _LoginState extends State<Login> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 124, 12, 131),
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           fontSize: 16.0,
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Iniciar sesión',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 40,
                     ),
                     Row(
@@ -159,12 +184,14 @@ class _LoginState extends State<Login> {
                             onPressed: () {
                               Get.toNamed("/register");
                             },
-                            child: const Text(
+                            child: Text(
                               'Registrarse',
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ),
@@ -172,12 +199,14 @@ class _LoginState extends State<Login> {
                             onPressed: () {
                               Get.toNamed("/restaurar");
                             },
-                            child: const Text(
+                            child: Text(
                               'Restaurar contraseña',
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ),

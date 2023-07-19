@@ -1,8 +1,10 @@
 import 'package:acfashion_store/ui/auth/login_screen.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class IntroScreen extends StatefulWidget {
   IntroScreen({Key? key}) : super(key: key);
@@ -16,6 +18,8 @@ class _IntroScreenState extends State<IntroScreen>
   late AnimationController _controller;
   late Animation<double> _position;
   late Animation<double> _opacity;
+
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -49,6 +53,13 @@ class _IntroScreenState extends State<IntroScreen>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       body: Container(
         color: MyColors.myBlack,

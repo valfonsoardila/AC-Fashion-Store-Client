@@ -5,11 +5,13 @@ import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
 import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -162,10 +164,10 @@ class _MainScreenState extends State<MainScreen> {
                 cantidadProducto,
                 catalogoProducto,
                 nombreProducto,
+                descripcionProducto,
                 colorProducto,
                 tallaProducto,
                 categoriaProducto,
-                descripcionProducto,
                 valoracionProducto,
                 precioFormateado,
                 idProducto));
@@ -179,185 +181,180 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Container(
-          color: Colors.white,
-          alignment: Alignment.center,
-          child: FutureBuilder(
-            future: Future.delayed(
-                Duration(seconds: 3)), //Establece el tiempo de carga
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
+    final theme = Provider.of<ThemeChanger>(context);
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: FutureBuilder(
+          future: Future.delayed(
+              Duration(seconds: 3)), //Establece el tiempo de carga
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: MyColors.myPurple,
+                    backgroundColor: Colors.purple[400],
+                  ),
+                  Text(
+                    "Cargando...",
+                    style: TextStyle(
                       color: MyColors.myPurple,
-                      backgroundColor: Colors.purple[400],
+                      fontSize: 20,
+                      decoration: TextDecoration.none,
                     ),
-                    Text(
-                      "Cargando...",
-                      style: TextStyle(
-                        color: MyColors.myPurple,
-                        fontSize: 20,
-                        decoration: TextDecoration.none,
+                  ),
+                ],
+              );
+            } else {
+              if (productos.isNotEmpty && perfil.isNotEmpty) {
+                return Scaffold(
+                  body: Stack(
+                    children: [
+                      DrawerScreen(
+                        uid: id,
+                        nombre: nombre,
+                        correo: correo,
+                        contrasena: contrasena,
+                        celular: celular,
+                        direccion: direccion,
+                        foto: foto,
+                        profesion: profesion,
                       ),
-                    ),
-                  ],
+                      //MainScreen(uid: uid, catalogo: catalogo), //Pantalla principal
+                      DashboardScreen(
+                        id: id,
+                        nombre: nombre,
+                        correo: correo,
+                        contrasena: contrasena,
+                        foto: foto,
+                        profesion: profesion,
+                        direccion: direccion,
+                        celular: celular,
+                        productos: productos,
+                        favoritos: favoritos,
+                      ),
+                    ],
+                  ),
                 );
+
+                // return DashboardScreen(
+                //           id: id,
+                //           nombre: nombre,
+                //           correo: correo,
+                //           contrasena: contrasena,
+                //           catalogo: catalogo,
+                //           profesion: profesion,
+                //           direccion: direccion,
+                //           celular: celular,
+                //           productos: productos,
+                //         ),
               } else {
-                if (productos.isNotEmpty && perfil.isNotEmpty) {
-                  return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    home: Scaffold(
-                      body: Stack(
-                        children: [
-                          DrawerScreen(
-                            uid: id,
-                            nombre: nombre,
-                            correo: correo,
-                            contrasena: contrasena,
-                            celular: celular,
-                            direccion: direccion,
-                            foto: foto,
-                            profesion: profesion,
+                if (snapshot.hasError) {
+                  return Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.network_check,
+                              color: Colors.red,
+                            ),
+                            Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "Error: ${snapshot.error}",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                            decoration: TextDecoration.none,
                           ),
-                          //MainScreen(uid: uid, catalogo: catalogo), //Pantalla principal
-                          DashboardScreen(
-                            id: id,
-                            nombre: nombre,
-                            correo: correo,
-                            contrasena: contrasena,
-                            foto: foto,
-                            profesion: profesion,
-                            direccion: direccion,
-                            celular: celular,
-                            productos: productos,
-                            favoritos: favoritos,
+                        ),
+                        Text(
+                          "Verifique su conexión a internet",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                            decoration: TextDecoration.none,
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircularProgressIndicator(
+                          color: Colors.black,
+                          backgroundColor: MyColors.myBlack,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.offAll(() => MainScreen());
+                          },
+                          child: Text(
+                            "Intentar de nuevo",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
-                  // return DashboardScreen(
-                  //           id: id,
-                  //           nombre: nombre,
-                  //           correo: correo,
-                  //           contrasena: contrasena,
-                  //           catalogo: catalogo,
-                  //           profesion: profesion,
-                  //           direccion: direccion,
-                  //           celular: celular,
-                  //           productos: productos,
-                  //         ),
                 } else {
-                  if (snapshot.hasError) {
-                    return Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.network_check,
-                                color: Colors.red,
-                              ),
-                              Icon(
-                                Icons.error,
-                                color: Colors.red,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            "Error: ${snapshot.error}",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          Text(
-                            "Verifique su conexión a internet",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          CircularProgressIndicator(
-                            color: Colors.black,
-                            backgroundColor: MyColors.myBlack,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.offAll(() => MainScreen());
-                            },
-                            child: Text(
-                              "Intentar de nuevo",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.help_outline,
+                  return Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.help_outline,
+                          color: Colors.red,
+                        ),
+                        Text(
+                          "Error desconocido",
+                          style: TextStyle(
                             color: Colors.red,
+                            fontSize: 20,
+                            decoration: TextDecoration.none,
                           ),
-                          Text(
-                            "Error desconocido",
+                        ),
+                        Text(
+                          "Por favor vuelva a ingresar",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.offAllNamed("/login");
+                          },
+                          child: Text(
+                            "Volver",
                             style: TextStyle(
                               color: Colors.red,
                               fontSize: 20,
                               decoration: TextDecoration.none,
                             ),
                           ),
-                          Text(
-                            "Por favor vuelva a ingresar",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Get.offAllNamed("/login");
-                            },
-                            child: Text(
-                              "Volver",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 20,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
-            },
-          ),
+            }
+          },
         ),
       ),
     );
