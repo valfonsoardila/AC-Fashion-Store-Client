@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:get/get.dart';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/payment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ShopScreen extends StatefulWidget {
   final String id;
@@ -28,6 +30,8 @@ class _ShopScreenState extends State<ShopScreen> {
   String id = '';
   List<Map<String, dynamic>> compra = [];
   var count;
+
+  bool _isDarkMode = false;
 
   int total() {
     int total = 0;
@@ -75,20 +79,39 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Get.back(),
+        ),
+        backgroundColor: _isDarkMode ? Colors.grey[900] : Colors.white,
         title: Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(Icons.shopping_cart),
+              Icon(
+                Icons.shopping_cart,
+                color: _isDarkMode ? Colors.white : Colors.black,
+              ),
               SizedBox(
                 width: 10,
               ),
               Text(
                 'Tu carrito de compras',
-                style: TextStyle(color: Colors.black, fontSize: 20),
+                style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontSize: 20),
               ),
             ],
           ),
@@ -96,95 +119,101 @@ class _ShopScreenState extends State<ShopScreen> {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Container(
+        color: _isDarkMode ? Colors.black : Colors.white,
         child: compra.isEmpty
-            ? Container(
-                child: Column(children: [
-                  Text(
-                    'No hay artículos seleccionados',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 100,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Agrega artículos a tu carrito de compras',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'para poder comprarlos',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '¡Es muy fácil!',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '1. Selecciona el artículo que deseas comprar',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '2. Presiona el botón "Agregar al carrito"',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal),
-                      ),
-                      Icon(
-                        Icons.add_shopping_cart_outlined,
-                        size: 30,
-                        color: Colors.black,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '3. ¡Listo! Ya puedes comprar tus artículos',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ]),
+            ? Center(
+                child: Container(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'No hay artículos seleccionados',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Icon(
+                          Icons.shopping_cart_outlined,
+                          size: 100,
+                          color: _isDarkMode ? Colors.white : Colors.black,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Agrega artículos a tu carrito de compras',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'para poder comprarlos',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '¡Es muy fácil!',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '1. Selecciona el artículo que deseas comprar',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '2. Presiona el botón "Agregar al carrito"',
+                              style: TextStyle(
+                                  color:
+                                      _isDarkMode ? Colors.white : Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            Icon(
+                              Icons.add_shopping_cart_outlined,
+                              size: 30,
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '3. ¡Listo! Ya puedes comprar tus artículos',
+                          style: TextStyle(
+                              color: _isDarkMode ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ]),
+                ),
               )
             : Column(
                 children: [
@@ -215,7 +244,8 @@ class _ShopScreenState extends State<ShopScreen> {
                         return Container(
                           margin: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color:
+                                _isDarkMode ? Colors.grey[900] : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
@@ -234,7 +264,9 @@ class _ShopScreenState extends State<ShopScreen> {
                                 alignment: Alignment.center,
                                 child: Text('${index + 1}',
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),
                               ),
@@ -269,7 +301,9 @@ class _ShopScreenState extends State<ShopScreen> {
                                     Text(
                                       compra[index]['titulo'],
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: _isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -279,7 +313,9 @@ class _ShopScreenState extends State<ShopScreen> {
                                     Text(
                                       compra[index]['descripcion'],
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: _isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.normal),
                                     ),
@@ -289,7 +325,9 @@ class _ShopScreenState extends State<ShopScreen> {
                                     Text(
                                       '\$' + compra[index]['precio'].toString(),
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: _isDarkMode
+                                              ? Colors.white
+                                              : Colors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -316,7 +354,8 @@ class _ShopScreenState extends State<ShopScreen> {
                                   },
                                   icon: Icon(
                                     Icons.delete,
-                                    color: Colors.black,
+                                    color:
+                                        _isDarkMode ? Colors.red : Colors.black,
                                   ),
                                   alignment: Alignment.center,
                                 ),

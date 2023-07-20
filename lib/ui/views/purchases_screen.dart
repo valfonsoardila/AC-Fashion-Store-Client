@@ -1,10 +1,12 @@
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class PurchasesScreen extends StatefulWidget {
   final List<FavoriteModel> favoritos;
@@ -19,6 +21,8 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
   bool _controllerconectivity = true;
   String id = '';
   List<FavoriteModel> favoritos = [];
+
+  bool _isDarkMode = false;
   List<FavoriteModel> generateFavoritos() {
     return favoritos;
   }
@@ -58,6 +62,13 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return favoritos.isNotEmpty
         ? Container(
             child: Column(
@@ -85,7 +96,9 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                         children: [
                           Container(
                             alignment: Alignment.center,
-                            color: Colors.black,
+                            color: _isDarkMode
+                                ? Colors.grey.shade800
+                                : Colors.black,
                             width: 200,
                             height: 30,
                             child: Text('Inversiones: \$ 0.00',
@@ -109,7 +122,9 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                           children: generateFavoritos()
                               .map(
                                 (e) => Card(
-                                    color: Color.fromARGB(255, 247, 243, 243),
+                                    color: _isDarkMode
+                                        ? Colors.grey.shade800
+                                        : Color.fromARGB(255, 250, 228, 231),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30),
                                     ),
@@ -121,6 +136,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                           PageTransition(
                                               type: PageTransitionType.fade,
                                               child: DetailScreen(
+                                                accesible: false,
                                                 isFavorited: true,
                                                 idUser: id,
                                                 id: e.id,
@@ -140,7 +156,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                         padding: const EdgeInsets.all(5.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Expanded(
                                               child: Container(
@@ -168,7 +184,9 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black),
                                             ),
                                             SizedBox(height: 5),
                                             Text(
@@ -176,15 +194,20 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Color.fromARGB(
+                                                          255, 127, 5, 136)
+                                                      : Colors.black),
                                             ),
                                             SizedBox(height: 5),
                                             Text(
                                               '${e.category}',
                                               style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Colors.white
+                                                      : MyColors.myPurple),
                                             ),
                                             SizedBox(height: 5),
                                             Row(
@@ -201,7 +224,9 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.black),
+                                                      color: _isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black),
                                                 ),
                                               ],
                                             ),

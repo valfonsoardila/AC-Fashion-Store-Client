@@ -61,6 +61,8 @@ class _MainScreenState extends State<MainScreen> {
   //MAPAS
   Map<String, dynamic> perfil = {};
 
+  bool _isDarkMode = false;
+
   @override
   void initState() {
     super.initState();
@@ -182,7 +184,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
+      backgroundColor: _isDarkMode != false ? Colors.black : Colors.white,
       body: Container(
         alignment: Alignment.center,
         child: FutureBuilder(
@@ -252,7 +261,15 @@ class _MainScreenState extends State<MainScreen> {
                 //         ),
               } else {
                 if (snapshot.hasError) {
+                  final theme = Provider.of<ThemeChanger>(context);
+                  var temaActual = theme.getTheme();
+                  if (temaActual == ThemeData.dark()) {
+                    _isDarkMode = true;
+                  } else {
+                    _isDarkMode = false;
+                  }
                   return Container(
+                    color: _isDarkMode != false ? Colors.black : Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -260,18 +277,30 @@ class _MainScreenState extends State<MainScreen> {
                           children: [
                             Icon(
                               Icons.network_check,
-                              color: Colors.red,
+                              color: _isDarkMode != false
+                                  ? _isDarkMode != false
+                                      ? Colors.red
+                                      : Color.fromARGB(255, 231, 30, 15)
+                                  : Color.fromARGB(255, 231, 30, 15),
                             ),
                             Icon(
                               Icons.error,
-                              color: Colors.red,
+                              color: _isDarkMode != false
+                                  ? _isDarkMode != false
+                                      ? Colors.red
+                                      : Color.fromARGB(255, 231, 30, 15)
+                                  : Color.fromARGB(255, 231, 30, 15),
                             ),
                           ],
                         ),
                         Text(
                           "Error: ${snapshot.error}",
                           style: TextStyle(
-                            color: Colors.red,
+                            color: _isDarkMode != false
+                                ? _isDarkMode != false
+                                    ? Colors.red
+                                    : Color.fromARGB(255, 231, 30, 15)
+                                : Color.fromARGB(255, 231, 30, 15),
                             fontSize: 20,
                             decoration: TextDecoration.none,
                           ),
@@ -279,7 +308,11 @@ class _MainScreenState extends State<MainScreen> {
                         Text(
                           "Verifique su conexión a internet",
                           style: TextStyle(
-                            color: Colors.red,
+                            color: _isDarkMode != false
+                                ? _isDarkMode != false
+                                    ? Colors.red
+                                    : Color.fromARGB(255, 231, 30, 15)
+                                : Color.fromARGB(255, 231, 30, 15),
                             fontSize: 20,
                             decoration: TextDecoration.none,
                           ),
@@ -309,17 +342,22 @@ class _MainScreenState extends State<MainScreen> {
                   );
                 } else {
                   return Container(
+                    color: _isDarkMode != false ? Colors.black : Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.help_outline,
-                          color: Colors.red,
+                          color: _isDarkMode != false
+                              ? Colors.red
+                              : Color.fromARGB(255, 231, 30, 15),
                         ),
                         Text(
                           "Error desconocido",
                           style: TextStyle(
-                            color: Colors.red,
+                            color: _isDarkMode != false
+                                ? Colors.red
+                                : Color.fromARGB(255, 231, 30, 15),
                             fontSize: 20,
                             decoration: TextDecoration.none,
                           ),
@@ -327,7 +365,9 @@ class _MainScreenState extends State<MainScreen> {
                         Text(
                           "Por favor vuelva a ingresar",
                           style: TextStyle(
-                            color: Colors.red,
+                            color: _isDarkMode != false
+                                ? Colors.red
+                                : Color.fromARGB(255, 231, 30, 15),
                             fontSize: 20,
                             decoration: TextDecoration.none,
                           ),
@@ -342,7 +382,9 @@ class _MainScreenState extends State<MainScreen> {
                           child: Text(
                             "Volver",
                             style: TextStyle(
-                              color: Colors.red,
+                              color: _isDarkMode != false
+                                  ? Colors.red
+                                  : Color.fromARGB(255, 231, 30, 15),
                               fontSize: 20,
                               decoration: TextDecoration.none,
                             ),

@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 // import 'package:netduino_upc_app/ui/anim/introFull_app.dart';
 class App extends StatelessWidget {
   App({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -28,10 +27,10 @@ class App extends StatelessWidget {
 }
 
 class MaterialAppWithTheme extends StatelessWidget {
-  const MaterialAppWithTheme({
+  MaterialAppWithTheme({
     super.key,
   });
-
+  // Define los temas personalizados aquí
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);

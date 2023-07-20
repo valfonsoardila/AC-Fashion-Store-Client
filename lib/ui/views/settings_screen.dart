@@ -1,6 +1,9 @@
 import 'package:acfashion_store/ui/models/theme_model.dart';
+import 'package:acfashion_store/ui/views/block_info/Info_help.dart';
+import 'package:acfashion_store/ui/views/block_info/info_company.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:simple_icons/simple_icons.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -23,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _isDarkMode = false;
     }
     return Scaffold(
+      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
       body: Column(
         children: [
           Container(
@@ -32,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   leading: Icon(
                     _isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
-                    color: _isDarkMode ? Colors.grey : Colors.black,
+                    color: _isDarkMode ? Colors.white : Colors.black,
                   ),
                   title: Text(
                     _isDarkMode ? 'Modo oscuro' : 'Modo claro',
@@ -45,21 +49,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     value: _isDarkMode,
                     onChanged: (value) {
                       setState(() {
-                        _isDarkMode = value;
+                        _isDarkMode = !_isDarkMode;
+                        if (_isDarkMode) {
+                          theme.setTheme(ThemeData.dark());
+                        } else {
+                          theme.setTheme(ThemeData.light());
+                        }
                       });
                     },
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Icons.language),
-                  title: Text(
-                    'Idioma',
-                    style: TextStyle(
-                      color: _isDarkMode ? Colors.white : Colors.black,
-                      fontSize: 20,
+                    leading: Icon(Icons.info),
+                    title: Text(
+                      '¿Quienes somos?',
+                      style: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InfoCompany()));
+                    }),
                 ListTile(
                   leading: Icon(Icons.help),
                   title: Text(
@@ -69,6 +83,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       fontSize: 20,
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => InfoHelp()));
+                  },
                 ),
               ],
             ),
@@ -83,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mode: _isDarkMode ? Colors.white : Colors.black,
                   icon: SimpleIcons.codeberg,
                   colorIcon: Colors.green,
-                  textOne: 'Desarrollado por: ',
+                  textOne: 'Creditos a: ',
                   textTwo: "Victor Ardila",
                   type: 'text',
                 ),
@@ -134,6 +152,14 @@ class NewRow extends StatelessWidget {
   Widget build(BuildContext context) {
     Color modeColor = this.mode;
     bool isLink = this.type == 'link';
+
+    void _launchURL(String url) async {
+      final Uri uri = Uri.parse(url);
+      if (!await launchUrl(uri)) {
+        throw Exception('Could not launch $uri');
+      }
+    }
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -142,7 +168,17 @@ class NewRow extends StatelessWidget {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Lógica a ejecutar al presionar el botón
+                  if (isLink) {
+                    if (textOne == 'Git Hub:') {
+                      _launchURL(
+                          'https://github.com/VictorArdila?tab=repositories'); // Reemplaza "tu_usuario" con tu nombre de usuario de GitHub
+                    } else if (textOne == 'Contacto: ') {
+                      _launchURL(
+                          'mailto:victoradila@gmail.com?subject=Asunto%20del%20mensaje'); // Reemplaza el correo por el que desees y opcionalmente el asunto del mensaje
+                    }
+                  } else {
+                    // Lógica a ejecutar al presionar el botón cuando no es un enlace
+                  }
                 },
                 child: Column(
                   children: <Widget>[
@@ -164,7 +200,7 @@ class NewRow extends StatelessWidget {
                             Text(
                               textOne,
                               style: TextStyle(
-                                color: Colors.black,
+                                color: modeColor,
                                 fontSize: 14,
                               ),
                             ),

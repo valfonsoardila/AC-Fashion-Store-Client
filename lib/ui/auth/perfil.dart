@@ -98,6 +98,7 @@ class _PerfilState extends State<Perfil> {
       _isDarkMode = false;
     }
     return Scaffold(
+      backgroundColor: _isDarkMode != false ? Colors.black : Colors.white,
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 124, 12, 131),
         title: Text("Completar Perfil",
@@ -105,6 +106,7 @@ class _PerfilState extends State<Perfil> {
                 color: _isDarkMode != false ? Colors.black : Colors.white)),
       ),
       body: Container(
+        color: _isDarkMode != false ? Colors.black : Colors.white,
         padding: EdgeInsets.all(10.0),
         child: Center(
           child: ListView(

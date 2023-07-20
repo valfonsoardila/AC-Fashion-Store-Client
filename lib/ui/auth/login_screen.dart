@@ -53,6 +53,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          color: _isDarkMode != false ? Colors.black : Colors.white,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Stack(
@@ -167,21 +168,29 @@ class _LoginState extends State<Login> {
                             controlua
                                 .ingresarUser(user.text, pass.text)
                                 .then((value) {
-                              if (controlua.userValido == null) {
+                              if (controlua.userValido == null &&
+                                  controlua.sesionValida == null) {
                                 Get.snackbar("Este usuario no esta registrado",
                                     controlua.mensajesUser,
                                     duration: Duration(seconds: 2));
                               } else {
-                                if (controlua.sesionValida != null) {
-                                  // Get.snackbar("Ha iniciado sesión correctamente",
-                                  //     controlua.mensajesUser,
-                                  //     duration:  Duration(seconds: 4),
-                                  //     backgroundColor:
-                                  //          Color.fromARGB(255, 73, 73, 73));
-                                  // controlua.userValido!.user?.uid;
-                                  String uid = controlua.sesionValida!.user.id;
-                                  Get.toNamed("/principal", arguments: uid);
-                                  // Get.to(Home(uid: uid));
+                                if (controlua.sesionValida == null) {
+                                  Get.snackbar("Usuario o contraseña invalida",
+                                      controlua.mensajesUser,
+                                      duration: Duration(seconds: 2));
+                                } else {
+                                  if (controlua.sesionValida != null) {
+                                    // Get.snackbar("Ha iniciado sesión correctamente",
+                                    //     controlua.mensajesUser,
+                                    //     duration:  Duration(seconds: 4),
+                                    //     backgroundColor:
+                                    //          Color.fromARGB(255, 73, 73, 73));
+                                    // controlua.userValido!.user?.uid;
+                                    String uid =
+                                        controlua.sesionValida!.user.id;
+                                    Get.toNamed("/principal", arguments: uid);
+                                    // Get.to(Home(uid: uid));
+                                  }
                                 }
                               }
                             });

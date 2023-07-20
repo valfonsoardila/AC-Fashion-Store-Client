@@ -4,13 +4,16 @@ import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
 import 'package:acfashion_store/domain/controller/controllerProductos.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
+  final bool accesible;
   final bool isFavorited;
   final String idUser;
   final String id;
@@ -26,6 +29,7 @@ class DetailScreen extends StatefulWidget {
 
   DetailScreen({
     Key? key,
+    required this.accesible,
     required this.isFavorited,
     required this.idUser,
     required this.id,
@@ -52,6 +56,7 @@ class _DashboardScreenState extends State<DetailScreen> {
   List<Map<String, dynamic>> nuevaconsultafavoritos = [];
   bool _controllerconectivity = true;
   bool _isFavorited = false;
+  bool _isAccessible = false;
   bool autoRotate = false;
   String idUser = "";
   String msg = "";
@@ -71,6 +76,8 @@ class _DashboardScreenState extends State<DetailScreen> {
   var descripcion = "";
   var valoracion = "";
   var precio = "";
+
+  bool _isDarkMode = false;
   void _initConnectivity() async {
     // Obtiene el estado de la conectividad al inicio
     final connectivityResult = await Connectivity().checkConnectivity();
@@ -104,6 +111,7 @@ class _DashboardScreenState extends State<DetailScreen> {
     valoracion = widget.valoration;
     precio = widget.price;
     cantidad = widget.cantidad;
+    _isAccessible = widget.accesible;
   }
 
   @override
@@ -143,10 +151,19 @@ class _DashboardScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
+      backgroundColor: _isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back_ios,
+              color: _isDarkMode ? Colors.white : MyColors.myBlack),
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
@@ -154,8 +171,9 @@ class _DashboardScreenState extends State<DetailScreen> {
           categoria,
           style: TextStyle(color: MyColors.myPurple),
         ),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: MyColors.myBlack),
+        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+        iconTheme:
+            IconThemeData(color: _isDarkMode ? MyColors.myBlack : Colors.white),
         elevation: 0,
         actions: [
           _isFavorited != false
@@ -190,13 +208,14 @@ class _DashboardScreenState extends State<DetailScreen> {
                   },
                 )
               : IconButton(
-                  icon: Icon(Icons.favorite_border, color: Colors.black),
+                  icon: Icon(Icons.favorite_border,
+                      color: _isDarkMode ? Colors.white : Colors.black),
                   onPressed: () {
                     setState(() {
                       _isFavorited = !_isFavorited;
                       var favorito = {
-                        "id": idUser,
                         "uid": idProducto,
+                        "id": idUser,
                         "cantidad": cantidad,
                         "imagen": imagen,
                         "nombre": titulo,
@@ -208,7 +227,6 @@ class _DashboardScreenState extends State<DetailScreen> {
                         "precio": precio,
                       };
                       controlf.agregarfavorito(favorito);
-                      print(idUser);
                       controlf.obtenerfavoritos(idUser).then((value) {
                         setState(() {
                           msg = controlf.mensajesFavorio;
@@ -223,49 +241,52 @@ class _DashboardScreenState extends State<DetailScreen> {
                     });
                   },
                 ),
-          IconButton(
-            icon: Icon(Icons.add_shopping_cart_outlined),
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            color: Colors.black,
-            onPressed: () async {
-              if (cantidad >= 1) {
-                carrito.add({
-                  "id": idProducto,
-                  "cantidad": cantidad,
-                  "imagen": imagen,
-                  "titulo": titulo,
-                  "color": color,
-                  "talla": talla,
-                  "categoria": categoria,
-                  "descripcion": descripcion,
-                  "valoracion": valoracion,
-                  "precio": precio,
-                });
-                final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ShopScreen(
-                              compra: carrito,
-                              itemCount: 1,
-                              id: idUser,
-                            )));
-                if (result != null) {
-                  setState(() {
-                    itemCount = result;
-                  });
-                }
-              }
-            },
-          ),
+          _isAccessible != false
+              ? IconButton(
+                  icon: Icon(Icons.add_shopping_cart_outlined),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  color: _isDarkMode ? Colors.white : Colors.black,
+                  onPressed: () async {
+                    if (cantidad >= 1) {
+                      carrito.add({
+                        "id": idProducto,
+                        "cantidad": cantidad,
+                        "imagen": imagen,
+                        "titulo": titulo,
+                        "color": color,
+                        "talla": talla,
+                        "categoria": categoria,
+                        "descripcion": descripcion,
+                        "valoracion": valoracion,
+                        "precio": precio,
+                      });
+                      final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShopScreen(
+                                    compra: carrito,
+                                    itemCount: 1,
+                                    id: idUser,
+                                  )));
+                      if (result != null) {
+                        setState(() {
+                          itemCount = result;
+                        });
+                      }
+                    }
+                  },
+                )
+              : Container(),
         ],
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: _isDarkMode ? Colors.grey[900] : Colors.white,
           child: Column(
             children: [
               Container(
+                color: _isDarkMode ? Colors.black12 : Colors.white,
                 height: size.width - 30,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -315,7 +336,9 @@ class _DashboardScreenState extends State<DetailScreen> {
               Container(
                   width: size.width,
                   decoration: new BoxDecoration(
-                      color: MyColors.grayBackground,
+                      color: _isDarkMode
+                          ? Colors.grey[900]
+                          : MyColors.grayBackground,
                       borderRadius: new BorderRadius.only(
                         topLeft: const Radius.circular(40.0),
                         topRight: const Radius.circular(40.0),
@@ -331,7 +354,8 @@ class _DashboardScreenState extends State<DetailScreen> {
                           text: TextSpan(
                               text: titulo,
                               style: TextStyle(
-                                  color: Colors.black87,
+                                  color:
+                                      _isDarkMode ? Colors.white : Colors.black,
                                   fontSize: 24.0,
                                   fontWeight: FontWeight.bold)),
                         ),
@@ -349,7 +373,10 @@ class _DashboardScreenState extends State<DetailScreen> {
                               text: TextSpan(
                                   text: valoracion,
                                   style: TextStyle(
-                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                    color: _isDarkMode
+                                        ? Colors.white
+                                        : Colors.black54,
                                     fontSize: 16.0,
                                   )),
                             ),
@@ -358,10 +385,12 @@ class _DashboardScreenState extends State<DetailScreen> {
                             ),
                             RichText(
                               textAlign: TextAlign.start,
-                              text: const TextSpan(
+                              text: TextSpan(
                                   text: "(1125 Review)",
                                   style: TextStyle(
-                                    color: Colors.black45,
+                                    color: _isDarkMode
+                                        ? Colors.white
+                                        : Colors.black54,
                                     fontSize: 16.0,
                                   )),
                             ),
@@ -375,7 +404,8 @@ class _DashboardScreenState extends State<DetailScreen> {
                           text: TextSpan(
                               text: descripcion,
                               style: TextStyle(
-                                color: Colors.black45,
+                                color:
+                                    _isDarkMode ? Colors.white : Colors.black54,
                                 fontSize: 16.0,
                               )),
                         ),
@@ -384,10 +414,11 @@ class _DashboardScreenState extends State<DetailScreen> {
                         ),
                         RichText(
                           textAlign: TextAlign.start,
-                          text: const TextSpan(
+                          text: TextSpan(
                               text: "Selecciona el color :",
                               style: TextStyle(
-                                color: Colors.black87,
+                                color:
+                                    _isDarkMode ? Colors.white : Colors.black54,
                                 fontSize: 20.0,
                               )),
                         ),

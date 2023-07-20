@@ -612,6 +612,8 @@ class NewRow extends StatelessWidget {
   final String textOne;
   final String textTwo;
 
+  bool _isDarkMode = false;
+
   NewRow({
     Key? key,
     required this.mode,
@@ -622,7 +624,13 @@ class NewRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _isDarkMode = false;
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Row(
       children: <Widget>[
         Expanded(
@@ -704,13 +712,6 @@ class NewImage extends StatelessWidget {
           ? CircleAvatar(
               radius: 50,
               backgroundImage: NetworkImage(img),
-              child: Container(
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                ),
-              ),
             )
           : CircleAvatar(
               radius: 50,

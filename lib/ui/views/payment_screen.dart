@@ -1,6 +1,8 @@
 import 'package:acfashion_store/ui/models/assets_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   final compra;
@@ -11,6 +13,8 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  bool _isDarkMode = false;
+
   void seleccionarCategoria(categoria) {}
   String selectedCategoryName =
       "Ahorro a la mano"; // ID de la categoría seleccionada
@@ -73,25 +77,38 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            Icon(Icons.payment, color: MyColors.myPurple),
+            Icon(Icons.payment,
+                color: _isDarkMode ? Colors.white : Colors.black),
             SizedBox(width: 5),
-            Text('Metodos de pago', style: TextStyle(color: MyColors.myPurple)),
+            Text('Metodos de pago',
+                style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black)),
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: _isDarkMode ? Colors.grey[900] : Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back_ios,
+              color: _isDarkMode ? Colors.white : Colors.black),
           onPressed: () {
             Navigator.pop(context, widget.compra);
           },
         ),
-        iconTheme: IconThemeData(color: MyColors.myPurple),
+        iconTheme:
+            IconThemeData(color: _isDarkMode ? Colors.white : Colors.black),
       ),
       body: Container(
+        color: _isDarkMode ? Colors.black : Colors.white,
         child: Column(
           children: [
             Container(

@@ -58,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ProductModel> colors = [];
   List<NotificationModel> notifications = [];
 
+  bool _isDarkMode = false;
+
   List<ProductModel> generateProducts() {
     return productos;
   }
@@ -151,6 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String selectedCategoryId = "0"; // ID de la categoría seleccionada
   List<Widget> buildCategories() {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return AssetsModel.generateCategories().map((e) {
       bool isSelected = selectedCategoryId == e.id;
       return Container(
@@ -161,7 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(30),
                 child: Container(
-                  color: MyColors.grayBackground,
+                  color: _isDarkMode
+                      ? Colors.grey.shade600
+                      : MyColors.grayBackground,
                   child: e.modelo.isNotEmpty
                       ? Image.asset(
                           e.modelo,
@@ -176,7 +187,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 e.category,
-                style: TextStyle(fontSize: 14),
+                style: TextStyle(
+                    fontSize: 14,
+                    color: _isDarkMode ? Colors.white : Colors.black87),
               ),
             ],
           ),
@@ -185,7 +198,11 @@ class _HomeScreenState extends State<HomeScreen> {
               isSelected ? Colors.white : Colors.black38,
             ),
             backgroundColor: MaterialStateProperty.all<Color>(
-              isSelected ? MyColors.myPurple : Colors.white,
+              isSelected
+                  ? MyColors.myPurple
+                  : _isDarkMode
+                      ? Colors.grey.shade900
+                      : Colors.white,
             ),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
@@ -207,12 +224,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return Scaffold(
       body: Container(
+        color: _isDarkMode ? Colors.black : Colors.white,
         child: ListView(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+              padding: EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  bottom: 15,
+                  top: 10), //paddin de los banners
               child: Stack(
                 children: [
                   SingleChildScrollView(
@@ -253,7 +282,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           text: TextSpan(
                                             text: "Nuevo lanzamiento",
                                             style: TextStyle(
-                                                color: Colors.white,
+                                                color: _isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black87,
                                                 fontSize: 16),
                                           ),
                                         ),
@@ -275,19 +306,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         ElevatedButton(
                                             child: Text("  Comprar Ahora  ".toUpperCase(),
-                                                style: TextStyle(fontSize: 12)),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: _isDarkMode
+                                                        ? Colors.white
+                                                        : Colors.black87)),
                                             style: ButtonStyle(
                                                 foregroundColor:
                                                     MaterialStateProperty.all<Color>(
-                                                        MyColors.myBlack),
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<Color>(
+                                                        _isDarkMode
+                                                            ? Colors.black87
+                                                            : Colors.white),
+                                                backgroundColor: _isDarkMode
+                                                    ? MaterialStateProperty.all<Color>(
+                                                        Colors.grey.shade900)
+                                                    : MaterialStateProperty.all<Color>(
                                                         Colors.white),
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(30)))),
+                                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)))),
                                             onPressed: () {}),
                                       ],
                                     ),
@@ -364,7 +401,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   .map(
                     (e) => Card(
                       borderOnForeground: false,
-                      color: Color.fromARGB(255, 250, 228, 231),
+                      color: _isDarkMode
+                          ? Colors.grey.shade800
+                          : Color.fromARGB(255, 250, 228, 231),
                       clipBehavior: Clip.antiAlias,
                       shadowColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -379,6 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               PageTransition(
                                   type: PageTransitionType.leftToRight,
                                   child: DetailScreen(
+                                    accesible: true,
                                     isFavorited: _isFavorite,
                                     idUser: id,
                                     id: e.id,
@@ -453,16 +493,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                     text: TextSpan(
                                         text: e.category,
                                         style: TextStyle(
-                                            color: MyColors.myPurple,
-                                            fontSize: 16.0)),
+                                            color: _isDarkMode
+                                                ? Colors.yellow
+                                                : MyColors.myPurple,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold)),
                                   ),
                                   SizedBox(
-                                    width: 50,
+                                    width: 40,
                                   ),
                                   Icon(
                                     Icons.star,
                                     color: Colors.yellow[700],
-                                    size: 16,
+                                    size: 18,
                                   ),
                                   SizedBox(width: 5),
                                   Text(
@@ -470,7 +513,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87),
                                   ),
                                 ],
                               ),
@@ -482,7 +527,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 text: TextSpan(
                                     text: e.title,
                                     style: TextStyle(
-                                        color: Colors.black87, fontSize: 18.0)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87,
+                                        fontSize: 18.0)),
                               ),
                               SizedBox(
                                 height: 5,
@@ -494,7 +542,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     text: TextSpan(
                                         text: "\$ ${e.price}",
                                         style: TextStyle(
-                                            color: Colors.black87,
+                                            color: _isDarkMode
+                                                ? Colors.white
+                                                : Colors.black87,
                                             fontSize: 18.0,
                                             fontWeight: FontWeight.bold)),
                                   ),

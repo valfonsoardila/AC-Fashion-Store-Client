@@ -174,6 +174,7 @@ class _RestaurarState extends State<Restaurar> {
       _isDarkMode = false;
     }
     return Scaffold(
+      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -188,6 +189,7 @@ class _RestaurarState extends State<Restaurar> {
       ),
       body: SingleChildScrollView(
         child: Container(
+          color: _isDarkMode != false ? Colors.black : Colors.white,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Stack(

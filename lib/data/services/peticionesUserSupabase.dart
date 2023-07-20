@@ -8,6 +8,7 @@ class Peticioneslogin {
       var response = null;
       final database = await PeticionesPerfil.buscarcorreo(email);
       if (database != {}) {
+        print("Entró a autenticar");
         final AuthResponse authResponse = await client.auth.signInWithPassword(
           email: email,
           password: password,

@@ -12,8 +12,8 @@ class ControlFavoritos extends GetxController {
     return _response.value;
   }
 
-  Future<List<Map<String, dynamic>>> obtenerfavoritos(String id) async {
-    _response.value = await PeticionesFavorito.obtenerFavoritos(id);
+  Future<List<Map<String, dynamic>>> obtenerfavoritos(String uid) async {
+    _response.value = await PeticionesFavorito.obtenerFavoritos(uid);
     await controlProducto(_response.value);
     return _response.value;
   }

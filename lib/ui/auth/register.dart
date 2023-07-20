@@ -55,6 +55,7 @@ class _RegisterState extends State<Register> {
     }
 
     return Container(
+      color: _isDarkMode != false ? Colors.black : Colors.white,
       child: Scaffold(
         appBar: AppBar(
             backgroundColor: _isDarkMode != false ? Colors.black : Colors.white,
@@ -69,6 +70,7 @@ class _RegisterState extends State<Register> {
             )),
         body: SingleChildScrollView(
           child: Container(
+            color: _isDarkMode != false ? Colors.black : Colors.white,
             padding: EdgeInsets.only(top: 30),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,

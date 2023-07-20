@@ -52,6 +52,7 @@ class ControlUserAuth extends GetxController {
 
   Future<void> controlUser(dynamic respuesta) async {
     if (respuesta == null) {
+      _sesion.value = null;
       _mensaje.value = "Por favor intente de nuevo";
     } else if (respuesta == "existe") {
       _response.value = null;

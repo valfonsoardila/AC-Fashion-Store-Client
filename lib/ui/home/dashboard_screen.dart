@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/models/assets_model.dart';
@@ -15,6 +16,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String id;
@@ -82,6 +84,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   List<ProductModel> categories = [];
   List<ProductModel> colors = [];
   List<NotificationModel> notifications = [];
+
+  bool _isDarkMode = false;
 
   List<ProductModel> generateProducts() {
     return productos;
@@ -288,7 +292,13 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
-
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     final List<Widget> _widgetOptions = <Widget>[
       HomeScreen(
         favoritos: productosFavoritos,
@@ -313,7 +323,11 @@ class _DashboardScreenState extends State<DashboardScreen>
             isDrawerOpen ? BorderRadius.circular(40) : BorderRadius.circular(0),
       ),
       child: Scaffold(
+        backgroundColor: _isDarkMode != false ? Colors.black : Colors.white,
         appBar: AppBar(
+          backgroundColor: _isDarkMode != false
+              ? Color.fromARGB(255, 19, 18, 18)
+              : Colors.white,
           leading: SizedBox(
             width: 20, // Ajusta el ancho según sea necesario
             child: isDrawerOpen
@@ -385,7 +399,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           //       profesion: profesionPerfil,
           //     ))),
           //),
-          backgroundColor: Colors.white,
           elevation: 0,
           flexibleSpace: isSearchOpen != true
               ? Container()
@@ -398,13 +411,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                       decoration: InputDecoration(
                         hintText: "Buscar",
                         suffix: IconButton(
-                          hoverColor: Colors.white,
-                          splashColor: Colors.white,
+                          hoverColor: _isDarkMode != false
+                              ? Colors.black
+                              : Colors.white,
+                          splashColor: _isDarkMode != false
+                              ? Colors.black
+                              : Colors.white,
                           alignment: Alignment.centerRight,
                           iconSize: 20,
                           icon: Icon(
                             Icons.close,
-                            color: Colors.black,
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black,
                           ),
                           onPressed: () {
                             setState(() {
@@ -428,7 +447,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                         child: IconButton(
                           icon: Icon(Icons.notifications_none,
-                              color: Colors.black),
+                              color: _isDarkMode != false
+                                  ? Colors.white
+                                  : Colors.black),
                           onPressed: () {
                             _mostrarNotificaciones();
                           },
@@ -444,7 +465,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                               ),
                               child: IconButton(
                                 icon: Icon(Icons.shopping_cart_outlined,
-                                    color: Colors.black),
+                                    color: _isDarkMode != false
+                                        ? Colors.white
+                                        : Colors.black),
                                 onPressed: () async {
                                   if (_controllerconectivity == true) {
                                     final result = await Navigator.push<int>(
@@ -487,14 +510,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 }
                               },
                               icon: Icon(Icons.shopping_cart_outlined,
-                                  color: Colors.black)),
+                                  color: _isDarkMode != false
+                                      ? Colors.white
+                                      : Colors.black)),
                       IconButton(
                           onPressed: () {
                             setState(() {
                               isSearchOpen = true;
                             });
                           },
-                          icon: Icon(Icons.search, color: Colors.black)),
+                          icon: Icon(Icons.search,
+                              color: _isDarkMode != false
+                                  ? Colors.white
+                                  : Colors.black)),
                     ],
                   ),
           ],
@@ -517,10 +545,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           margin: EdgeInsets.all(displayWidth * .05),
           height: displayWidth * .155,
           decoration: BoxDecoration(
-            color: Color.fromRGBO(247, 232, 253, 1),
+            color: _isDarkMode != false
+                ? Colors.grey[900]
+                : Color.fromRGBO(247, 232, 253, 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.1),
+                color: _isDarkMode != false
+                    ? Colors.white.withOpacity(.1)
+                    : Colors.black.withOpacity(.1),
                 blurRadius: 30,
                 offset: Offset(0, 10),
               ),
@@ -605,7 +637,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               size: displayWidth * .076,
                               color: index == _page
                                   ? Colors.white
-                                  : Colors.black26,
+                                  : Colors.grey.withOpacity(.9),
                             ),
                           ],
                         ),

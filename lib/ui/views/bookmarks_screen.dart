@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
+import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class BookMarksScreen extends StatefulWidget {
   final List<FavoriteModel> favoritos;
@@ -22,6 +24,8 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   bool _controllerconectivity = true;
   String id = '';
   List<FavoriteModel> favoritos = [];
+
+  bool _isDarkMode = false;
   List<FavoriteModel> generateFavoritos() {
     return favoritos;
   }
@@ -61,6 +65,13 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
     return favoritos.isNotEmpty
         ? Container(
             decoration: BoxDecoration(
@@ -93,7 +104,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                           children: generateFavoritos()
                               .map(
                                 (e) => Card(
-                                    color: Color.fromARGB(255, 230, 223, 245),
+                                    color: _isDarkMode
+                                        ? Colors.grey.shade800
+                                        : Color.fromARGB(255, 250, 228, 231),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30),
                                     ),
@@ -105,6 +118,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                           PageTransition(
                                               type: PageTransitionType.fade,
                                               child: DetailScreen(
+                                                accesible: false,
                                                 isFavorited: true,
                                                 idUser: id,
                                                 id: e.id,
@@ -124,7 +138,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                         padding: const EdgeInsets.all(5.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Expanded(
                                               child: Container(
@@ -152,7 +166,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Colors.white
+                                                      : Colors.black),
                                             ),
                                             SizedBox(height: 5),
                                             Text(
@@ -160,15 +176,20 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Color.fromARGB(
+                                                          255, 127, 5, 136)
+                                                      : Colors.black),
                                             ),
                                             SizedBox(height: 5),
                                             Text(
                                               '${e.category}',
                                               style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
+                                                  color: _isDarkMode
+                                                      ? Colors.white
+                                                      : MyColors.myPurple),
                                             ),
                                             SizedBox(height: 5),
                                             Row(
@@ -185,7 +206,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.black),
+                                                      color: _isDarkMode
+                                                          ? Colors.white
+                                                          : Colors.black),
                                                 ),
                                                 SizedBox(width: 115),
                                                 Icon(
