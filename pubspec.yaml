@@ -48,6 +48,9 @@ dependencies:
   simple_icons: ^7.10.0
   provider: ^6.0.5
   url_launcher: ^6.1.12
+  geolocator: ^9.0.2
+  geocoding: ^2.1.0
+  flutter_map: ^5.0.0
 
 dev_dependencies:
   flutter_test:

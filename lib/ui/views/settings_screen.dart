@@ -36,7 +36,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   leading: Icon(
                     _isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? Colors.tealAccent
+                        : Colors.yellow.shade800,
                   ),
                   title: Text(
                     _isDarkMode ? 'Modo oscuro' : 'Modo claro',

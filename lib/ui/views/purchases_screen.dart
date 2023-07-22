@@ -195,8 +195,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                   color: _isDarkMode
-                                                      ? Color.fromARGB(
-                                                          255, 127, 5, 136)
+                                                      ? Colors.yellow
                                                       : Colors.black),
                                             ),
                                             SizedBox(height: 5),
@@ -207,8 +206,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                                   fontWeight: FontWeight.bold,
                                                   color: _isDarkMode
                                                       ? Colors.white
-                                                      : const Color.fromARGB(
-                                                          255, 151, 10, 161)),
+                                                      : MyColors.myPurple),
                                             ),
                                             SizedBox(height: 5),
                                             Row(

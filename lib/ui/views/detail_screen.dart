@@ -127,7 +127,7 @@ class _DashboardScreenState extends State<DetailScreen> {
     return colorCategories()
         .map(
           (e) => Container(
-            padding: const EdgeInsets.only(left: 5, bottom: 10, top: 15),
+            padding: EdgeInsets.only(left: 5, bottom: 10, top: 15),
             child: Container(
               decoration: BoxDecoration(
                   border: Border.all(
@@ -135,7 +135,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                   color: Colors.white,
                   borderRadius: new BorderRadius.circular(12)),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Image.asset(
                   e.modelo,
                   height: 30,
@@ -292,25 +292,38 @@ class _DashboardScreenState extends State<DetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Stack(
+                      alignment: Alignment.center,
                       children: [
                         Align(
-                          alignment: Alignment.bottomCenter,
+                          alignment: Alignment.center,
+                          heightFactor: 1.4,
                           child: Container(
-                            height: size.width * 0.2,
-                            width: size.width * 0.9,
-                            margin: EdgeInsets.only(bottom: 20),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/ring.png"),
-                                fit: BoxFit.fill,
-                                alignment: Alignment.bottomCenter,
-                              ),
-                            ),
+                            //height: size.width * 0.2,
+                            height: size.height * 1.5,
+                            width: size.width,
+                            decoration: _isDarkMode
+                                ? BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/pasarela.jpg"),
+                                      fit: BoxFit.fill,
+                                      alignment: Alignment.bottomCenter,
+                                    ),
+                                  )
+                                : BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/pasarela3.jpg"),
+                                      fit: BoxFit.fill,
+                                      alignment: Alignment.bottomCenter,
+                                    ),
+                                  ),
                           ),
                         ),
                         Container(
                           height: size.width * 0.8,
                           width: size.width * 0.9,
+                          margin: EdgeInsets.only(top: 35),
                           decoration: _controllerconectivity != false
                               ? BoxDecoration(
                                   image: DecorationImage(
@@ -335,17 +348,17 @@ class _DashboardScreenState extends State<DetailScreen> {
               ),
               Container(
                   width: size.width,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   decoration: new BoxDecoration(
                       color: _isDarkMode
-                          ? Colors.grey[900]
+                          ? Color.fromARGB(255, 39, 39, 39)
                           : MyColors.grayBackground,
                       borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(40.0),
-                        topRight: const Radius.circular(40.0),
+                        topLeft: Radius.circular(40.0),
+                        topRight: Radius.circular(40.0),
                       )),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

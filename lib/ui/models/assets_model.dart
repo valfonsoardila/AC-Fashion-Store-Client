@@ -20,7 +20,7 @@ class AssetsModel {
       MCommerceModel(
         "3",
         "assets/icons/mcommerce/ic_daviplata.png",
-        "Davidplata",
+        "Daviplata",
         MyColors.myRed,
       ),
       MCommerceModel(

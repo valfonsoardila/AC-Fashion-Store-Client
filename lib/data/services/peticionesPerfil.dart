@@ -8,18 +8,24 @@ class PeticionesPerfil {
   static final ControlUserAuth controlua = Get.find();
   static final SupabaseClient _client = Supabase.instance.client;
 
-  static Future<Map<String, dynamic>> buscarcorreo(String correo) async {
+  static Future<Map<String, dynamic>> buscarcorreo(String email) async {
     try {
       Map<String, dynamic> perfil = {};
+      final correo = email.toLowerCase();
       final tableName = 'perfil';
       final response =
           await _client.from(tableName).select('*').eq('correo', correo);
-      print("esta es la respuesta: ${response}");
-      // perfil = response.data[0];
-      // print("este es el perfil: $perfil");
+      print("esta es la respuesta: $response");
+      if (response.isEmpty) {
+        print("esta vacio");
+        perfil = {};
+      } else {
+        print("no esta vacio");
+        perfil = response[0];
+      }
       return perfil;
     } catch (error) {
-      print('Error en la operación de restauración de contraseña: $error');
+      print('Error en la operación buscar correo: $error');
       throw error;
     }
   }

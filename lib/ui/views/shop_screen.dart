@@ -62,13 +62,20 @@ class _ShopScreenState extends State<ShopScreen> {
     });
   }
 
+  void _cargardatos() {
+    id = widget.id;
+    compra = widget.compra;
+    count = widget.itemCount;
+    for (var i = 0; i < compra.length; i++) {
+      compra[i]['uid'] = id;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    id = widget.id;
     _initConnectivity();
-    compra = widget.compra;
-    count = widget.itemCount;
+    _cargardatos();
   }
 
   @override
@@ -392,6 +399,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   MaterialPageRoute(
                                       builder: (context) => PaymentScreen(
                                             compra: compra,
+                                            total: total(),
                                           )),
                                 );
                               },

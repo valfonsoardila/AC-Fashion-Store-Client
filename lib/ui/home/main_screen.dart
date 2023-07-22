@@ -196,7 +196,7 @@ class _MainScreenState extends State<MainScreen> {
         alignment: Alignment.center,
         child: FutureBuilder(
           future: Future.delayed(
-              Duration(seconds: 3)), //Establece el tiempo de carga
+              Duration(seconds: 4)), //Establece el tiempo de carga
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Column(

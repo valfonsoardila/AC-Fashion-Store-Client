@@ -91,8 +91,10 @@ class _IntroScreenState extends State<IntroScreen>
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 60,
+                padding: EdgeInsets.only(
+                  left: 60,
+                  right: 60,
+                  top: 60,
                 ),
                 width: size.width,
                 child: Image.asset(
@@ -104,7 +106,7 @@ class _IntroScreenState extends State<IntroScreen>
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 160),
                 height: size.height / 2,
                 child: Column(
                   children: [
@@ -127,7 +129,7 @@ class _IntroScreenState extends State<IntroScreen>
                               "Tu estilo propio\nes tu forma de expresarte\nsin decir una palabra",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w300)),
                     ),
                     Spacer(),

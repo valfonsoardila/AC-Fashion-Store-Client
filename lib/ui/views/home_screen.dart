@@ -189,7 +189,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 e.category,
                 style: TextStyle(
                     fontSize: 14,
-                    color: _isDarkMode ? Colors.white : Colors.black87),
+                    color: _isDarkMode
+                        ? Colors.white
+                        : isSelected
+                            ? Colors.white
+                            : Colors.black38),
               ),
             ],
           ),
@@ -280,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         RichText(
                                           textAlign: TextAlign.center,
                                           text: TextSpan(
-                                            text: "Nuevo lanzamiento",
+                                            text: "",
                                             style: TextStyle(
                                                 color: _isDarkMode
                                                     ? Colors.white
@@ -568,6 +572,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         if (e.cantidad > itemCount.value) {
                                           itemCount.value++;
                                           carrito.add({
+                                            "uid": "",
                                             "id": e.id,
                                             "cantidad": e.cantidad,
                                             "imagen": e.modelo,

@@ -30,12 +30,15 @@ class Peticioneslogin {
       final client = Supabase.instance.client;
       var response = null;
       final database = await PeticionesPerfil.buscarcorreo(email);
-      if (database == {}) {
+      print("database: $database");
+      if (database.isEmpty) {
+        print("Entró a registrar en auth");
         final AuthResponse authResponse = await client.auth.signUp(
           email: email,
           password: password,
         );
         final User? user = authResponse.user;
+        print("user: $user");
         response = user;
       } else {
         response = "existe";

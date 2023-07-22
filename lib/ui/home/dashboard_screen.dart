@@ -476,7 +476,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                         builder: (context) => ShopScreen(
                                           compra: carrito,
                                           itemCount: itemCount,
-                                          id: id.isNotEmpty ? "" : id,
+                                          id: id,
                                         ),
                                       ),
                                     );
