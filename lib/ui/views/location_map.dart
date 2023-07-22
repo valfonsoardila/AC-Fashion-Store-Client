@@ -106,6 +106,7 @@ class _LocationMapState extends State<LocationMap> {
                         ],
                       ),
                     ),
+                    Container(),
                   ],
                 ),
               ),
