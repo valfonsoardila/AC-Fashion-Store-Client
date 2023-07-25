@@ -3,7 +3,8 @@ import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/models/assets_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
-import 'package:acfashion_store/ui/views/location_map.dart';
+import 'package:acfashion_store/ui/views/googlemaps_screen.dart';
+// import 'package:acfashion_store/ui/views/location_map.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,10 +12,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
+  final perfil;
   final compra;
   final int total;
   PaymentScreen({
     super.key,
+    required this.perfil,
     this.compra,
     required this.total,
   });
@@ -27,13 +30,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   ControlUserPerfil controlup = ControlUserPerfil();
   bool _isDarkMode = false;
   bool _controllerconectivity = false;
-  TextEditingController controlId = TextEditingController();
-  TextEditingController controlCorreo = TextEditingController();
-  TextEditingController controlNombre = TextEditingController();
-  TextEditingController controlTelefono = TextEditingController();
-  TextEditingController controlURL = TextEditingController();
   ImagePicker picker = ImagePicker();
   List<Map<String, dynamic>> carrito = [];
+  Map<String, dynamic> perfil = {};
   var idUser;
   var correo;
   var nombre;
@@ -115,291 +114,279 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void _cargarDatos() {
     carrito = widget.compra;
     idUser = carrito[0]['uid'];
-    controlup.obtenerperfil(idUser).then((value) {
-      if (controlup.mensajesPerfil == "Proceso exitoso") {
-        setState(() {
-          correo = controlup.datosPerfil['correo'];
-          nombre = controlup.datosPerfil['nombre'];
-          telefono = controlup.datosPerfil['celular'];
-          url = controlup.datosPerfil['foto'];
-          controlId.text = idUser;
-          controlCorreo.text = correo;
-          controlNombre.text = nombre;
-          controlTelefono.text = telefono;
-          controlURL.text = url;
-          print(controlTelefono.text);
-        });
-      }
-    });
+    correo = perfil['correo'];
+    nombre = perfil['nombre'];
+    telefono = perfil['celular'];
+    url = perfil['foto'];
   }
 
-  void _facturar() {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Factura de compra',
-                style: TextStyle(color: Colors.black),
-              ),
-              content: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.8, // El 80% del ancho de la pantalla
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            'Esta factura se enviará como comprobante de compra a su correo y telefono movil.',
-                            style: TextStyle(
-                              color: _isDarkMode ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Card(
-                            borderOnForeground: false,
-                            color: _isDarkMode
-                                ? Colors.grey.shade800
-                                : Color.fromARGB(255, 247, 245, 245),
-                            clipBehavior: Clip.antiAlias,
-                            shadowColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Container(
-                              height: 250,
-                              width: 450,
-                              padding: EdgeInsets.all(5.0),
-                              child: Column(
-                                children: [
-                                  Text('Datos de comprador',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18)),
-                                  SizedBox(height: 10),
-                                  NewImage(
-                                      controller: _controllerconectivity,
-                                      img: url,
-                                      text: ''),
-                                  Row(
-                                    children: [
-                                      Text('Nombre: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text(nombre ?? 'No registrado',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Correo: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text(correo ?? 'No registrado',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Telefono: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text(telefono ?? 'No registrado',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Card(
-                            borderOnForeground: false,
-                            color: _isDarkMode
-                                ? Colors.grey.shade800
-                                : Color.fromARGB(255, 247, 245, 245),
-                            clipBehavior: Clip.antiAlias,
-                            shadowColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Container(
-                              height: 250,
-                              width: 450,
-                              padding: EdgeInsets.all(10.0),
-                              child: Column(
-                                children: [
-                                  Text('Datos de compra',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18)),
-                                  Row(
-                                    children: [
-                                      Text('Productos a pagar: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('${carrito.length}',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Total a pagar: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('${widget.total}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Metodo de pago: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('$selectedCategoryName',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Fecha de compra: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text(
-                                          '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Hora de compra: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('${getFormattedTime()}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Estado de entrega: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('Pendiente',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Tiempo de entrega: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text('4 a 10 horas',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Direccion: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18)),
-                                      Text(direccion ?? "No registrado",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton.icon(
-                  onPressed: () {
-                    // Lógica para guardar los cambios realizados en el perfil
-                    Navigator.of(context).pop();
-                    var perfil = <String, dynamic>{};
-                  },
-                  icon: Icon(Icons.attach_money_sharp,
-                      color: Colors.green.shade900),
-                  label: Text('Pagar',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Cancelar',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // void _facturar() {
+  //   showDialog(
+  //     context: context,
+  //     barrierColor: Colors.black.withOpacity(0.5),
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (BuildContext context, StateSetter setState) {
+  //           return AlertDialog(
+  //             backgroundColor: Colors.white,
+  //             title: Text(
+  //               'Factura de compra',
+  //               style: TextStyle(color: Colors.black),
+  //             ),
+  //             content: Container(
+  //               width: MediaQuery.of(context).size.width *
+  //                   0.8, // El 80% del ancho de la pantalla
+  //               color: Colors.white,
+  //               child: SingleChildScrollView(
+  //                 child: Container(
+  //                   color: Colors.white,
+  //                   child: Center(
+  //                     child: Column(
+  //                       children: [
+  //                         Text(
+  //                           'Esta factura se enviará como comprobante de compra a su correo y telefono movil.',
+  //                           style: TextStyle(
+  //                             color: _isDarkMode ? Colors.white : Colors.black,
+  //                           ),
+  //                         ),
+  //                         SizedBox(height: 10),
+  //                         Card(
+  //                           borderOnForeground: false,
+  //                           color: _isDarkMode
+  //                               ? Colors.grey.shade800
+  //                               : Color.fromARGB(255, 247, 245, 245),
+  //                           clipBehavior: Clip.antiAlias,
+  //                           shadowColor: Colors.black,
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(30.0),
+  //                           ),
+  //                           child: Container(
+  //                             height: 250,
+  //                             width: 450,
+  //                             padding: EdgeInsets.all(5.0),
+  //                             child: Column(
+  //                               children: [
+  //                                 Text('Datos de comprador',
+  //                                     style: TextStyle(
+  //                                         color: Colors.black,
+  //                                         fontWeight: FontWeight.bold,
+  //                                         fontSize: 18)),
+  //                                 SizedBox(height: 10),
+  //                                 NewImage(
+  //                                     controller: _controllerconectivity,
+  //                                     img: url,
+  //                                     text: ''),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Nombre: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text(nombre ?? 'No registrado',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontSize: 18)),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Correo: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text(correo ?? 'No registrado',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontSize: 18)),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Telefono: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text(telefono ?? 'No registrado',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontSize: 18)),
+  //                                   ],
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Card(
+  //                           borderOnForeground: false,
+  //                           color: _isDarkMode
+  //                               ? Colors.grey.shade800
+  //                               : Color.fromARGB(255, 247, 245, 245),
+  //                           clipBehavior: Clip.antiAlias,
+  //                           shadowColor: Colors.black,
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(30.0),
+  //                           ),
+  //                           child: Container(
+  //                             height: 250,
+  //                             width: 450,
+  //                             padding: EdgeInsets.all(10.0),
+  //                             child: Column(
+  //                               children: [
+  //                                 Text('Datos de compra',
+  //                                     style: TextStyle(
+  //                                         color: Colors.black,
+  //                                         fontWeight: FontWeight.bold,
+  //                                         fontSize: 18)),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Productos a pagar: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('${carrito.length}',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontSize: 18)),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Total a pagar: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('${widget.total}',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Metodo de pago: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('$selectedCategoryName',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Fecha de compra: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text(
+  //                                         '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Hora de compra: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('${getFormattedTime()}',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Estado de entrega: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('Pendiente',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Tiempo de entrega: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text('4 a 10 horas',
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                                 Row(
+  //                                   children: [
+  //                                     Text('Direccion: ',
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             fontSize: 18)),
+  //                                     Text(direccion ?? "No registrado",
+  //                                         style: TextStyle(
+  //                                           color: Colors.black,
+  //                                         )),
+  //                                   ],
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             actions: [
+  //               TextButton.icon(
+  //                 onPressed: () {
+  //                   // Lógica para guardar los cambios realizados en el perfil
+  //                   Navigator.of(context).pop();
+  //                   var perfil = <String, dynamic>{};
+  //                 },
+  //                 icon: Icon(Icons.attach_money_sharp,
+  //                     color: Colors.green.shade900),
+  //                 label: Text('Pagar',
+  //                     style: TextStyle(
+  //                         color: Colors.black,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 18)),
+  //               ),
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text('Cancelar',
+  //                     style: TextStyle(
+  //                         color: Colors.black,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 18)),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   void seleccionarCategoria(categoria) {}
   String selectedCategoryName =
@@ -463,6 +450,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void initState() {
+    perfil = widget.perfil;
     _cargarDatos();
     _initConnectivity();
     super.initState();
@@ -542,11 +530,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                 ),
                 onPressed: () {
+                  var perfil = <String, dynamic>{
+                    'uid': idUser,
+                    'correo': correo,
+                    'nombre': nombre,
+                    'celular': telefono,
+                    'foto': url,
+                  };
+                  print("Perfil: $perfil");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LocationMap(
+                          builder: (context) => GoogleMapsScreen(
+                                categoriaPago: selectedCategoryName,
+                                total: widget.total,
                                 compra: carrito,
+                                perfil: perfil,
                               )));
                 },
               ),

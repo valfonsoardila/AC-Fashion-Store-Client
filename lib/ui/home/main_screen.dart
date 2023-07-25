@@ -196,7 +196,7 @@ class _MainScreenState extends State<MainScreen> {
         alignment: Alignment.center,
         child: FutureBuilder(
           future: Future.delayed(
-              Duration(seconds: 4)), //Establece el tiempo de carga
+              Duration(seconds: 3)), //Establece el tiempo de carga
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Column(
@@ -217,125 +217,112 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               );
             } else {
-              if (productos.isNotEmpty && perfil.isNotEmpty) {
-                return Scaffold(
-                  body: Stack(
+              if (snapshot.hasError) {
+                final theme = Provider.of<ThemeChanger>(context);
+                var temaActual = theme.getTheme();
+                if (temaActual == ThemeData.dark()) {
+                  _isDarkMode = true;
+                } else {
+                  _isDarkMode = false;
+                }
+                return Container(
+                  color: _isDarkMode != false ? Colors.black : Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DrawerScreen(
-                        uid: id,
-                        nombre: nombre,
-                        correo: correo,
-                        contrasena: contrasena,
-                        celular: celular,
-                        direccion: direccion,
-                        foto: foto,
-                        profesion: profesion,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.network_check,
+                            color: _isDarkMode != false
+                                ? _isDarkMode != false
+                                    ? Colors.red
+                                    : Color.fromARGB(255, 231, 30, 15)
+                                : Color.fromARGB(255, 231, 30, 15),
+                          ),
+                          Icon(
+                            Icons.error,
+                            color: _isDarkMode != false
+                                ? _isDarkMode != false
+                                    ? Colors.red
+                                    : Color.fromARGB(255, 231, 30, 15)
+                                : Color.fromARGB(255, 231, 30, 15),
+                          ),
+                        ],
                       ),
-                      //MainScreen(uid: uid, catalogo: catalogo), //Pantalla principal
-                      DashboardScreen(
-                        id: id,
-                        nombre: nombre,
-                        correo: correo,
-                        contrasena: contrasena,
-                        foto: foto,
-                        profesion: profesion,
-                        direccion: direccion,
-                        celular: celular,
-                        productos: productos,
-                        favoritos: favoritos,
+                      Text(
+                        "Error: ${snapshot.error}",
+                        style: TextStyle(
+                          color: _isDarkMode != false
+                              ? _isDarkMode != false
+                                  ? Colors.red
+                                  : Color.fromARGB(255, 231, 30, 15)
+                              : Color.fromARGB(255, 231, 30, 15),
+                          fontSize: 20,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      Text(
+                        "Verifique su conexión a internet",
+                        style: TextStyle(
+                          color: _isDarkMode != false
+                              ? _isDarkMode != false
+                                  ? Colors.red
+                                  : Color.fromARGB(255, 231, 30, 15)
+                              : Color.fromARGB(255, 231, 30, 15),
+                          fontSize: 20,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CircularProgressIndicator(
+                        color: Colors.black,
+                        backgroundColor: MyColors.myBlack,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.offAll(() => MainScreen());
+                        },
+                        child: Text(
+                          "Intentar de nuevo",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 );
-
-                // return DashboardScreen(
-                //           id: id,
-                //           nombre: nombre,
-                //           correo: correo,
-                //           contrasena: contrasena,
-                //           catalogo: catalogo,
-                //           profesion: profesion,
-                //           direccion: direccion,
-                //           celular: celular,
-                //           productos: productos,
-                //         ),
               } else {
-                if (snapshot.hasError) {
-                  final theme = Provider.of<ThemeChanger>(context);
-                  var temaActual = theme.getTheme();
-                  if (temaActual == ThemeData.dark()) {
-                    _isDarkMode = true;
-                  } else {
-                    _isDarkMode = false;
-                  }
-                  return Container(
-                    color: _isDarkMode != false ? Colors.black : Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                if (productos.isNotEmpty && perfil.isNotEmpty) {
+                  return Scaffold(
+                    body: Stack(
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.network_check,
-                              color: _isDarkMode != false
-                                  ? _isDarkMode != false
-                                      ? Colors.red
-                                      : Color.fromARGB(255, 231, 30, 15)
-                                  : Color.fromARGB(255, 231, 30, 15),
-                            ),
-                            Icon(
-                              Icons.error,
-                              color: _isDarkMode != false
-                                  ? _isDarkMode != false
-                                      ? Colors.red
-                                      : Color.fromARGB(255, 231, 30, 15)
-                                  : Color.fromARGB(255, 231, 30, 15),
-                            ),
-                          ],
+                        DrawerScreen(
+                          uid: id,
+                          nombre: nombre,
+                          correo: correo,
+                          contrasena: contrasena,
+                          celular: celular,
+                          direccion: direccion,
+                          foto: foto,
+                          profesion: profesion,
                         ),
-                        Text(
-                          "Error: ${snapshot.error}",
-                          style: TextStyle(
-                            color: _isDarkMode != false
-                                ? _isDarkMode != false
-                                    ? Colors.red
-                                    : Color.fromARGB(255, 231, 30, 15)
-                                : Color.fromARGB(255, 231, 30, 15),
-                            fontSize: 20,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        Text(
-                          "Verifique su conexión a internet",
-                          style: TextStyle(
-                            color: _isDarkMode != false
-                                ? _isDarkMode != false
-                                    ? Colors.red
-                                    : Color.fromARGB(255, 231, 30, 15)
-                                : Color.fromARGB(255, 231, 30, 15),
-                            fontSize: 20,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CircularProgressIndicator(
-                          color: Colors.black,
-                          backgroundColor: MyColors.myBlack,
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Get.offAll(() => MainScreen());
-                          },
-                          child: Text(
-                            "Intentar de nuevo",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
+                        DashboardScreen(
+                          id: id,
+                          nombre: nombre,
+                          correo: correo,
+                          contrasena: contrasena,
+                          foto: foto,
+                          profesion: profesion,
+                          direccion: direccion,
+                          celular: celular,
+                          productos: productos,
+                          favoritos: favoritos,
                         ),
                       ],
                     ),

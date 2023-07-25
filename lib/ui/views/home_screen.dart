@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/assets_model.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
@@ -15,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
+  final perfil;
   final List<FavoriteModel> favoritos;
   final List<ProductModel> productos;
   final String id;
@@ -22,6 +21,7 @@ class HomeScreen extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onCarrito;
   const HomeScreen({
     super.key,
+    this.perfil,
     required this.favoritos,
     required this.productos,
     required this.id,
@@ -89,6 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
 
   void cargarDatos() {
+    print(
+                              "perfil desde el home screen: ${widget.perfil}");
     id = widget.id;
     productos = widget.productos;
     productosAux = productos;
@@ -248,6 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 10), //paddin de los banners
               child: Stack(
                 children: [
+                  //banners de la pantalla principal
                   SingleChildScrollView(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -372,6 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(
               height: 60,
+              //categorias de la pantalla principal
               child: Container(
                 child: ListView(
                   scrollDirection: Axis.horizontal,
@@ -382,21 +386,36 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 10,
             ),
+            //label de los nuevos diseños
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                    text: "Nuevos diseños",
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold)),
+              child: Container(
+                height: 30,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  color:
+                      _isDarkMode ? MyColors.myPurple : MyColors.grayBackground,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Container(
+                  margin: EdgeInsets.only(left: 5.0),
+                  child: RichText(
+                    textAlign: TextAlign.start,
+                    text: TextSpan(
+                        text: "Nuevos diseños",
+                        style: TextStyle(
+                            color:
+                                _isDarkMode ? Colors.white : MyColors.myPurple,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ),
               ),
             ),
             SizedBox(
               height: 10,
             ),
+            //productos de la pantalla principal
             GridView.count(
               childAspectRatio: 0.6,
               crossAxisCount: 2,
@@ -422,6 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               PageTransition(
                                   type: PageTransitionType.leftToRight,
                                   child: DetailScreen(
+                                    perfil: widget.perfil,
                                     accesible: true,
                                     isFavorited: _isFavorite,
                                     idUser: id,
@@ -471,12 +491,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         } else {
                                           print("Conectado");
                                           return _controllerconectivity != false
-                                              ? Image.network(
+                                              ? //Image del catalogo del producto
+                                              Image.network(
                                                   e.catalogo,
                                                   height: 250,
                                                   width: double.infinity,
                                                 )
-                                              : Center(
+                                              : //Image de verificacion de conexion
+                                              Center(
                                                   child: Image.asset(
                                                     "assets/icons/ic_not_signal.png",
                                                     height: 50,
@@ -490,6 +512,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 4,
                               ),
+                              //label de la categoria y valoracion del producto
                               Row(
                                 children: [
                                   RichText(
@@ -526,6 +549,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 5,
                               ),
+                              //label del titulo del producto
                               RichText(
                                 textAlign: TextAlign.start,
                                 text: TextSpan(
@@ -539,6 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 5,
                               ),
+                              //label de la descripcion del producto
                               Row(
                                 children: [
                                   RichText(
@@ -553,6 +578,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fontWeight: FontWeight.bold)),
                                   ),
                                   Spacer(),
+                                  //boton de agregar al carrito
                                   ElevatedButton(
                                       child: Icon(
                                         Icons.add_shopping_cart_outlined,
@@ -588,11 +614,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           print(itemCount.value);
                                           seleccionarProductos(
                                               itemCount.value, carrito);
-                                          WidgetsBinding.instance!
-                                              .addPostFrameCallback((_) {
-                                            setState(
-                                                () {}); // Actualizar inmediatamente después de cambiar el valor
-                                          });
+                                          // WidgetsBinding.instance!
+                                          //     .addPostFrameCallback((_) {
+                                          //   setState(
+                                          //       () {}); // Actualizar inmediatamente después de cambiar el valor
+                                          // });
                                         }
                                       })
                                 ],

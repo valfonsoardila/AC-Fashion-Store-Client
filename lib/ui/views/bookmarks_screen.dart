@@ -12,8 +12,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class BookMarksScreen extends StatefulWidget {
+  final perfil;
   final List<FavoriteModel> favoritos;
-  BookMarksScreen({super.key, required this.favoritos});
+  BookMarksScreen({super.key, required this.favoritos, required this.perfil});
 
   @override
   State<BookMarksScreen> createState() => _BookMarksScreenState();
@@ -118,6 +119,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                           PageTransition(
                                               type: PageTransitionType.fade,
                                               child: DetailScreen(
+                                                perfil: widget.perfil,
                                                 accesible: false,
                                                 isFavorited: true,
                                                 idUser: id,

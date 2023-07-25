@@ -9,11 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ShopScreen extends StatefulWidget {
+  final perfil;
   final String id;
   final compra;
   final itemCount;
   const ShopScreen({
     Key? key,
+    required this.perfil,
     required this.id,
     this.compra,
     this.itemCount,
@@ -66,6 +68,7 @@ class _ShopScreenState extends State<ShopScreen> {
     id = widget.id;
     compra = widget.compra;
     count = widget.itemCount;
+    print("este es el perfil: ${widget.perfil}");
     for (var i = 0; i < compra.length; i++) {
       compra[i]['uid'] = id;
     }
@@ -280,23 +283,43 @@ class _ShopScreenState extends State<ShopScreen> {
                               Container(
                                 width: 100,
                                 height: 100,
-                                decoration: _controllerconectivity != false
-                                    ? BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              compra[index]['imagen']),
-                                          fit: BoxFit.cover,
-                                        ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/icons/ic_not_signal.png'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors
+                                            .grey, // Aquí puedes definir el color de fondo deseado
                                       ),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: _controllerconectivity !=
+                                              false
+                                          ? BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    compra[index]['imagen']),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )
+                                          : BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/icons/ic_not_signal.png'),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               SizedBox(
                                 width: 10,
@@ -398,6 +421,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => PaymentScreen(
+                                            perfil: widget.perfil,
                                             compra: compra,
                                             total: total(),
                                           )),
@@ -410,7 +434,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Pagar',
+                                      'Seleccionar método de pago',
                                       textAlign: TextAlign.center,
                                     ),
                                     Icon(

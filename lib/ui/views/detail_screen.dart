@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
+  final perfil;
   final bool accesible;
   final bool isFavorited;
   final String idUser;
@@ -29,6 +30,7 @@ class DetailScreen extends StatefulWidget {
 
   DetailScreen({
     Key? key,
+    required this.perfil,
     required this.accesible,
     required this.isFavorited,
     required this.idUser,
@@ -265,6 +267,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ShopScreen(
+                                    perfil: widget.perfil,
                                     compra: carrito,
                                     itemCount: 1,
                                     id: idUser,
@@ -352,7 +355,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                   decoration: new BoxDecoration(
                       color: _isDarkMode
                           ? Color.fromARGB(255, 39, 39, 39)
-                          : MyColors.grayBackground,
+                          : Color.fromARGB(255, 247, 246, 246),
                       borderRadius: new BorderRadius.only(
                         topLeft: Radius.circular(40.0),
                         topRight: Radius.circular(40.0),

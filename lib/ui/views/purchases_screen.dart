@@ -9,8 +9,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class PurchasesScreen extends StatefulWidget {
+  final perfil;
   final List<FavoriteModel> favoritos;
-  PurchasesScreen({super.key, required this.favoritos});
+  PurchasesScreen({super.key, required this.favoritos, this.perfil});
 
   @override
   State<PurchasesScreen> createState() => _PurchasesScreenState();
@@ -136,6 +137,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                           PageTransition(
                                               type: PageTransitionType.fade,
                                               child: DetailScreen(
+                                                perfil: widget.perfil,
                                                 accesible: false,
                                                 isFavorited: true,
                                                 idUser: id,

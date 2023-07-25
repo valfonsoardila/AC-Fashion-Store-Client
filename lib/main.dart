@@ -1,5 +1,3 @@
-import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
-import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Importa el paquete supabase_flutter
@@ -7,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await GetStorage.init();
@@ -20,9 +19,8 @@ void main() async {
   );
   Get.put(
       ControlUserAuth()); // Reemplaza ControlUserAuth con tu controlador de autenticación de Supabase
-  Get.put(ControlUserPerfil());
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  Get.put(ControlFavoritos());
+  await dotenv.load(fileName: ".env");
   runApp(App());
 }
