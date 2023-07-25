@@ -27,106 +27,108 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     return Scaffold(
       backgroundColor: _isDarkMode ? Colors.black : Colors.white,
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height / 2,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(
-                    _isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
-                    color: _isDarkMode
-                        ? Colors.tealAccent
-                        : Colors.yellow.shade800,
-                  ),
-                  title: Text(
-                    _isDarkMode ? 'Modo oscuro' : 'Modo claro',
-                    style: TextStyle(
-                      color: _isDarkMode ? Colors.white : Colors.black,
-                      fontSize: 20,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height / 2,
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      _isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
+                      color: _isDarkMode
+                          ? Colors.tealAccent
+                          : Colors.yellow.shade800,
+                    ),
+                    title: Text(
+                      _isDarkMode ? 'Modo oscuro' : 'Modo claro',
+                      style: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
+                    trailing: Switch(
+                      value: _isDarkMode,
+                      onChanged: (value) {
+                        setState(() {
+                          _isDarkMode = !_isDarkMode;
+                          if (_isDarkMode) {
+                            theme.setTheme(ThemeData.dark());
+                          } else {
+                            theme.setTheme(ThemeData.light());
+                          }
+                        });
+                      },
                     ),
                   ),
-                  trailing: Switch(
-                    value: _isDarkMode,
-                    onChanged: (value) {
-                      setState(() {
-                        _isDarkMode = !_isDarkMode;
-                        if (_isDarkMode) {
-                          theme.setTheme(ThemeData.dark());
-                        } else {
-                          theme.setTheme(ThemeData.light());
-                        }
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                    leading: Icon(Icons.info),
+                  ListTile(
+                      leading: Icon(Icons.info),
+                      title: Text(
+                        '¿Quienes somos?',
+                        style: TextStyle(
+                          color: _isDarkMode ? Colors.white : Colors.black,
+                          fontSize: 20,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => InfoCompany()));
+                      }),
+                  ListTile(
+                    leading: Icon(Icons.help),
                     title: Text(
-                      '¿Quienes somos?',
+                      'Ayuda',
                       style: TextStyle(
                         color: _isDarkMode ? Colors.white : Colors.black,
                         fontSize: 20,
                       ),
                     ),
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => InfoCompany()));
-                    }),
-                ListTile(
-                  leading: Icon(Icons.help),
-                  title: Text(
-                    'Ayuda',
-                    style: TextStyle(
-                      color: _isDarkMode ? Colors.white : Colors.black,
-                      fontSize: 20,
-                    ),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => InfoHelp()));
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => InfoHelp()));
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.28,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                NewRow(
-                  mode: _isDarkMode ? Colors.white : Colors.black,
-                  icon: SimpleIcons.codeberg,
-                  colorIcon: Colors.green,
-                  textOne: 'Creditos a: ',
-                  textTwo: "Victor Ardila",
-                  type: 'text',
-                ),
-                NewRow(
-                  mode: _isDarkMode ? Colors.white : Colors.black,
-                  icon: SimpleIcons.gmail,
-                  colorIcon: Colors.red,
-                  textOne: 'Contacto: ',
-                  textTwo: "victoradila@gmail.com",
-                  type: 'link',
-                ),
-                NewRow(
-                  mode: _isDarkMode ? Colors.white : Colors.black,
-                  icon: SimpleIcons.git,
-                  colorIcon: Colors.orange,
-                  textOne: 'Git Hub:',
-                  textTwo: "Aqui",
-                  type: 'link',
-                ),
-              ],
-            ),
-          )
-        ],
+            Container(
+              height: MediaQuery.of(context).size.height * 0.28,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  NewRow(
+                    mode: _isDarkMode ? Colors.white : Colors.black,
+                    icon: SimpleIcons.codeberg,
+                    colorIcon: Colors.green,
+                    textOne: 'Creditos a: ',
+                    textTwo: "Victor Ardila",
+                    type: 'text',
+                  ),
+                  NewRow(
+                    mode: _isDarkMode ? Colors.white : Colors.black,
+                    icon: SimpleIcons.gmail,
+                    colorIcon: Colors.red,
+                    textOne: 'Contacto: ',
+                    textTwo: "victoradila@gmail.com",
+                    type: 'link',
+                  ),
+                  NewRow(
+                    mode: _isDarkMode ? Colors.white : Colors.black,
+                    icon: SimpleIcons.git,
+                    colorIcon: Colors.orange,
+                    textOne: 'Git Hub:',
+                    textTwo: "Aqui",
+                    type: 'link',
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

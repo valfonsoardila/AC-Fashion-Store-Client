@@ -22,6 +22,7 @@ class GoogleMapsScreen extends StatefulWidget {
 
 class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   GoogleMapController? _mapController;
+  List<Placemark> placemarks = [];
   TextEditingController controlId = TextEditingController();
   TextEditingController controlCorreo = TextEditingController();
   TextEditingController controlNombre = TextEditingController();
@@ -46,6 +47,8 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   var direccion;
   var _image;
   var _myLocation = LatLng(0, 0);
+  var _myLocationInit = LatLng(0, 0);
+  var currentlocation = [];
   List<Location> locations = [];
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
@@ -81,7 +84,9 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     final Position position = await Geolocator.getCurrentPosition();
-    // print(position);
+    placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    currentlocation = placemarks;
     return position;
   }
 
@@ -96,7 +101,8 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
       setState(() {
         double latitude = value.latitude;
         double longitude = value.longitude;
-        _myLocation = LatLng(latitude, longitude);
+        _myLocationInit = LatLng(latitude, longitude);
+        _myLocation = _myLocationInit;
         _locationMessage = "${value.latitude}, ${value.longitude}";
         print("mi poosicion es: $_locationMessage");
       });
@@ -333,10 +339,13 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18)),
-                                      Text(direccion ?? "No registrado",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          )),
+                                      Expanded(
+                                        child:
+                                            Text(direccion ?? "No registrado",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                )),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -462,6 +471,10 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                             ),
                             onChanged: (value) async {
                               locations = await locationFromAddress(value);
+                              placemarks = await placemarkFromCoordinates(
+                                  locations[0].latitude,
+                                  locations[0].longitude);
+                              print(placemarks);
                             },
                           ),
                         ),
@@ -471,19 +484,35 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               TextButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      _searchLocation = true;
+                                      _myLocation = _myLocationInit;
+                                      direccion = controlDireccion.text;
+                                      _mapController?.animateCamera(
+                                          CameraUpdate.newLatLng(_myLocation));
+                                      currentlocation = placemarks;
+                                      print(currentlocation);
+                                    });
+                                  },
                                   icon: Icon(Icons.location_on),
                                   label: Text('Usar ubicacion actual')),
                               TextButton.icon(
                                   onPressed: () {
                                     setState(() {
                                       _searchLocation = true;
-                                      _myLocation = LatLng(
-                                          locations[0].latitude,
-                                          locations[0].longitude);
                                       direccion = controlDireccion.text;
-                                      _mapController?.animateCamera(
-                                          CameraUpdate.newLatLng(_myLocation));
+                                      print(direccion);
+                                      if (direccion != '') {
+                                        _myLocation = LatLng(
+                                            locations[0].latitude,
+                                            locations[0].longitude);
+                                        _mapController?.animateCamera(
+                                            CameraUpdate.newLatLng(
+                                                _myLocation));
+                                        currentlocation = placemarks;
+                                      }
+                                      print(currentlocation);
                                     });
                                   },
                                   icon: Icon(Icons.search),
@@ -503,28 +532,34 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                             child: Stack(
                               children: [
                                 _locationMessage != ''
-                                    ? GoogleMap(
-                                        initialCameraPosition: CameraPosition(
-                                            target: _myLocation, zoom: 15),
-                                        mapType: MapType.normal,
-                                        onMapCreated: (GoogleMapController
-                                            googleMapController) {
-                                          _mapController = googleMapController;
-                                        },
-                                        markers: {
-                                          Marker(
-                                            markerId: MarkerId('1'),
-                                            position: _myLocation,
-                                            infoWindow: InfoWindow(
-                                              title: 'Mi ubicacion',
-                                              snippet: 'Ubicacion actual',
-                                            ),
-                                            flat: true,
-                                            icon:
-                                                BitmapDescriptor.defaultMarker,
-                                          ),
-                                        },
-                                      )
+                                    ? placemarks != []
+                                        ? GoogleMap(
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                                    target: _myLocation,
+                                                    zoom: 15),
+                                            mapType: MapType.normal,
+                                            onMapCreated: (GoogleMapController
+                                                googleMapController) {
+                                              _mapController =
+                                                  googleMapController;
+                                            },
+                                            markers: {
+                                              Marker(
+                                                markerId: MarkerId('1'),
+                                                position: _myLocation,
+                                                infoWindow: InfoWindow(
+                                                  title: 'Mi ubicacion',
+                                                  snippet:
+                                                      'Aqui se hará la entrega',
+                                                ),
+                                                flat: true,
+                                                icon: BitmapDescriptor
+                                                    .defaultMarker,
+                                              ),
+                                            },
+                                          )
+                                        : Container()
                                     : Container(),
                               ],
                             ),
