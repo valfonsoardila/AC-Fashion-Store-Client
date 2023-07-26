@@ -1,10 +1,12 @@
-import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
-import 'package:acfashion_store/domain/controller/controllerProductos.dart';
+import 'package:acfashion_store/domain/controller/controllerCompra.dart';
+import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
+import 'package:acfashion_store/domain/controller/controllerProducto.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
 import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
+import 'package:acfashion_store/ui/models/purchases_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
@@ -26,6 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   ControlUserPerfil controlup = Get.put(ControlUserPerfil());
   ControlProducto controlp = Get.put(ControlProducto());
   ControlFavoritos controlf = Get.put(ControlFavoritos());
+  ControlCompra controlc = Get.put(ControlCompra());
   //VARIABLES DE CONTROL
   String idUsuario = '';
   String? uid;
@@ -56,7 +59,9 @@ class _MainScreenState extends State<MainScreen> {
   //LISTAS
   List<Map<String, dynamic>> consultaProductos = [];
   List<Map<String, dynamic>> consultaFavoritos = [];
+  List<Map<String, dynamic>> consultaCompras = [];
   List<FavoriteModel> favoritos = [];
+  List<PurchasesModel> compras = [];
   List<ProductModel> productos = [];
   //MAPAS
   Map<String, dynamic> perfil = {};
@@ -109,37 +114,68 @@ class _MainScreenState extends State<MainScreen> {
           consultaProductos = controlp.datosProductos;
           print(
               "Datos de productos recibidos en MainScreen: $consultaProductos");
-          for (var i = 0; i < consultaProductos.length; i++) {
-            idProducto = consultaProductos[i]['id'] ?? '';
-            cantidadProducto = consultaProductos[i]['cantidad'] ?? 0;
-            catalogoProducto = consultaProductos[i]['catalogo'] ?? '';
-            modeloProducto = consultaProductos[i]['modelo'] ?? '';
-            nombreProducto = consultaProductos[i]['nombre'] ?? '';
-            descripcionProducto = consultaProductos[i]['descripcion'] ?? '';
-            colorProducto = consultaProductos[i]['color'] ?? '';
-            tallaProducto = consultaProductos[i]['talla'] ?? '';
-            categoriaProducto = consultaProductos[i]['categoria'] ?? '';
-            valoracionProducto = consultaProductos[i]['valoracion'] ?? '';
-            precioProducto = consultaProductos[i]['precio'] ?? 0.0;
-            precioFormateado =
-                NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
-            productos.add(ProductModel(
-              idProducto,
-              cantidadProducto,
-              catalogoProducto,
-              modeloProducto,
-              nombreProducto,
-              colorProducto,
-              tallaProducto,
-              categoriaProducto,
-              descripcionProducto,
-              valoracionProducto,
-              precioFormateado,
-            ));
+          if (consultaProductos.length > 1) {
+            for (var i = 0; i < consultaProductos.length; i++) {
+              idProducto = consultaProductos[i]['id'] ?? '';
+              cantidadProducto = consultaProductos[i]['cantidad'] ?? 0;
+              catalogoProducto = consultaProductos[i]['catalogo'] ?? '';
+              modeloProducto = consultaProductos[i]['modelo'] ?? '';
+              nombreProducto = consultaProductos[i]['nombre'] ?? '';
+              descripcionProducto = consultaProductos[i]['descripcion'] ?? '';
+              colorProducto = consultaProductos[i]['color'] ?? '';
+              tallaProducto = consultaProductos[i]['talla'] ?? '';
+              categoriaProducto = consultaProductos[i]['categoria'] ?? '';
+              valoracionProducto = consultaProductos[i]['valoracion'] ?? '';
+              precioProducto = consultaProductos[i]['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              productos.add(ProductModel(
+                idProducto,
+                cantidadProducto,
+                catalogoProducto,
+                modeloProducto,
+                nombreProducto,
+                colorProducto,
+                tallaProducto,
+                categoriaProducto,
+                descripcionProducto,
+                valoracionProducto,
+                precioFormateado,
+              ));
+            }
+          } else {
+            consultaProductos.forEach((element) {
+              idProducto = element['id'] ?? '';
+              cantidadProducto = element['cantidad'] ?? 0;
+              catalogoProducto = element['catalogo'] ?? '';
+              modeloProducto = element['modelo'] ?? '';
+              nombreProducto = element['nombre'] ?? '';
+              descripcionProducto = element['descripcion'] ?? '';
+              colorProducto = element['color'] ?? '';
+              tallaProducto = element['talla'] ?? '';
+              categoriaProducto = element['categoria'] ?? '';
+              valoracionProducto = element['valoracion'] ?? '';
+              precioProducto = element['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              productos.add(ProductModel(
+                idProducto,
+                cantidadProducto,
+                catalogoProducto,
+                modeloProducto,
+                nombreProducto,
+                colorProducto,
+                tallaProducto,
+                categoriaProducto,
+                descripcionProducto,
+                valoracionProducto,
+                precioFormateado,
+              ));
+            });
           }
         });
       } else {
-        print("Error al cargar datos de productos");
+        print("Error al cargar datos de favoritos");
       }
     });
     controlf.obtenerfavoritos(idUsuario).then((value) {
@@ -149,34 +185,143 @@ class _MainScreenState extends State<MainScreen> {
       if (msg == "Proceso exitoso") {
         setState(() {
           consultaFavoritos = controlf.datosFavoritos;
-          for (var i = 0; i < consultaFavoritos.length; i++) {
-            idUsuario = consultaFavoritos[i]['uid'] ?? '';
-            cantidadProducto = consultaFavoritos[i]['cantidad'] ?? 0;
-            catalogoProducto = consultaFavoritos[i]['imagen'] ?? '';
-            nombreProducto = consultaFavoritos[i]['nombre'] ?? '';
-            descripcionProducto = consultaFavoritos[i]['descripcion'] ?? '';
-            colorProducto = consultaFavoritos[i]['color'] ?? '';
-            tallaProducto = consultaFavoritos[i]['talla'] ?? '';
-            categoriaProducto = consultaFavoritos[i]['categoria'] ?? '';
-            valoracionProducto = consultaFavoritos[i]['valoracion'] ?? '';
-            precioProducto = consultaFavoritos[i]['precio'] ?? 0.0;
-            idProducto = consultaFavoritos[i]['id'] ?? '';
-            favoritos.add(FavoriteModel(
-                idUsuario,
-                cantidadProducto,
-                catalogoProducto,
-                nombreProducto,
-                descripcionProducto,
-                colorProducto,
-                tallaProducto,
-                categoriaProducto,
-                valoracionProducto,
-                precioFormateado,
-                idProducto));
+          if (consultaFavoritos.length > 1) {
+            for (var i = 0; i <= consultaFavoritos.length; i++) {
+              idUsuario = consultaFavoritos[i]['uid'] ?? '';
+              cantidadProducto = consultaFavoritos[i]['cantidad'] ?? 0;
+              catalogoProducto = consultaFavoritos[i]['imagen'] ?? '';
+              nombreProducto = consultaFavoritos[i]['nombre'] ?? '';
+              descripcionProducto = consultaFavoritos[i]['descripcion'] ?? '';
+              colorProducto = consultaFavoritos[i]['color'] ?? '';
+              tallaProducto = consultaFavoritos[i]['talla'] ?? '';
+              categoriaProducto = consultaFavoritos[i]['categoria'] ?? '';
+              valoracionProducto = consultaFavoritos[i]['valoracion'] ?? '';
+              precioProducto = consultaFavoritos[i]['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              idProducto = consultaFavoritos[i]['id'] ?? '';
+              favoritos.add(FavoriteModel(
+                  idUsuario,
+                  cantidadProducto,
+                  catalogoProducto,
+                  nombreProducto,
+                  descripcionProducto,
+                  colorProducto,
+                  tallaProducto,
+                  categoriaProducto,
+                  valoracionProducto,
+                  precioFormateado,
+                  idProducto));
+            }
+          } else {
+            consultaFavoritos.forEach((element) {
+              idUsuario = element['uid'] ?? '';
+              cantidadProducto = element['cantidad'] ?? 0;
+              catalogoProducto = element['imagen'] ?? '';
+              nombreProducto = element['nombre'] ?? '';
+              descripcionProducto = element['descripcion'] ?? '';
+              colorProducto = element['color'] ?? '';
+              tallaProducto = element['talla'] ?? '';
+              categoriaProducto = element['categoria'] ?? '';
+              valoracionProducto = element['valoracion'] ?? '';
+              precioProducto = element['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              idProducto = element['id'] ?? '';
+              favoritos.add(FavoriteModel(
+                  idUsuario,
+                  cantidadProducto,
+                  catalogoProducto,
+                  nombreProducto,
+                  descripcionProducto,
+                  colorProducto,
+                  tallaProducto,
+                  categoriaProducto,
+                  valoracionProducto,
+                  precioFormateado,
+                  idProducto));
+            });
           }
         });
       } else {
         print("Error al cargar datos de favoritos");
+      }
+    });
+    controlc.obtenerCompras().then((value) {
+      setState(() {
+        msg = controlc.mensajesCompra;
+      });
+      if (msg == "Proceso exitoso") {
+        setState(() {
+          consultaCompras = controlc.datosCompras;
+          print("Datos de compras recibidos en MainScreen: $consultaCompras");
+          if (consultaCompras.length > 1) {
+            for (var i = 0; i < consultaCompras.length; i++) {
+              var uid = consultaFavoritos[i]['uid'] ?? '';
+              var iduser = consultaFavoritos[i]['iduser'] ?? '';
+              var idpedido = consultaFavoritos[i]['idpedido'] ?? '';
+              var cantidad = consultaFavoritos[i]['cantidad'] ?? 0;
+              var imagen = consultaFavoritos[i]['imagen'] ?? '';
+              var titulo = consultaFavoritos[i]['titulo'] ?? '';
+              var descripcion = consultaFavoritos[i]['descripcion'] ?? '';
+              var color = consultaFavoritos[i]['color'] ?? '';
+              var talla = consultaFavoritos[i]['talla'] ?? '';
+              var categoria = consultaFavoritos[i]['categoria'] ?? '';
+              var valoracion = consultaFavoritos[i]['valoracion'] ?? '';
+              var precio = consultaFavoritos[i]['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precio * 1000);
+              compras.add(PurchasesModel(
+                uid,
+                iduser,
+                idpedido,
+                cantidad,
+                imagen,
+                titulo,
+                descripcion,
+                color,
+                talla,
+                categoria,
+                valoracion,
+                precio,
+              ));
+            }
+          } else {
+            consultaCompras.forEach((element) {
+              var uid = element['uid'] ?? '';
+              var iduser = element['iduser'] ?? '';
+              var idpedido = element['idpedido'] ?? '';
+              var cantidad = element['cantidad'] ?? 0;
+              var imagen = element['imagen'] ?? '';
+              var titulo = element['titulo'] ?? '';
+              var descripcion = element['descripcion'] ?? '';
+              var color = element['color'] ?? '';
+              var talla = element['talla'] ?? '';
+              var categoria = element['categoria'] ?? '';
+              var valoracion = element['valoracion'] ?? '';
+              var precio = element['precio'] ?? '0.0';
+              precioFormateado =
+                  NumberFormat("#,###", "es_CO").format(precio * 1000);
+              compras.add(PurchasesModel(
+                uid,
+                iduser,
+                idpedido,
+                cantidad,
+                imagen,
+                titulo,
+                descripcion,
+                color,
+                talla,
+                categoria,
+                valoracion,
+                precioFormateado,
+              ));
+            });
+          }
+          print("Unica compra recibida en el main screen: $compras");
+        });
+      } else {
+        print("Error al cargar datos de compras");
       }
     });
   }
@@ -196,7 +341,7 @@ class _MainScreenState extends State<MainScreen> {
         alignment: Alignment.center,
         child: FutureBuilder(
           future: Future.delayed(
-              Duration(seconds: 3)), //Establece el tiempo de carga
+              Duration(seconds: 4)), //Establece el tiempo de carga
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Column(
@@ -323,6 +468,7 @@ class _MainScreenState extends State<MainScreen> {
                           celular: celular,
                           productos: productos,
                           favoritos: favoritos,
+                          compras: compras,
                         ),
                       ],
                     ),

@@ -89,8 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
 
   void cargarDatos() {
-    print(
-                              "perfil desde el home screen: ${widget.perfil}");
+    print("perfil desde el home screen: ${widget.perfil}");
     id = widget.id;
     productos = widget.productos;
     productosAux = productos;
@@ -598,9 +597,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         if (e.cantidad > itemCount.value) {
                                           itemCount.value++;
                                           carrito.add({
-                                            "uid": "",
-                                            "id": e.id,
-                                            "cantidad": e.cantidad,
+                                            "uid": e.id,
+                                            "iduser": id,
+                                            "idpedido": '',
+                                            "cantidad": itemCount.value,
                                             "imagen": e.modelo,
                                             "titulo": e.title,
                                             "color": e.color,
@@ -610,7 +610,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             "valoracion": e.valoration,
                                             "precio": e.price,
                                           });
-                                          print(carrito);
+                                          print(
+                                              "CARRITO DESDE EL HOME: $carrito");
                                           print(itemCount.value);
                                           seleccionarProductos(
                                               itemCount.value, carrito);

@@ -77,9 +77,8 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
         ? Scaffold(
             body: SingleChildScrollView(
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                color: _isDarkMode ? Colors.black : Colors.white,
+                height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
                     SizedBox(height: 16),
@@ -248,33 +247,45 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 SizedBox(height: 16),
                                 Text('Agrega productos a favoritos',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('para verlos aquí',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('más tarde',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('👇',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('Para hacerlo, solo debes',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -282,19 +293,27 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
+                                            color: _isDarkMode
+                                                ? Colors.white
+                                                : Colors.black)),
                                     Icon(
                                       Icons.favorite_border,
-                                      color: Colors.black,
+                                      color: _isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                     ),
                                     Text(' en la parte superior',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
+                                            color: _isDarkMode
+                                                ? Colors.white
+                                                : Colors.black)),
                                     Icon(
                                       Icons.arrow_upward,
-                                      color: Colors.black,
+                                      color: _isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                     )
                                   ],
                                 ),
@@ -316,33 +335,33 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   SizedBox(height: 16),
                   Text('Agrega productos a favoritos',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Text('para verlos aquí',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Text('más tarde',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Text('👇',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Text('Para hacerlo, solo debes',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -350,19 +369,21 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black)),
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black)),
                       Icon(
                         Icons.favorite_border,
-                        color: Colors.black,
+                        color: _isDarkMode ? Colors.white : Colors.black,
                       ),
                       Text(' en la parte superior',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black)),
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black)),
                       Icon(
                         Icons.arrow_upward,
-                        color: Colors.black,
+                        color: _isDarkMode ? Colors.white : Colors.black,
                       )
                     ],
                   ),

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
-import 'package:acfashion_store/domain/controller/controllerFavoritos.dart';
-import 'package:acfashion_store/domain/controller/controllerProductos.dart';
+import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
+import 'package:acfashion_store/domain/controller/controllerProducto.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';

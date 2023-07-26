@@ -1,5 +1,6 @@
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
+import 'package:acfashion_store/ui/models/purchases_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
@@ -10,8 +11,8 @@ import 'package:provider/provider.dart';
 
 class PurchasesScreen extends StatefulWidget {
   final perfil;
-  final List<FavoriteModel> favoritos;
-  PurchasesScreen({super.key, required this.favoritos, this.perfil});
+  final List<PurchasesModel> compras;
+  PurchasesScreen({super.key, this.perfil, required this.compras});
 
   @override
   State<PurchasesScreen> createState() => _PurchasesScreenState();
@@ -21,11 +22,12 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
   ControlConectividad controlconect = ControlConectividad();
   bool _controllerconectivity = true;
   String id = '';
-  List<FavoriteModel> favoritos = [];
+  int dinero = 0;
+  List<PurchasesModel> compras = [];
 
   bool _isDarkMode = false;
-  List<FavoriteModel> generateFavoritos() {
-    return favoritos;
+  List<PurchasesModel> generateFavoritos() {
+    return compras;
   }
 
   void _initConnectivity() async {
@@ -45,15 +47,25 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
     });
   }
 
+  void sumarDinero() {
+    for (var i = 0; i < compras.length; i++) {
+      double formato = double.parse(compras[i].price);
+      int dineroPorProducto = (formato * 1000).toInt();
+      dinero = dinero + dineroPorProducto;
+    }
+    print("dinero: $dinero");
+  }
+
   @override
   void initState() {
     super.initState();
     _initConnectivity();
-    favoritos = widget.favoritos;
-    print("favoritos: $favoritos");
-    if (favoritos.isNotEmpty) {
-      id = favoritos[0].id;
+    compras = widget.compras;
+    print("Compras: $compras");
+    if (compras.isNotEmpty) {
+      id = compras[0].uid;
     }
+    sumarDinero();
   }
 
   @override
@@ -70,10 +82,12 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
     } else {
       _isDarkMode = false;
     }
-    return favoritos.isNotEmpty
+    return compras.isNotEmpty
         ? Scaffold(
             body: SingleChildScrollView(
               child: Container(
+                color: _isDarkMode ? Colors.black : Colors.white,
+                height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
                     SizedBox(height: 16),
@@ -104,7 +118,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                     : Colors.black,
                                 width: 200,
                                 height: 30,
-                                child: Text('Inversiones: \$ 0.00',
+                                child: Text('Inv: \$' + '${dinero}',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -116,7 +130,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    favoritos.isNotEmpty
+                    compras.isNotEmpty
                         ? Container(
                             child: GridView.count(
                               childAspectRatio: 0.6,
@@ -145,7 +159,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                                     accesible: false,
                                                     isFavorited: true,
                                                     idUser: id,
-                                                    id: e.id,
+                                                    id: e.uid,
                                                     cantidad: e.cantidad,
                                                     image: e.imagen,
                                                     title: e.nombre,
@@ -260,33 +274,45 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 SizedBox(height: 16),
                                 Text('¡No te preocupes!',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('Puedes hacerlo',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('ahora o puedes hacerlo',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('más tarde',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Text('para hacerlo solo debes',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black)),
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -294,19 +320,31 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
+                                            color: _isDarkMode
+                                                ? Colors.white
+                                                : Colors.black)),
                                     Icon(
                                       Icons.add_shopping_cart_outlined,
-                                      color: Colors.black,
+                                      color: _isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                     ),
-                                    Text('en el producto que desees comprar',
+                                    Text('en el producto que desees',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black)),
-                                    Text('Y ¡listo!')
+                                            color: _isDarkMode
+                                                ? Colors.white
+                                                : Colors.black)),
                                   ],
                                 ),
+                                Text('comprar y ¡listo!',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black)),
                               ],
                             ),
                           )
@@ -321,63 +359,63 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
               child: Column(
                 children: [
                   SizedBox(height: 16),
-                  Text('No ha realizado ninguna compra',
+                  Text('No ha comprado nada aún',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   SizedBox(height: 16),
                   Text('¡No te preocupes!',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  Text('Haz una compra de algún producto',
+                          color: _isDarkMode ? Colors.white : Colors.black)),
+                  Text('Puedes hacerlo',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  Text('En la app store',
+                          color: _isDarkMode ? Colors.white : Colors.black)),
+                  Text('ahora o puedes hacerlo',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  Text('👇',
+                          color: _isDarkMode ? Colors.white : Colors.black)),
+                  Text('más tarde',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  Text('Para hacerlo, solo debes',
+                          color: _isDarkMode ? Colors.white : Colors.black)),
+                  Text('para hacerlo solo debes',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('presionar el carrito de compras',
+                      Text('presionar el icono de',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black)),
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black)),
                       Icon(
-                        Icons.add_shopping_cart,
-                        color: Colors.black,
+                        Icons.add_shopping_cart_outlined,
+                        color: _isDarkMode ? Colors.white : Colors.black,
                       ),
+                      Text('en el producto que desees',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black)),
                     ],
                   ),
-                  Text('del catalogo del producto',
+                  Text('comprar y ¡listo!',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  Text(
-                    'Y ¡listo!',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
+                          color: _isDarkMode ? Colors.white : Colors.black)),
                 ],
               ),
             ),

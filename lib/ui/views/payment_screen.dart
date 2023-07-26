@@ -118,6 +118,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     nombre = perfil['nombre'];
     telefono = perfil['celular'];
     url = perfil['foto'];
+    print("perfil en el payment: $perfil");
   }
 
   // void _facturar() {
@@ -530,6 +531,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                 ),
                 onPressed: () {
+                  print("CARRITO EN EL PAGO: $carrito");
                   var perfil = <String, dynamic>{
                     'uid': idUser,
                     'correo': correo,

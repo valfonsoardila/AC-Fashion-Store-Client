@@ -1,3 +1,4 @@
+import 'package:acfashion_store/domain/controller/controllerPedido.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:geocoding/geocoding.dart';
@@ -21,6 +22,7 @@ class GoogleMapsScreen extends StatefulWidget {
 }
 
 class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
+  ControlPedido controlpd = ControlPedido();
   GoogleMapController? _mapController;
   List<Placemark> placemarks = [];
   TextEditingController controlId = TextEditingController();
@@ -38,7 +40,10 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   String selectedCategoryName = '';
   ImagePicker picker = ImagePicker();
   List<Map<String, dynamic>> carrito = [];
+  List<Location> locations = [];
   Map<String, dynamic> perfil = {};
+  int total = 0;
+  //VARIABLES PERFIL
   var idUser;
   var correo;
   var nombre;
@@ -46,10 +51,10 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   var url;
   var direccion;
   var _image;
+  //VARIABLES UBICACION
   var _myLocation = LatLng(0, 0);
   var _myLocationInit = LatLng(0, 0);
   var currentlocation = [];
-  List<Location> locations = [];
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -110,13 +115,15 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     selectedCategoryName = widget.categoriaPago;
     carrito = widget.compra;
     perfil = widget.perfil;
+    total = widget.total;
     print(perfil);
     if (perfil != {}) {
-      idUser = perfil['id'];
+      idUser = perfil['uid'];
       correo = perfil['correo'];
       nombre = perfil['nombre'];
       telefono = perfil['celular'];
       url = perfil['foto'];
+      print("Prueba id usuario: $idUser");
     }
   }
 
@@ -362,6 +369,26 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
                 TextButton.icon(
                   onPressed: () {
                     // Lógica para guardar los cambios realizados en el perfil
+                    var pedido = {
+                      'iduser': idUser,
+                      'nombre': nombre,
+                      'correo': correo,
+                      'celular': telefono,
+                      'foto': url,
+                      'direccion': direccion,
+                      'cantidad': carrito.length,
+                      'total': total,
+                      'metodoPago': selectedCategoryName,
+                      'fechaCompra':
+                          '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                      'horaCompra': '${getFormattedTime()}',
+                      'estadoEntrega': 'Pendiente',
+                      'tiempoEntrega': '4 a 10 horas',
+                    };
+                    print("Este es el pedido a guardar: $pedido");
+                    print("CARRITO DESDE GOOGLE MAPS: $carrito");
+                    controlpd.agregarPedido(
+                        pedido, carrito, perfil, widget.total);
                     Navigator.of(context).pop();
                   },
                   icon: Icon(Icons.attach_money_sharp,

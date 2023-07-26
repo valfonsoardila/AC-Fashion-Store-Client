@@ -69,9 +69,6 @@ class _ShopScreenState extends State<ShopScreen> {
     compra = widget.compra;
     count = widget.itemCount;
     print("este es el perfil: ${widget.perfil}");
-    for (var i = 0; i < compra.length; i++) {
-      compra[i]['uid'] = id;
-    }
   }
 
   @override
@@ -417,6 +414,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       child: _controllerconectivity != false
                           ? ElevatedButton(
                               onPressed: () {
+                                print("COMPRA EN SHOP: $compra");
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

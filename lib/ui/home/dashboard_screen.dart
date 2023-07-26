@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/notification_model.dart';
+import 'package:acfashion_store/ui/models/purchases_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
@@ -29,6 +30,7 @@ class DashboardScreen extends StatefulWidget {
   final String profesion;
   final List<ProductModel> productos;
   final List<FavoriteModel> favoritos;
+  final List<PurchasesModel> compras;
   DashboardScreen({
     Key? key,
     required this.id,
@@ -41,6 +43,7 @@ class DashboardScreen extends StatefulWidget {
     required this.profesion,
     required this.productos,
     required this.favoritos,
+    required this.compras,
   }) : super(key: key);
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -81,6 +84,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
   List<FavoriteModel> productosFavoritos = [];
+  List<PurchasesModel> compras = [];
   List<ProductModel> productosAux = [];
   List<ProductModel> categories = [];
   List<ProductModel> colors = [];
@@ -135,6 +139,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     productos = widget.productos;
     productosAux = productos;
     productosFavoritos = widget.favoritos;
+    compras = widget.compras;
     perfil = <String, dynamic>{
       'uid': id,
       'correo': correoPerfil,
@@ -330,7 +335,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         onCarrito: obtenerCarrito,
       ),
       BookMarksScreen(favoritos: productosFavoritos, perfil: perfil),
-      PurchasesScreen(favoritos: productosFavoritos, perfil: perfil),
+      PurchasesScreen(compras: compras, perfil: perfil),
       SettingsScreen(),
     ];
     return AnimatedContainer(
