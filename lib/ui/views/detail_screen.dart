@@ -243,44 +243,44 @@ class _DashboardScreenState extends State<DetailScreen> {
                     });
                   },
                 ),
-          _isAccessible != false
-              ? IconButton(
-                  icon: Icon(Icons.add_shopping_cart_outlined),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  color: _isDarkMode ? Colors.white : Colors.black,
-                  onPressed: () async {
-                    if (cantidad >= 1) {
-                      carrito.add({
-                        "id": idProducto,
-                        "cantidad": cantidad,
-                        "imagen": imagen,
-                        "titulo": titulo,
-                        "color": color,
-                        "talla": talla,
-                        "categoria": categoria,
-                        "descripcion": descripcion,
-                        "valoracion": valoracion,
-                        "precio": precio,
-                      });
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ShopScreen(
-                                    perfil: widget.perfil,
-                                    compra: carrito,
-                                    itemCount: 1,
-                                    id: idUser,
-                                  )));
-                      if (result != null) {
-                        setState(() {
-                          itemCount = result;
-                        });
-                      }
-                    }
-                  },
-                )
-              : Container(),
+          // _isAccessible != false
+          //     ? IconButton(
+          //         icon: Icon(Icons.add_shopping_cart_outlined),
+          //         splashColor: Colors.transparent,
+          //         highlightColor: Colors.transparent,
+          //         color: _isDarkMode ? Colors.white : Colors.black,
+          //         onPressed: () async {
+          //           if (cantidad >= 1) {
+          //             carrito.add({
+          //               "id": idProducto,
+          //               "cantidad": cantidad,
+          //               "imagen": imagen,
+          //               "titulo": titulo,
+          //               "color": color,
+          //               "talla": talla,
+          //               "categoria": categoria,
+          //               "descripcion": descripcion,
+          //               "valoracion": valoracion,
+          //               "precio": precio,
+          //             });
+          //             final result = await Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                     builder: (context) => ShopScreen(
+          //                           perfil: widget.perfil,
+          //                           compra: carrito,
+          //                           itemCount: 1,
+          //                           id: idUser,
+          //                         )));
+          //             if (result != null) {
+          //               setState(() {
+          //                 itemCount = result;
+          //               });
+          //             }
+          //           }
+          //         },
+          //       )
+          //     : Container(),
         ],
       ),
       body: SingleChildScrollView(
@@ -438,6 +438,125 @@ class _DashboardScreenState extends State<DetailScreen> {
                                 fontSize: 20.0,
                               )),
                         ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: Text(
+                            color,
+                            style: TextStyle(
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black54,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isDarkMode
+                                ? Color.fromARGB(255, 39, 39, 39)
+                                : Color.fromARGB(255, 247, 246, 246),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        RichText(
+                          textAlign: TextAlign.start,
+                          text: TextSpan(
+                              text: "Selecciona la talla :",
+                              style: TextStyle(
+                                color:
+                                    _isDarkMode ? Colors.white : Colors.black54,
+                                fontSize: 20.0,
+                              )),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: Text(
+                            talla,
+                            style: TextStyle(
+                              color:
+                                  _isDarkMode ? Colors.white : Colors.black54,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isDarkMode
+                                ? Color.fromARGB(255, 39, 39, 39)
+                                : Color.fromARGB(255, 247, 246, 246),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _isAccessible != false
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      if (cantidad >= 1) {
+                                        carrito.add({
+                                          "id": idProducto,
+                                          "cantidad": cantidad,
+                                          "imagen": imagen,
+                                          "titulo": titulo,
+                                          "color": color,
+                                          "talla": talla,
+                                          "categoria": categoria,
+                                          "descripcion": descripcion,
+                                          "valoracion": valoracion,
+                                          "precio": precio,
+                                        });
+                                        final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ShopScreen(
+                                                      perfil: widget.perfil,
+                                                      compra: carrito,
+                                                      itemCount: 1,
+                                                      id: idUser,
+                                                    )));
+                                        if (result != null) {
+                                          setState(() {
+                                            itemCount = result;
+                                          });
+                                        }
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.add_shopping_cart_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          'Agregar al carrito',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: MyColors.myPurple,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         SizedBox(
                           height: 80,
                           child: ListView(

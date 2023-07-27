@@ -25,7 +25,7 @@ class PeticionesPedido {
         'pago': total,
       };
       carrito.forEach((element) {
-        element['idpedido'] = pedidoRegistrado[0]['uid'];
+        element['uid'] = pedidoRegistrado[0]['uid'];
       });
       print("CARRITO ANTES DE GUARDAR: $carrito");
       final responsePago = await PeticionesPago.crearPago([pago]);

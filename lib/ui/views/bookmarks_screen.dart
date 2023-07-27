@@ -220,11 +220,25 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                                               ? Colors.white
                                                               : Colors.black),
                                                     ),
-                                                    SizedBox(width: 115),
-                                                    Icon(
-                                                      Icons.favorite,
-                                                      color: Colors.red,
-                                                      size: 24,
+                                                    SizedBox(width: 100),
+                                                    CircleAvatar(
+                                                      backgroundColor:
+                                                          _isDarkMode
+                                                              ? Colors
+                                                                  .grey.shade900
+                                                              : Colors.white,
+                                                      child: IconButton(
+                                                        icon: Icon(
+                                                          Icons.favorite,
+                                                          color: Colors.red,
+                                                          size: 24,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            favoritos.remove(e);
+                                                          });
+                                                        },
+                                                      ),
                                                     ),
                                                   ],
                                                 ),

@@ -68,7 +68,7 @@ class _ShopScreenState extends State<ShopScreen> {
     id = widget.id;
     compra = widget.compra;
     count = widget.itemCount;
-    print("este es el perfil: ${widget.perfil}");
+    print("este es el perfil en ShopScreen: ${widget.perfil}");
   }
 
   @override
@@ -115,7 +115,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 width: 10,
               ),
               Text(
-                'Tu carrito de compras',
+                'Mi carrito de compras',
                 style: TextStyle(
                     color: _isDarkMode ? Colors.white : Colors.black,
                     fontSize: 20),
