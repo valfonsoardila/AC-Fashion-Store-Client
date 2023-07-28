@@ -11,24 +11,27 @@ import 'package:page_transition/page_transition.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   final perfil;
-  final List<FavoriteModel> favoritos;
-  final List<ProductModel> productos;
-  final String id;
-  final Function(int) onProductosSeleccionados;
-  final Function(List<Map<String, dynamic>>) onCarrito;
-  final Function(List<FavoriteModel>) onFavoritesProducts;
+  final compra;
+  final favoritos;
+  final productos;
+  final id;
+  final onProductosSeleccionados;
+  final onCarrito;
+  final onFavoritesProducts;
   const HomeScreen({
     super.key,
     this.perfil,
-    required this.onFavoritesProducts,
-    required this.favoritos,
-    required this.productos,
-    required this.id,
-    required this.onProductosSeleccionados,
-    required this.onCarrito,
+    this.compra,
+    this.onFavoritesProducts,
+    this.favoritos,
+    this.productos,
+    this.id,
+    this.onProductosSeleccionados,
+    this.onCarrito,
   });
 
   @override
@@ -37,8 +40,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ControlConectividad controlconect = ControlConectividad();
+  final PageController _pageController = PageController();
   bool _controllerconectivity = true;
-
   String id = "";
   bool _isFavorite = false;
   RxInt itemCount = 0.obs;
@@ -70,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<NotificationModel> notificationsList() {
     return notifications;
   }
+
   //callbaks de favoritos
   void gestionFavoritos(List<FavoriteModel> favoritosobtenidos) {
     print("favoritos que se enviaran al dash: $favoritosobtenidos");
@@ -284,85 +288,41 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 200,
                         child: Stack(
                           children: [
-                            PageView.builder(
-                              itemCount: bannerImages.length,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  currentPage = index;
-                                });
+                            GestureDetector(
+                              onHorizontalDragUpdate: (details) {
+                                if (details.delta.dx > 0) {
+                                  // Deslizamiento hacia la derecha, cambiar a la página anterior
+                                  _pageController.previousPage(
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.ease);
+                                } else if (details.delta.dx < 0) {
+                                  // Deslizamiento hacia la izquierda, cambiar a la página siguiente
+                                  _pageController.nextPage(
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.ease);
+                                }
                               },
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(bannerImages[index]),
-                                      fit: BoxFit.fill,
+                              child: PageView(
+                                controller: _pageController,
+                                onPageChanged: (value) {
+                                  setState(() {
+                                    currentPage = value;
+                                  });
+                                },
+                                children: List.generate(
+                                  bannerImages.length,
+                                  (index) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          bannerImages[index],
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        right: 18,
-                                        left: 18,
-                                        top: 10,
-                                        bottom: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        RichText(
-                                          textAlign: TextAlign.center,
-                                          text: TextSpan(
-                                            text: "",
-                                            style: TextStyle(
-                                                color: _isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black87,
-                                                fontSize: 16),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        RichText(
-                                          textAlign: TextAlign.start,
-                                          text: TextSpan(
-                                            text: "",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                fontSize: 28),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 62,
-                                        ),
-                                        ElevatedButton(
-                                            child: Text("  Comprar Ahora  ".toUpperCase(),
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: _isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black87)),
-                                            style: ButtonStyle(
-                                                foregroundColor:
-                                                    MaterialStateProperty.all<Color>(
-                                                        _isDarkMode
-                                                            ? Colors.black87
-                                                            : Colors.white),
-                                                backgroundColor: _isDarkMode
-                                                    ? MaterialStateProperty.all<Color>(
-                                                        Colors.grey.shade900)
-                                                    : MaterialStateProperty.all<Color>(
-                                                        Colors.white),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)))),
-                                            onPressed: () {}),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
+                                ),
+                              ),
                             ),
                             Align(
                               alignment: Alignment.bottomCenter,
@@ -504,10 +464,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: _controllerconectivity != false
                                     ? //Image del catalogo del producto
-                                    Image.network(
-                                        e.catalogo,
-                                        height: 250,
-                                        width: double.infinity,
+                                    CachedNetworkImage(
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                                Center(
+                                          child: CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                        imageUrl: e.catalogo,
                                       )
                                     : //Image de verificacion de conexion
                                     Center(

@@ -114,7 +114,6 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     _controllerconectivity = widget.controllerconectivity;
     carrito = widget.carrito;
     perfil = widget.perfil;
-    print("Este es el perfil en invoice: ${perfil}");
     idUser = perfil['uid'];
     url = widget.url;
     nombre = widget.nombre;

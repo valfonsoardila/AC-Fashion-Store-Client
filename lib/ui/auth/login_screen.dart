@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
@@ -35,10 +36,24 @@ class _LoginState extends State<Login> {
     });
   }
 
+  void guardarDatos() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', user.text);
+    prefs.setString('pass', pass.text);
+    await prefs.remove('userLoggedIn');
+  }
+
+  void cargarDatos() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    user.text = prefs.getString('user') ?? '';
+    pass.text = prefs.getString('pass') ?? '';
+  }
+
   @override
   void initState() {
     super.initState();
     _initConnectivity();
+    cargarDatos();
   }
 
   @override
@@ -93,6 +108,7 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 40.0),
                     TextFormField(
                       controller: user,
+                      enableSuggestions: true,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -189,6 +205,7 @@ class _LoginState extends State<Login> {
                                     String uid =
                                         controlua.sesionValida!.user.id;
                                     Get.toNamed("/principal", arguments: uid);
+                                    guardarDatos();
                                     // Get.to(Home(uid: uid));
                                   }
                                 }

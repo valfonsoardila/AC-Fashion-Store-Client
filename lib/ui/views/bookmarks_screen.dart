@@ -7,6 +7,7 @@ import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/detail_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -156,11 +157,23 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                                     child:
                                                         _controllerconectivity !=
                                                                 false
-                                                            ? Image.network(
-                                                                e.imagen,
-                                                                height: 89,
-                                                                width: double
-                                                                    .infinity,
+                                                            ? CachedNetworkImage(
+                                                                progressIndicatorBuilder:
+                                                                    (context,
+                                                                            url,
+                                                                            downloadProgress) =>
+                                                                        Center(
+                                                                  child: CircularProgressIndicator(
+                                                                      value: downloadProgress
+                                                                          .progress),
+                                                                ),
+                                                                errorWidget: (context,
+                                                                        url,
+                                                                        error) =>
+                                                                    Icon(Icons
+                                                                        .error),
+                                                                imageUrl:
+                                                                    e.imagen,
                                                               )
                                                             : Center(
                                                                 child:
