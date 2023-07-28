@@ -49,18 +49,18 @@ class _ShopScreenState extends State<ShopScreen> {
 
   void _initConnectivity() async {
     // Obtiene el estado de la conectividad al inicio
-    final connectivityResult = await Connectivity().checkConnectivity();
-    _updateConnectionStatus(connectivityResult);
+    bool connectivityResult = await controlconect.verificarConexion();
+    _updateConnectionStatus();
 
     // Escucha los cambios en la conectividad y actualiza el estado en consecuencia
     Connectivity().onConnectivityChanged.listen((connectivityResult) {
-      _updateConnectionStatus(connectivityResult);
+      _updateConnectionStatus();
     });
   }
 
-  void _updateConnectionStatus(ConnectivityResult connectivityResult) {
+  void _updateConnectionStatus() {
     setState(() {
-      _controllerconectivity = connectivityResult != ConnectivityResult.none;
+      _controllerconectivity = controlconect.conexion;
     });
   }
 

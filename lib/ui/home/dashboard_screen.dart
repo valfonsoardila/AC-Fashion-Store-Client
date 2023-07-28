@@ -83,6 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Map<String, dynamic> perfil = {};
   List<Map<String, dynamic>> carrito = [];
   List<ProductModel> productos = [];
+  List<FavoriteModel> favoritosAux = [];
   List<FavoriteModel> productosFavoritos = [];
   List<PurchasesModel> compras = [];
   List<ProductModel> productosAux = [];
@@ -122,9 +123,11 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   void _mostrarAlerta() {
-    Get.snackbar("Error de conexion", "No se pudo conectar con el servidor",
-        duration: const Duration(seconds: 4),
-        backgroundColor: const Color.fromARGB(255, 73, 73, 73));
+    Get.snackbar(
+      "Error de conexion",
+      "No se pudo conectar con el servidor",
+      duration: const Duration(seconds: 4),
+    );
   }
 
   void cargarDatos() {
@@ -247,6 +250,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  void obtenerNuevaListaFavoritos(List<FavoriteModel> favoritosobtenidos) {
+    print(
+        "Esta fue la lista de favoritos que llego al dash: $favoritosobtenidos");
+    this.favoritosAux = favoritosobtenidos;
+    if (favoritosAux.length == 0) {
+      productosFavoritos.clear();
+    }
+    print("Nueva lista de favoritos en el dash: $productosFavoritos");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -333,6 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         id: id,
         onProductosSeleccionados: obtenerCantidadProductosSeleccionados,
         onCarrito: obtenerCarrito,
+        onFavoritesProducts: obtenerNuevaListaFavoritos,
       ),
       BookMarksScreen(favoritos: productosFavoritos, perfil: perfil),
       PurchasesScreen(compras: compras, perfil: perfil),

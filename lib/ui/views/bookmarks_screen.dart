@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
+import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
@@ -22,7 +23,9 @@ class BookMarksScreen extends StatefulWidget {
 
 class _BookMarksScreenState extends State<BookMarksScreen> {
   ControlConectividad controlconect = ControlConectividad();
+  ControlFavoritos controlf = ControlFavoritos();
   bool _controllerconectivity = true;
+  String idproducto = '';
   String id = '';
   List<FavoriteModel> favoritos = [];
 
@@ -62,6 +65,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   @override
   void dispose() {
     super.dispose();
+    controlf.eliminarfavorito(idproducto);
   }
 
   @override
@@ -234,7 +238,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                                           size: 24,
                                                         ),
                                                         onPressed: () {
+                                                          print("id: ${e.uid}");
                                                           setState(() {
+                                                            idproducto = e.uid;
                                                             favoritos.remove(e);
                                                           });
                                                         },

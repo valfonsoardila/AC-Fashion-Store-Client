@@ -52,12 +52,12 @@ class PeticionesFavorito {
     }
   }
 
-  static Future<dynamic> eliminarFavorito(String id) async {
-    print("id del producto a eliminar: $id");
+  static Future<dynamic> eliminarFavorito(String uid) async {
+    print("id del producto a eliminar: $uid");
     final tableName = "favorito";
     try {
       final List<Map<String, dynamic>> data =
-          await _client.from(tableName).delete().match({'uid': id}).select();
+          await _client.from(tableName).delete().match({'uid': uid}).select();
       return data;
     } catch (error) {
       print('Error en la operación de creación de catálogo: $error');

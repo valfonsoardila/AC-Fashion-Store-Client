@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
 import 'package:acfashion_store/domain/controller/controllerProducto.dart';
+import 'package:acfashion_store/ui/models/favorite_model.dart';
 import 'package:acfashion_store/ui/models/product_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
@@ -27,7 +28,7 @@ class DetailScreen extends StatefulWidget {
   final String description;
   final String valoration;
   final String price;
-
+  final onFavoritesProducts;
   DetailScreen({
     Key? key,
     required this.perfil,
@@ -44,6 +45,7 @@ class DetailScreen extends StatefulWidget {
     required this.description,
     required this.valoration,
     required this.price,
+    this.onFavoritesProducts,
   }) : super(key: key);
 
   @override
@@ -54,8 +56,11 @@ class _DashboardScreenState extends State<DetailScreen> {
   ControlConectividad controlconect = ControlConectividad();
   ControlProducto controlp = new ControlProducto();
   ControlFavoritos controlf = new ControlFavoritos();
+  List<FavoriteModel> favoritos = [];
+  List<ProductModel> productos = [];
   List<Map<String, dynamic>> carrito = [];
   List<Map<String, dynamic>> nuevaconsultafavoritos = [];
+  Map<String, dynamic> favorito = {};
   bool _controllerconectivity = true;
   bool _isFavorited = false;
   bool _isAccessible = false;
@@ -66,7 +71,6 @@ class _DashboardScreenState extends State<DetailScreen> {
   int swipeSensitivity = 2;
   bool allowSwipeToRotate = true;
   bool imagePrecached = true;
-  List<ProductModel> productos = [];
   var itemCount;
   var idProducto = "";
   var cantidad = 0;
@@ -97,6 +101,17 @@ class _DashboardScreenState extends State<DetailScreen> {
     });
   }
 
+  List<ProductModel> colorCategories() {
+    return productos;
+  }
+
+  void gestionFavoritos(
+    List<FavoriteModel> nuevalistafavoritos,
+  ) {
+    print("nuevalistafavoritos: " + nuevalistafavoritos.toString());
+    widget.onFavoritesProducts(nuevalistafavoritos);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -119,10 +134,6 @@ class _DashboardScreenState extends State<DetailScreen> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  List<ProductModel> colorCategories() {
-    return productos;
   }
 
   List<Widget> buildColorWidgets() {
@@ -184,28 +195,11 @@ class _DashboardScreenState extends State<DetailScreen> {
                   onPressed: () {
                     setState(() {
                       _isFavorited = !_isFavorited;
-                      print("id del producto: $idProducto");
-                      controlf.eliminarfavorito(idProducto).then((value) {
-                        print("Eliminado");
-                        setState(() {
-                          msg = controlf.mensajesFavorio;
-                          print(msg);
-                        });
-                        if (msg == "Proceso exitoso") {
-                          controlf.obtenerfavoritos(idUser).then((value) {
-                            setState(() {
-                              msg = controlf.mensajesFavorio;
-                            });
-                            if (msg == "Proceso exitoso") {
-                              setState(() {
-                                nuevaconsultafavoritos =
-                                    controlf.datosFavoritos;
-                              });
-                            }
-                            Get.offAndToNamed("/principal", arguments: idUser);
-                          });
-                        }
-                      });
+                      controlf.eliminarfavorito(idProducto);
+                      favorito.remove(favorito);
+                      print("favorito despues de eliminar: " +
+                          favorito.toString());
+                      gestionFavoritos(favoritos);
                     });
                   },
                 )
@@ -215,7 +209,7 @@ class _DashboardScreenState extends State<DetailScreen> {
                   onPressed: () {
                     setState(() {
                       _isFavorited = !_isFavorited;
-                      var favorito = {
+                      favorito = {
                         "uid": idProducto,
                         "id": idUser,
                         "cantidad": cantidad,
@@ -228,18 +222,23 @@ class _DashboardScreenState extends State<DetailScreen> {
                         "valoracion": valoracion,
                         "precio": precio,
                       };
+                      favoritos.add(
+                        FavoriteModel(
+                          favorito["uid"],
+                          favorito["cantidad"],
+                          favorito["imagen"],
+                          favorito["nombre"],
+                          favorito["color"],
+                          favorito["talla"],
+                          favorito["categoria"],
+                          favorito["descripcion"],
+                          favorito["valoracion"],
+                          favorito["precio"],
+                          favorito["id"],
+                        ),
+                      );
                       controlf.agregarfavorito(favorito);
-                      controlf.obtenerfavoritos(idUser).then((value) {
-                        setState(() {
-                          msg = controlf.mensajesFavorio;
-                        });
-                        if (msg == "Proceso exitoso") {
-                          setState(() {
-                            nuevaconsultafavoritos = controlf.datosFavoritos;
-                          });
-                          Get.offAndToNamed("/principal", arguments: idUser);
-                        }
-                      });
+                      gestionFavoritos(favoritos);
                     });
                   },
                 ),
@@ -492,70 +491,72 @@ class _DashboardScreenState extends State<DetailScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                        _isAccessible != false
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      if (cantidad >= 1) {
-                                        carrito.add({
-                                          "id": idProducto,
-                                          "cantidad": cantidad,
-                                          "imagen": imagen,
-                                          "titulo": titulo,
-                                          "color": color,
-                                          "talla": talla,
-                                          "categoria": categoria,
-                                          "descripcion": descripcion,
-                                          "valoracion": valoracion,
-                                          "precio": precio,
-                                        });
-                                        final result = await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ShopScreen(
-                                                      perfil: widget.perfil,
-                                                      compra: carrito,
-                                                      itemCount: 1,
-                                                      id: idUser,
-                                                    )));
-                                        if (result != null) {
-                                          setState(() {
-                                            itemCount = result;
-                                          });
-                                        }
-                                      }
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.add_shopping_cart_outlined,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          'Agregar al carrito',
-                                          style: TextStyle(
-                                              fontSize: 18,
+                        _controllerconectivity != false
+                            ? _isAccessible != false
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          if (cantidad >= 1) {
+                                            carrito.add({
+                                              "id": idProducto,
+                                              "cantidad": cantidad,
+                                              "imagen": imagen,
+                                              "titulo": titulo,
+                                              "color": color,
+                                              "talla": talla,
+                                              "categoria": categoria,
+                                              "descripcion": descripcion,
+                                              "valoracion": valoracion,
+                                              "precio": precio,
+                                            });
+                                            final result = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ShopScreen(
+                                                          perfil: widget.perfil,
+                                                          compra: carrito,
+                                                          itemCount: 1,
+                                                          id: idUser,
+                                                        )));
+                                            if (result != null) {
+                                              setState(() {
+                                                itemCount = result;
+                                              });
+                                            }
+                                          }
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.add_shopping_cart_outlined,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              'Agregar al carrito',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: MyColors.myPurple,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: MyColors.myPurple,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              )
+                                    ],
+                                  )
+                                : Container()
                             : Container(),
                         SizedBox(
                           height: 80,

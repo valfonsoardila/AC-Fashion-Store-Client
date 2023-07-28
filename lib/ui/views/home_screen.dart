@@ -19,9 +19,11 @@ class HomeScreen extends StatefulWidget {
   final String id;
   final Function(int) onProductosSeleccionados;
   final Function(List<Map<String, dynamic>>) onCarrito;
+  final Function(List<FavoriteModel>) onFavoritesProducts;
   const HomeScreen({
     super.key,
     this.perfil,
+    required this.onFavoritesProducts,
     required this.favoritos,
     required this.productos,
     required this.id,
@@ -64,8 +66,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return productos;
   }
 
+  List<FavoriteModel> favoritosAux = [];
   List<NotificationModel> notificationsList() {
     return notifications;
+  }
+  //callbaks de favoritos
+  void gestionFavoritos(List<FavoriteModel> favoritosobtenidos) {
+    print("favoritos que se enviaran al dash: $favoritosobtenidos");
+    widget.onFavoritesProducts(favoritosobtenidos);
+  }
+
+  void obtenerNuevaListaFavoritos(
+    List<FavoriteModel> favoritosobtenidos,
+  ) {
+    // Asigna el valor de la cantidad de productos seleccionados a la variable
+    this.favoritosAux = favoritosobtenidos;
+    setState(() {
+      if (favoritosAux.length > 0) {
+        _isFavorite = true;
+        favoritos.add(favoritosAux[0]);
+      } else {
+        _isFavorite = false;
+        favoritos = [];
+      }
+    });
+    gestionFavoritos(favoritos);
+    print("Nueva lista de favoritos: $favoritos");
   }
 
   void seleccionarProductos(
@@ -434,7 +460,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       elevation: 0,
                       child: InkWell(
                         onTap: () async {
-                          obteneridfavorito(e.id);
+                          if (favoritos.length > 0) {
+                            obteneridfavorito(e.id);
+                          }
                           final result = await Navigator.push(
                               context,
                               PageTransition(
@@ -454,6 +482,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     description: e.description,
                                     valoration: e.valoration,
                                     price: e.price,
+                                    onFavoritesProducts:
+                                        obtenerNuevaListaFavoritos,
                                   )));
                           if (result != null) {
                             setState(() {
@@ -472,41 +502,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                child: FutureBuilder<bool>(
-                                    future: controlconect.verificarConexion(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        print("Cargando");
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else {
-                                        if (snapshot.hasError) {
-                                          print("Error");
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else {
-                                          print("Conectado");
-                                          return _controllerconectivity != false
-                                              ? //Image del catalogo del producto
-                                              Image.network(
-                                                  e.catalogo,
-                                                  height: 250,
-                                                  width: double.infinity,
-                                                )
-                                              : //Image de verificacion de conexion
-                                              Center(
-                                                  child: Image.asset(
-                                                    "assets/icons/ic_not_signal.png",
-                                                    height: 50,
-                                                    width: 50,
-                                                  ),
-                                                );
-                                        }
-                                      }
-                                    }),
+                                child: _controllerconectivity != false
+                                    ? //Image del catalogo del producto
+                                    Image.network(
+                                        e.catalogo,
+                                        height: 250,
+                                        width: double.infinity,
+                                      )
+                                    : //Image de verificacion de conexion
+                                    Center(
+                                        child: Image.asset(
+                                          "assets/icons/ic_not_signal.png",
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                      ),
                               ),
                               SizedBox(
                                 height: 4,

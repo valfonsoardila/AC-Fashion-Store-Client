@@ -18,8 +18,8 @@ class ControlFavoritos extends GetxController {
     return _response.value;
   }
 
-  Future<void> eliminarfavorito(String id) async {
-    _response.value = await PeticionesFavorito.eliminarFavorito(id);
+  Future<void> eliminarfavorito(String uid) async {
+    _response.value = await PeticionesFavorito.eliminarFavorito(uid);
     await controlProducto(_response.value);
     return _response.value;
   }
