@@ -10,7 +10,7 @@ class PurchasesModel {
   String talla;
   String category;
   String valoration;
-  String price;
+  int price;
 
   PurchasesModel(
     this.uid,

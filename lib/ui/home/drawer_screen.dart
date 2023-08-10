@@ -578,7 +578,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   controlua.userValido == null && controlua.estadoUser == null
                       ? Get.offAllNamed("/home")
                       : Get.offAllNamed("/login");
-                  controlua.userValido.val("");
+                  controlua.cerrarSesion();
                 });
               },
               child: Row(

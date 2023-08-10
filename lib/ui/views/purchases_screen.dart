@@ -50,7 +50,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
 
   void sumarDinero() {
     for (var i = 0; i < compras.length; i++) {
-      double formato = double.parse(compras[i].price);
+      double formato = compras[i].price.toDouble();
       int dineroPorProducto = (formato * 1000).toInt();
       dinero = dinero + dineroPorProducto;
     }

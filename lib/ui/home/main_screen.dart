@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
   var tallaProducto = "";
   var categoriaProducto = "";
   var valoracionProducto = "";
-  var precioProducto = 0.0;
+  var precioProducto = 0;
   //LISTAS
   List<Map<String, dynamic>> consultaProductos = [];
   List<Map<String, dynamic>> consultaFavoritos = [];
@@ -126,21 +126,21 @@ class _MainScreenState extends State<MainScreen> {
               tallaProducto = consultaProductos[i]['talla'] ?? '';
               categoriaProducto = consultaProductos[i]['categoria'] ?? '';
               valoracionProducto = consultaProductos[i]['valoracion'] ?? '';
-              precioProducto = consultaProductos[i]['precio'] ?? '0.0';
-              precioFormateado =
-                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              precioProducto = consultaProductos[i]['precio'] ?? 0;
+              // precioFormateado =
+              //     NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
               productos.add(ProductModel(
-                idProducto,
-                cantidadProducto,
-                catalogoProducto,
-                modeloProducto,
-                nombreProducto,
-                colorProducto,
-                tallaProducto,
-                categoriaProducto,
-                descripcionProducto,
-                valoracionProducto,
-                precioFormateado,
+                id: idProducto,
+                cantidad: cantidadProducto,
+                catalogo: catalogoProducto,
+                modelo: modeloProducto,
+                title: nombreProducto,
+                color: colorProducto,
+                talla: tallaProducto,
+                category: categoriaProducto,
+                description: descripcionProducto,
+                valoration: valoracionProducto,
+                price: precioProducto,
               ));
             }
           } else {
@@ -155,21 +155,21 @@ class _MainScreenState extends State<MainScreen> {
               tallaProducto = element['talla'] ?? '';
               categoriaProducto = element['categoria'] ?? '';
               valoracionProducto = element['valoracion'] ?? '';
-              precioProducto = element['precio'] ?? '0.0';
-              precioFormateado =
-                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              precioProducto = element['precio'] ?? 0;
+              // precioFormateado =
+              //     NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
               productos.add(ProductModel(
-                idProducto,
-                cantidadProducto,
-                catalogoProducto,
-                modeloProducto,
-                nombreProducto,
-                colorProducto,
-                tallaProducto,
-                categoriaProducto,
-                descripcionProducto,
-                valoracionProducto,
-                precioFormateado,
+                id: idProducto,
+                cantidad: cantidadProducto,
+                catalogo: catalogoProducto,
+                modelo: modeloProducto,
+                title: nombreProducto,
+                color: colorProducto,
+                talla: tallaProducto,
+                category: categoriaProducto,
+                description: descripcionProducto,
+                valoration: valoracionProducto,
+                price: precioProducto,
               ));
             });
           }
@@ -196,9 +196,9 @@ class _MainScreenState extends State<MainScreen> {
               tallaProducto = consultaFavoritos[i]['talla'] ?? '';
               categoriaProducto = consultaFavoritos[i]['categoria'] ?? '';
               valoracionProducto = consultaFavoritos[i]['valoracion'] ?? '';
-              precioProducto = consultaFavoritos[i]['precio'] ?? '0.0';
-              precioFormateado =
-                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              precioProducto = consultaFavoritos[i]['precio'] ?? 0;
+              // precioFormateado =
+              //     NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
               idProducto = consultaFavoritos[i]['id'] ?? '';
               favoritos.add(FavoriteModel(
                   idUsuario,
@@ -210,7 +210,7 @@ class _MainScreenState extends State<MainScreen> {
                   tallaProducto,
                   categoriaProducto,
                   valoracionProducto,
-                  precioFormateado,
+                  precioProducto,
                   idProducto));
             }
           } else {
@@ -224,9 +224,9 @@ class _MainScreenState extends State<MainScreen> {
               tallaProducto = element['talla'] ?? '';
               categoriaProducto = element['categoria'] ?? '';
               valoracionProducto = element['valoracion'] ?? '';
-              precioProducto = element['precio'] ?? '0.0';
-              precioFormateado =
-                  NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
+              precioProducto = element['precio'] ?? 0;
+              // precioFormateado =
+              //     NumberFormat("#,###", "es_CO").format(precioProducto * 1000);
               idProducto = element['id'] ?? '';
               favoritos.add(FavoriteModel(
                   idUsuario,
@@ -238,7 +238,7 @@ class _MainScreenState extends State<MainScreen> {
                   tallaProducto,
                   categoriaProducto,
                   valoracionProducto,
-                  precioFormateado,
+                  precioProducto,
                   idProducto));
             });
           }
@@ -299,9 +299,9 @@ class _MainScreenState extends State<MainScreen> {
               var talla = element['talla'] ?? '';
               var categoria = element['categoria'] ?? '';
               var valoracion = element['valoracion'] ?? '';
-              var precio = element['precio'] ?? '0.0';
-              precioFormateado =
-                  NumberFormat("#,###", "es_CO").format(precio * 1000);
+              var precio = element['precio'] ?? 0;
+              // precioFormateado =
+              //     NumberFormat("#,###", "es_CO").format(precio * 1000);
               compras.add(PurchasesModel(
                 uid,
                 iduser,
@@ -314,7 +314,7 @@ class _MainScreenState extends State<MainScreen> {
                 talla,
                 categoria,
                 valoracion,
-                precioFormateado,
+                precio,
               ));
             });
           }

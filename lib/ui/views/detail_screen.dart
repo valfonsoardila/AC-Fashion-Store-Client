@@ -27,7 +27,7 @@ class DetailScreen extends StatefulWidget {
   final String category;
   final String description;
   final String valoration;
-  final String price;
+  final int price;
   final onFavoritesProducts;
   DetailScreen({
     Key? key,
@@ -81,7 +81,7 @@ class _DashboardScreenState extends State<DetailScreen> {
   var categoria = "";
   var descripcion = "";
   var valoracion = "";
-  var precio = "";
+  var precio = 0;
 
   bool _isDarkMode = false;
   void _initConnectivity() async {

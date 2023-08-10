@@ -284,35 +284,73 @@ class _PerfilState extends State<Perfil> {
                 ),
               ),
               SizedBox(height: 8.0),
-              DropdownButton(
-                hint: Text(
-                  'Genero',
-                  style: TextStyle(
-                      color:
-                          _isDarkMode != false ? Colors.white : Colors.black),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: _isDarkMode
+                        ? Colors.white
+                        : Colors
+                            .black, // Puedes cambiar el color del borde aquí
+                    width: 1.0, // Puedes ajustar el grosor del borde aquí
+                  ),
+                  borderRadius: BorderRadius.circular(
+                      8.0), // Puedes ajustar la esquina redondeada aquí
                 ),
-                dropdownColor:
-                    _isDarkMode != false ? Colors.grey[800] : Colors.white,
-                icon: Icon(Icons.arrow_drop_down,
-                    color: _isDarkMode != false ? Colors.white : Colors.black),
-                iconSize: 36,
-                isExpanded: true,
-                underline: SizedBox(),
-                style: TextStyle(
-                    color: _isDarkMode != false ? Colors.white : Colors.black),
-                value: generoSeleccionado,
-                onChanged: (newValue) {
-                  setState(() {
-                    generoSeleccionado =
-                        newValue.toString(); // Actualiza el valor seleccionado
-                  });
-                },
-                items: generos.map((valueItem) {
-                  return DropdownMenuItem(
-                    value: valueItem,
-                    child: Text(valueItem),
-                  );
-                }).toList(),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Icon(
+                        Icons.person, // Puedes cambiar el icono aquí
+                        color: _isDarkMode != false
+                            ? Colors.white
+                            : Color.fromARGB(255, 254, 12, 131),
+                      ),
+                    ),
+                    Expanded(
+                      child: DropdownButton(
+                        hint: Text(
+                          'Valoracion',
+                          style: TextStyle(
+                            color: _isDarkMode != false
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                        dropdownColor: _isDarkMode != false
+                            ? Colors.grey[800]
+                            : Colors.white,
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: _isDarkMode != false
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        iconSize: 36,
+                        isExpanded: true,
+                        underline: SizedBox(),
+                        style: TextStyle(
+                          color: _isDarkMode != false
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        value: generoSeleccionado,
+                        onChanged: (newValue) {
+                          setState(() {
+                            generoSeleccionado = newValue
+                                .toString(); // Actualiza el valor seleccionado
+                          });
+                        },
+                        items: generos.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(valueItem),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 10.0),
               ElevatedButton(

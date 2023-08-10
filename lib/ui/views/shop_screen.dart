@@ -37,11 +37,11 @@ class _ShopScreenState extends State<ShopScreen> {
 
   int total() {
     int total = 0;
-    double precio = 0;
+    int precio = 0;
     int nuevoPrecio = 0;
     for (var i = 0; i < compra.length; i++) {
-      precio = double.parse(compra[i]['precio']);
-      nuevoPrecio = precio.toInt() * 1000;
+      precio = compra[i]['precio'];
+      nuevoPrecio = precio;
       total = total + nuevoPrecio;
     }
     return total;
