@@ -9,9 +9,8 @@ class PeticionesCompra {
       print('compra: $compra');
       final tableNameCompra = 'compra';
       for (var i = 0; i < compra.length; i++) {
-        final responseCompra =
-            await _client.from(tableNameCompra).insert(compra[i]);
-        print('responseCompra: $responseCompra');
+        await _client.from(tableNameCompra).insert(compra[i]);
+        print('paso por aqui [$i]');
       }
     } catch (error) {
       print('Error en la operación de creación de compra: $error');

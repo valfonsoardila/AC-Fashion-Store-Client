@@ -114,6 +114,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     _controllerconectivity = widget.controllerconectivity;
     carrito = widget.carrito;
     perfil = widget.perfil;
+    print("PERFIL DESDE GOOGLE MAPS: $perfil");
     idUser = perfil['uid'];
     url = widget.url;
     nombre = widget.nombre;
@@ -376,6 +377,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     };
                     print("Este es el pedido a guardar: $pedido");
                     print("CARRITO DESDE GOOGLE MAPS: $carrito");
+                    print("PERFIL DESDE GOOGLE MAPS: $perfil");
                     controlpd.agregarPedido(
                         pedido, carrito, perfil, widget.total);
                     _showProcessingDialog();

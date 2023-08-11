@@ -12,8 +12,7 @@ class PeticionesPedido {
     try {
       var horaCompra = pedido['horaCompra'];
       final tableNamePedido = 'pedido';
-      final responsePedido =
-          await _client.from(tableNamePedido).insert([pedido]);
+      await _client.from(tableNamePedido).insert([pedido]);
       var pedidoRegistrado = await _client
           .from(tableNamePedido)
           .select('*')
@@ -23,17 +22,15 @@ class PeticionesPedido {
         'iduser': perfil['uid'],
         'nombre': perfil['nombre'],
         'pago': total,
+        'mes': DateTime.now().month,
       };
       carrito.forEach((element) {
-        element['uid'] = pedidoRegistrado[0]['uid'];
+        element['idpedido'] = pedidoRegistrado[0]['uid'];
       });
       print("CARRITO ANTES DE GUARDAR: $carrito");
-      final responsePago = await PeticionesPago.crearPago([pago]);
-      final responseCompra = await PeticionesCompra.crearCompra(carrito);
-      print('responsePedido: $responsePedido');
-      print('responsePago: $responsePago');
-      print('responseCompra: $responseCompra');
-      return responsePedido;
+      PeticionesPago.crearPago([pago]);
+      PeticionesCompra.crearCompra(carrito);
+      return true;
     } catch (error) {
       print('Error en la operación de creación de pedido: $error');
       throw error;

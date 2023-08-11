@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:acfashion_store/domain/controller/controllerConectivity.dart';
 import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
 import 'package:acfashion_store/domain/controller/controllerProducto.dart';
@@ -10,7 +8,6 @@ import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -500,7 +497,9 @@ class _DashboardScreenState extends State<DetailScreen> {
                                         onPressed: () async {
                                           if (cantidad >= 1) {
                                             carrito.add({
-                                              "id": idProducto,
+                                              "idpedido": "",
+                                              "iduser": idUser,
+                                              "idproducto": idProducto,
                                               "cantidad": cantidad,
                                               "imagen": imagen,
                                               "titulo": titulo,

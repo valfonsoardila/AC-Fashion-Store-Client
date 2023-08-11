@@ -1,6 +1,5 @@
 import 'package:acfashion_store/domain/controller/controllerPedido.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
-import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:acfashion_store/ui/views/Invoice/Invoice_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,7 +33,6 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   TextEditingController controlDireccion = TextEditingController();
   bool isDarkMode = false;
   bool _searchLocation = false;
-  bool _openInvoice = false;
   bool _controllerconectivity = false;
   String _locationMessage = "";
   String latitude = '';
@@ -52,7 +50,6 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
   var telefono;
   var url;
   var direccion;
-  var _image;
   //VARIABLES UBICACION
   var _myLocation = LatLng(0, 0);
   var _myLocationInit = LatLng(0, 0);
@@ -455,6 +452,7 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
     total = widget.total;
     print(perfil);
     if (perfil != {}) {
+      print("entro al if perfil no es vacio");
       idUser = perfil['uid'];
       correo = perfil['correo'];
       nombre = perfil['nombre'];

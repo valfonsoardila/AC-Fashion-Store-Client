@@ -573,7 +573,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         if (e.cantidad > itemCount.value) {
                                           itemCount.value++;
                                           carrito.add({
-                                            "uid": '',
+                                            "idpedido": "",
                                             "iduser": id,
                                             "idproducto": e.id,
                                             "cantidad": itemCount.value,
