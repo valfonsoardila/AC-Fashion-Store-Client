@@ -1,3 +1,4 @@
+import 'package:acfashion_store/domain/controller/controllerNotificacion.dart';
 import 'package:acfashion_store/domain/controller/controllerPedido.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
 import 'package:connectivity/connectivity.dart';
@@ -36,6 +37,7 @@ class InvoiceScreen extends StatefulWidget {
 }
 
 class _InvoiceScreenState extends State<InvoiceScreen> {
+  ControlNotificacion controln = ControlNotificacion();
   ControlPedido controlpd = ControlPedido();
   String idUser = '';
   bool isDarkMode = false;
@@ -375,11 +377,22 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       'estadoEntrega': 'Pendiente',
                       'tiempoEntrega': '4 a 10 horas',
                     };
-                    print("Este es el pedido a guardar: $pedido");
-                    print("CARRITO DESDE GOOGLE MAPS: $carrito");
-                    print("PERFIL DESDE GOOGLE MAPS: $perfil");
-                    controlpd.agregarPedido(
-                        pedido, carrito, perfil, widget.total);
+                    controlpd
+                        .agregarPedido(pedido, carrito, perfil, widget.total)
+                        .then((value) {
+                      var notificacion = {
+                        'iduser': idUser,
+                        'titulo': "Pedido realizado",
+                        'descripcion':
+                            "Su pedido se ha hecho con exito, pronto le notificaremos cuando su pedido este listo",
+                        'tiempoEntrega': '4 a 10 horas',
+                        'estado': "Pendiente",
+                        'hora': '${getFormattedTime()}',
+                        'fecha':
+                            '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                      };
+                      controln.agregarNotificacion(notificacion);
+                    });
                     _showProcessingDialog();
                   },
                   child: Text('Aceptar'),

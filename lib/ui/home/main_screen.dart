@@ -1,11 +1,13 @@
 import 'package:acfashion_store/domain/controller/controllerCompra.dart';
 import 'package:acfashion_store/domain/controller/controllerFavorito.dart';
+import 'package:acfashion_store/domain/controller/controllerNotificacion.dart';
 import 'package:acfashion_store/domain/controller/controllerProducto.dart';
 import 'package:acfashion_store/domain/controller/controllerUserAuth.dart';
 import 'package:acfashion_store/domain/controller/controllerUserPerfil.dart';
 import 'package:acfashion_store/ui/home/dashboard_screen.dart';
 import 'package:acfashion_store/ui/home/drawer_screen.dart';
 import 'package:acfashion_store/ui/models/favorite_model.dart';
+import 'package:acfashion_store/ui/models/notification_model.dart';
 import 'package:acfashion_store/ui/models/purchases_model.dart';
 import 'package:acfashion_store/ui/models/theme_model.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
@@ -29,6 +31,7 @@ class _MainScreenState extends State<MainScreen> {
   ControlProducto controlp = Get.put(ControlProducto());
   ControlFavoritos controlf = Get.put(ControlFavoritos());
   ControlCompra controlc = Get.put(ControlCompra());
+  ControlNotificacion controlnotificaciones = Get.put(ControlNotificacion());
   //VARIABLES DE CONTROL
   String idUsuario = '';
   String? uid;
@@ -60,9 +63,11 @@ class _MainScreenState extends State<MainScreen> {
   List<Map<String, dynamic>> consultaProductos = [];
   List<Map<String, dynamic>> consultaFavoritos = [];
   List<Map<String, dynamic>> consultaCompras = [];
+  List<Map<String, dynamic>> consultaNotificaciones = [];
   List<FavoriteModel> favoritos = [];
   List<PurchasesModel> compras = [];
   List<ProductModel> productos = [];
+  List<NotificationModel> notificaciones = [];
   //MAPAS
   Map<String, dynamic> perfil = {};
 
@@ -178,6 +183,7 @@ class _MainScreenState extends State<MainScreen> {
         print("Error al cargar datos de favoritos");
       }
     });
+    //Se obtienen datos de favoritos
     controlf.obtenerfavoritos(idUsuario).then((value) {
       setState(() {
         msg = controlf.mensajesFavorio;
@@ -247,6 +253,7 @@ class _MainScreenState extends State<MainScreen> {
         print("Error al cargar datos de favoritos");
       }
     });
+    //Se obtienen datos de compras
     controlc.obtenerCompras().then((value) {
       setState(() {
         msg = controlc.mensajesCompra;
@@ -324,6 +331,70 @@ class _MainScreenState extends State<MainScreen> {
         print("Error al cargar datos de compras");
       }
     });
+    //Se obtienen datos de notificaciones
+    controlnotificaciones.filtrarNotificacion(idUsuario).then((value) => {
+          setState(() {
+            msg = controlnotificaciones.mensajesNotificacion;
+          }),
+          if (msg == "Proceso exitoso")
+            {
+              setState(() {
+                consultaNotificaciones =
+                    controlnotificaciones.datosNotificaciones;
+                print(
+                    "Datos de notificaciones recibidos en MainScreen: $consultaNotificaciones");
+                if (consultaNotificaciones.length > 1) {
+                  for (var i = 0; i < consultaNotificaciones.length; i++) {
+                    var uid = consultaNotificaciones[i]['uid'] ?? '';
+                    var idUser = consultaNotificaciones[i]['iduser'] ?? '';
+                    var titulo = consultaNotificaciones[i]['titulo'] ?? '';
+                    var descripcion =
+                        consultaNotificaciones[i]['descripcion'] ?? '';
+                    var tiempoEntrega =
+                        consultaNotificaciones[i]['tiempoEntrega'] ?? '';
+                    var fecha = consultaNotificaciones[i]['fecha'] ?? '';
+                    var hora = consultaNotificaciones[i]['hora'] ?? '';
+                    var estado = consultaNotificaciones[i]['estado'] ?? '';
+                    notificaciones.add(
+                      NotificationModel(
+                        uid: uid,
+                        idUser: idUser,
+                        titulo: titulo,
+                        descripcion: descripcion,
+                        tiempoEntrega: tiempoEntrega,
+                        fecha: fecha,
+                        hora: hora,
+                        estado: estado,
+                      ),
+                    );
+                  }
+                } else {
+                  consultaNotificaciones.forEach((element) {
+                    var uid = element['uid'] ?? '';
+                    var idUser = element['iduser'] ?? '';
+                    var titulo = element['titulo'] ?? '';
+                    var descripcion = element['descripcion'] ?? '';
+                    var tiempoEntrega = element['tiempoEntrega'] ?? '';
+                    var fecha = element['fecha'] ?? '';
+                    var hora = element['hora'] ?? '';
+                    var estado = element['estado'] ?? '';
+                    notificaciones.add(
+                      NotificationModel(
+                        uid: uid,
+                        idUser: idUser,
+                        titulo: titulo,
+                        descripcion: descripcion,
+                        tiempoEntrega: tiempoEntrega,
+                        fecha: fecha,
+                        hora: hora,
+                        estado: estado,
+                      ),
+                    );
+                  });
+                }
+              })
+            }
+        });
   }
 
   @override
@@ -469,6 +540,7 @@ class _MainScreenState extends State<MainScreen> {
                           productos: productos,
                           favoritos: favoritos,
                           compras: compras,
+                          notificaciones: notificaciones,
                         ),
                       ],
                     ),

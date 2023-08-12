@@ -31,6 +31,7 @@ class DashboardScreen extends StatefulWidget {
   final List<ProductModel> productos;
   final List<FavoriteModel> favoritos;
   final List<PurchasesModel> compras;
+  final List<NotificationModel> notificaciones;
   DashboardScreen({
     Key? key,
     required this.id,
@@ -44,6 +45,7 @@ class DashboardScreen extends StatefulWidget {
     required this.productos,
     required this.favoritos,
     required this.compras,
+    required this.notificaciones,
   }) : super(key: key);
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -89,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   List<ProductModel> productosAux = [];
   List<ProductModel> categories = [];
   List<ProductModel> colors = [];
-  List<NotificationModel> notifications = [];
+  List<NotificationModel> _notificaciones = [];
   bool _isDarkMode = false;
 
   List<ProductModel> generateProducts() {
@@ -97,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   List<NotificationModel> notificationsList() {
-    return notifications;
+    return _notificaciones;
   }
 
   //Pendiente para cambiar esta funcion
@@ -143,6 +145,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     productosAux = productos;
     productosFavoritos = widget.favoritos;
     compras = widget.compras;
+    _notificaciones = widget.notificaciones;
     perfil = <String, dynamic>{
       'uid': id,
       'correo': correoPerfil,
@@ -168,6 +171,133 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
+  List<Widget> buildNotifications() {
+    final theme = Provider.of<ThemeChanger>(context);
+    var temaActual = theme.getTheme();
+    if (temaActual == ThemeData.dark()) {
+      _isDarkMode = true;
+    } else {
+      _isDarkMode = false;
+    }
+    return _notificaciones.length > 0
+        ? _notificaciones.map((e) {
+            return Column(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: _isDarkMode ? Colors.grey.shade900 : Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 5,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              e.titulo,
+                              style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              e.hora,
+                              style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              e.fecha,
+                              style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                e.descripcion,
+                                style: TextStyle(
+                                  color: _isDarkMode != false
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('Entrega: ',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            Text(
+                              e.tiempoEntrega,
+                              style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                SizedBox(height: 10.0),
+              ],
+            );
+          }).toList()
+        : [
+            Container(
+              height: 300.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "No tienes notificaciones",
+                    style: TextStyle(
+                      color: _isDarkMode != false
+                          ? Colors.white
+                          : Colors.grey.shade600,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ];
+  }
+
   void _mostrarNotificaciones() {
     showDialog(
       context: context,
@@ -175,58 +305,90 @@ class _DashboardScreenState extends State<DashboardScreen>
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: _isDarkMode != false
-                  ? Color.fromARGB(255, 19, 18, 18)
-                  : Colors.white,
-              title: Text(
-                'Mis Notificaciones',
-                style: TextStyle(
-                    color: _isDarkMode != false ? Colors.white : Colors.black),
-              ),
-              content: Container(
-                color: _isDarkMode != false
-                    ? Color.fromARGB(255, 19, 18, 18)
-                    : Colors.white,
-                padding: EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: Container(
-                    color: _isDarkMode != false
+            return _notificaciones.length > 0
+                ? AlertDialog(
+                    backgroundColor: _isDarkMode != false
                         ? Color.fromARGB(255, 19, 18, 18)
                         : Colors.white,
-                    padding: EdgeInsets.all(5.0),
-                    child: Center(
-                      child: Column(
-                        children: [],
-                      ),
+                    title: Text(
+                      'Mis Notificaciones',
+                      style: TextStyle(
+                          color: _isDarkMode != false
+                              ? Colors.white
+                              : Colors.black),
                     ),
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    // Lógica para guardar los cambios realizados en el perfil
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Marcar como leidas',
+                    content: Container(
+                        color: _isDarkMode != false
+                            ? Color.fromARGB(255, 19, 18, 18)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10.0),
+                        child: SizedBox(
+                          height: 300.0,
+                          width: 300.0,
+                          child: ListView(
+                            children: buildNotifications(),
+                          ),
+                        )),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          // Lógica para guardar los cambios realizados en el perfil
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Marcar como leidas',
+                            style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Borrar',
+                            style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black)),
+                      ),
+                    ],
+                  )
+                : AlertDialog(
+                    backgroundColor: _isDarkMode != false
+                        ? Color.fromARGB(255, 19, 18, 18)
+                        : Colors.white,
+                    title: Text(
+                      'Mis Notificaciones',
                       style: TextStyle(
                           color: _isDarkMode != false
                               ? Colors.white
-                              : Colors.black)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Borrar',
-                      style: TextStyle(
-                          color: _isDarkMode != false
-                              ? Colors.white
-                              : Colors.black)),
-                ),
-              ],
-            );
+                              : Colors.black),
+                    ),
+                    content: Container(
+                        color: _isDarkMode != false
+                            ? Color.fromARGB(255, 19, 18, 18)
+                            : Colors.white,
+                        padding: EdgeInsets.all(10.0),
+                        child: SizedBox(
+                          height: 300.0,
+                          width: 300.0,
+                          child: ListView(
+                            children: buildNotifications(),
+                          ),
+                        )),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cerrar',
+                            style: TextStyle(
+                                color: _isDarkMode != false
+                                    ? Colors.white
+                                    : Colors.black)),
+                      ),
+                    ],
+                  );
           },
         );
       },
@@ -330,7 +492,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
-    Size size = MediaQuery.of(context).size;
     final theme = Provider.of<ThemeChanger>(context);
     var temaActual = theme.getTheme();
     if (temaActual == ThemeData.dark()) {
