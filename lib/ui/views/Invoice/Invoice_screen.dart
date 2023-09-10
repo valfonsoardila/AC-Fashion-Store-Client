@@ -1,6 +1,7 @@
 import 'package:acfashion_store/domain/controller/controllerNotificacion.dart';
 import 'package:acfashion_store/domain/controller/controllerPedido.dart';
 import 'package:acfashion_store/ui/styles/my_colors.dart';
+import 'package:background_sms/background_sms.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -106,6 +107,22 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     setState(() {
       _controllerconectivity = connectivityResult != ConnectivityResult.none;
     });
+  }
+
+  //envia el comprobante de compra
+  Future<void> enviarComprobanteCompra(telefono, mensaje) async {
+    print("Enviando codigo");
+    print(telefono);
+    print(mensaje);
+    SmsStatus result = await BackgroundSms.sendMessage(
+      phoneNumber: telefono,
+      message: mensaje,
+    );
+    if (result == SmsStatus.sent) {
+      print("Sent");
+    } else {
+      print("Failed");
+    }
   }
 
   @override
@@ -393,6 +410,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       };
                       controln.agregarNotificacion(notificacion);
                     });
+                    enviarComprobanteCompra(telefono,
+                        "¡Gracias por comprar en AC Fashion Store!. Su pedido se ha hecho con exito, pronto le notificaremos cuando su pedido este listo");
                     _showProcessingDialog();
                   },
                   child: Text('Aceptar'),

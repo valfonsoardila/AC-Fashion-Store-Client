@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
@@ -49,11 +50,18 @@ class _LoginState extends State<Login> {
     pass.text = prefs.getString('pass') ?? '';
   }
 
+  _getPermission() async => await [
+        Permission.sms,
+        Permission.location,
+        Permission.storage,
+      ].request();
+
   @override
   void initState() {
     super.initState();
     _initConnectivity();
     cargarDatos();
+    _getPermission();
   }
 
   @override
