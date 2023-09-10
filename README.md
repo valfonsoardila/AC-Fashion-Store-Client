@@ -5,7 +5,6 @@ Tienda movil para gestionar poductos como outfits y diseños personalizados
 
 ## Tienda ropa móvil con base de datos relacional
 ## `Vistas`
-<div style="display: inline;">
-  ![MockupsAcFashionStoreClient](https://github.com/VictorArdila/AC-Fashion-Store-Client/assets/89551043/bb7834bc-af4f-4e22-81dc-4888790618b1)
-</div> 
+![MockupsAcFashionStoreClient](https://github.com/VictorArdila/AC-Fashion-Store-Client/assets/89551043/bb7834bc-af4f-4e22-81dc-4888790618b1)
+
 
